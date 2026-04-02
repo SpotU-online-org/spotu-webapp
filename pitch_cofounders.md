@@ -26,10 +26,9 @@ Entras a SpotU, creas tu cuenta y seleccionas quién eres:
 - **"Tengo un espacio publicitario"** — tienes una valla, pantalla, sitio web, podcast, red social, etc.
 - **"Soy agencia de marketing"** — ofreces servicios de marketing y buscas clientes o espacios
 
-### 2. Creas tu publicación
-Cada actor crea una **tarjeta/publicación** con información relevante:
+### 2. Publicas tu oferta (espacios y agencias) o buscas directamente (anunciantes)
 
-**Si tienes un espacio publicitario**, publicas:
+**Si tienes un espacio publicitario** (obligatorio publicar):
 - Tipo de espacio (físico o digital) y categoría (valla, pantalla LED, sitio web, podcast, etc.)
 - Descripción del espacio (ubicación, dimensiones, horarios, condiciones)
 - Fotos del espacio
@@ -37,22 +36,19 @@ Cada actor crea una **tarjeta/publicación** con información relevante:
 - Precio estimado
 - Tus datos de contacto: botón de WhatsApp y/o correo
 
-**Si quieres anunciarte**, publicas:
-- Qué tipo de espacio buscas
-- Qué quieres anunciar y tu objetivo
-- Tu ubicación y presupuesto
-- Tu industria
-- Tus datos de contacto: botón de WhatsApp y/o correo
-
-**Si eres agencia de marketing**, publicas:
+**Si eres agencia de marketing** (obligatorio publicar):
 - Tus servicios (gestión de campañas, diseño, media buying, manejo de redes, etc.)
 - Descripción y experiencia
 - Mercados donde operas e industrias de especialización
 - Precio estimado
 - Tus datos de contacto: botón de WhatsApp y/o correo
 
+**Si quieres anunciarte** (publicar es opcional):
+- Tu flujo principal es **buscar espacios y agencias directamente** y contactarlos
+- Opcionalmente, puedes **publicar tu necesidad** ("Solicitar cotizaciones") para que los proveedores te contacten a ti — útil cuando tienes un proyecto complejo o quieres que varios espacios/agencias compitan por tu presupuesto
+
 ### 3. Exploras y buscas
-Navegas el feed de publicaciones o usas filtros (ciudad, tipo de espacio, precio, tipo de actor) para encontrar exactamente lo que necesitas.
+Navegas el feed de publicaciones o usas filtros (ciudad, tipo de espacio, precio, tipo de actor). En V1, una **búsqueda asistida por IA** te permite describir lo que necesitas en lenguaje natural ("pantalla LED en Monterrey para evento deportivo con bajo presupuesto") y la plataforma filtra y rankea los mejores resultados automáticamente.
 
 ### 4. Contactas directamente
 Cada publicación tiene botones de **contactar por WhatsApp** y/o **contactar por correo**. Un clic y ya estás hablando con la otra parte. Sin intermediarios, sin esperar aprobaciones.
@@ -122,6 +118,7 @@ Esto se puede agregar después si la demanda lo justifica. La prioridad es que e
 | SpotU | Competencia |
 |-------|-------------|
 | Marketplace 3 lados (anunciantes + espacios + agencias) | Solo 2 lados |
+| Búsqueda con IA (describe lo que necesitas en lenguaje natural) | Filtros manuales |
 | Contacto directo (WhatsApp/correo) | Mensajería interna lenta |
 | Espacios físicos + digitales | Solo uno de los dos |
 | LATAM + hispano USA | Enfoque solo USA o solo Europa |
@@ -133,6 +130,7 @@ Esto se puede agregar después si la demanda lo justifica. La prioridad es que e
 
 - **Frontend:** Next.js (React) — web app responsive
 - **Backend:** Supabase (PostgreSQL, Auth, Storage)
+- **IA:** Claude API (búsqueda semántica en V1)
 - **Pagos:** Stripe
 - **Email:** Resend
 - **Deploy:** Vercel
@@ -154,7 +152,7 @@ Las agencias y agentes de marketing son un **multiplicador natural** del marketp
 |------|----------|
 | MVP funcional (publicaciones, búsqueda, contacto directo, stats básicas) | 8 semanas |
 | Primeros 100 usuarios (3 mercados) | Semana 10-12 |
-| V1 con pagos y contratos digitales | Semana 10-12 |
+| V1 con IA, pagos y contratos digitales | Semana 10-14 |
 | 500 usuarios activos | Mes 4-5 |
 | Revenue: $1,000 MRR | Mes 5-6 |
 | Revenue: $5,000 MRR | Mes 8-10 |
@@ -190,4 +188,4 @@ Lo que necesitamos:
 ---
 
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 2 de abril de 2026 (v3 — funcionamiento detallado, simplificación a marketplace puro)
+**Última actualización:** 2 de abril de 2026 (v4 — flujo híbrido anunciantes, IA en Fase 2)

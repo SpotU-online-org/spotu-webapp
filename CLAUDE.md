@@ -6,7 +6,9 @@ Marketplace de 3 lados (intermediario puro) que conecta:
 2. **Agencias de marketing** ↔ **Anunciantes** (agencias ofrecen servicios, empresas contratan)
 3. **Agencias de marketing** ↔ **Espacios publicitarios** (agencias gestionan espacios para sus clientes)
 
-**Alcance V1:** publicar, buscar, contactar (WhatsApp/correo directo), contratos digitales, stats básicas (vistas + clics en contactar). NO analytics de marketing, NO gestión de campañas, NO mensajería interna.
+**Dinámica:** Espacios y agencias publican (obligatorio). Anunciantes buscan y contactan directo; opcionalmente publican solicitudes de cotización.
+
+**Alcance V1:** publicar, buscar, contactar (WhatsApp/correo directo), búsqueda con IA (Claude API), contratos digitales, stats básicas (vistas + clics en contactar). NO analytics de marketing, NO gestión de campañas, NO mensajería interna.
 
 Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
@@ -14,6 +16,7 @@ Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (
 - **Frontend:** Next.js 14+ (App Router), React 18+, TypeScript
 - **Styling:** TailwindCSS + shadcn/ui
 - **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
+- **IA:** Claude API (búsqueda semántica, matching)
 - **Pagos:** Stripe (USD)
 - **Email:** Resend
 - **Deploy:** Vercel

@@ -15,6 +15,12 @@ SpotU es un marketplace de publicidad que conecta **tres tipos de actores**: anu
 SpotU es un **intermediario puro**: permite a los actores publicar, buscar y contactarse. No ofrecemos analytics de marketing, gestión de campañas ni herramientas avanzadas. Las únicas funcionalidades extra son:
 - **Contratos digitales** entre partes (hostear el acuerdo)
 - **Stats básicas** por publicación: cuántas personas vieron la publicación y cuántas presionaron el botón de contactar
+- **Búsqueda con IA** (Fase 2): matching semántico para todos los usuarios — describe lo que necesitas y la IA filtra los mejores resultados
+
+### Dinámica del marketplace
+- **Espacios y agencias** son el lado de oferta: **publican obligatoriamente** para existir en la plataforma
+- **Anunciantes** son el lado de demanda: su flujo principal es **buscar y contactar directamente**. Opcionalmente pueden publicar su necesidad ("Solicitar cotizaciones") para que espacios y agencias los contacten a ellos
+- Este modelo híbrido funciona en todas las etapas: cuando hay poca oferta, las publicaciones de anunciantes ayudan a atraer proveedores; cuando hay mucha oferta, los anunciantes simplemente buscan y contactan
 
 ---
 
@@ -79,9 +85,9 @@ Para dueños de vallas, pantallas LED, sitios web, redes sociales, podcasts, etc
 | Botón: Contactar por correo | Email | Sí (al menos uno) | contacto@espacio.com |
 | Sitio web / redes sociales | URL | No | instagram.com/espacio |
 
-### 3.2 Anunciante ("Quiero anunciarme")
+### 3.2 Anunciante — Solicitud de cotización ("Busco publicidad")
 
-Para empresas o personas que buscan dónde pautar.
+**Opcional.** El flujo principal del anunciante es buscar espacios/agencias y contactarlos directamente. Pero si quiere que los proveedores lo contacten a él, puede publicar una solicitud.
 
 | Campo | Tipo | Obligatorio | Ejemplo |
 |-------|------|-------------|---------|
@@ -128,7 +134,8 @@ Cada publicación debe tener **al menos un método de contacto** (WhatsApp o cor
 **Features:**
 - Autenticación (email + Google) via Supabase Auth
 - Registro con selección de rol: "Quiero anunciarme" / "Tengo espacio publicitario" / "Soy agencia de marketing"
-- CRUD completo de publicaciones con los campos definidos en Sección 3
+- CRUD completo de publicaciones con los campos definidos en Sección 3 (obligatorio para espacios/agencias, opcional para anunciantes)
+- Los anunciantes pueden buscar y contactar sin necesidad de publicar
 - Búsqueda con filtros (ciudad, tipo de espacio, rango de precio, tipo de actor)
 - Feed/explorar publicaciones con cards
 - Página de detalle de publicación con botones de contacto (WhatsApp y/o correo)
@@ -138,17 +145,24 @@ Cada publicación debe tener **al menos un método de contacto** (WhatsApp o cor
 
 **No incluye en MVP:**
 - Pagos / suscripciones
-- IA / matching semántico
-- Contratos digitales
+- IA / matching semántico (Fase 2)
+- Contratos digitales (Fase 2)
 - Mensajería interna (el contacto es directo por WhatsApp/correo)
 
 ---
 
 ### FASE 2: V1 (4-6 semanas post-MVP)
 
-**Objetivo:** Monetizar y agregar valor con contratos y planes.
+**Objetivo:** Monetizar, agregar IA para búsqueda y contratos digitales.
 
 **Features:**
+
+#### Búsqueda con IA (todos los usuarios)
+- Input inteligente: "Quiero anunciar un evento deportivo en Monterrey con bajo presupuesto"
+- Claude API interpreta intención, filtra y rankea resultados
+- Embeddings con pgvector para búsqueda semántica
+- Funciona para todos los usuarios (Free, Pro, Agency) — es parte del core del marketplace
+- Complementa los filtros manuales, no los reemplaza
 
 #### Sistema de pagos (Stripe)
 - Integración con Stripe Checkout
@@ -184,7 +198,6 @@ Cada publicación debe tener **al menos un método de contacto** (WhatsApp o cor
 ### FASE 3: Escala (ongoing, post-validación)
 
 **Añadir según demanda validada:**
-- Búsqueda con IA (matching semántico con Claude API)
 - Pagos entre partes vía plataforma (escrow con Stripe Connect)
 - Mensajería interna (inbox, chat)
 - Analytics avanzados (si los usuarios lo piden)
@@ -204,6 +217,7 @@ Cada publicación debe tener **al menos un método de contacto** (WhatsApp o cor
 | Frontend | Next.js 14+ (App Router), React 18+, TypeScript |
 | Styling | TailwindCSS + shadcn/ui |
 | Backend | Supabase (PostgreSQL, Auth, Storage, Edge Functions) |
+| IA (V1) | Claude API (búsqueda semántica, matching) |
 | Pagos | Stripe (Checkout, Billing) |
 | Email | Resend |
 | Deploy | Vercel |
@@ -332,6 +346,9 @@ CREATE TABLE listings (
   views_count INTEGER DEFAULT 0,
   contacts_count INTEGER DEFAULT 0, -- clics en botones de contactar
 
+  -- IA (V1)
+  embedding VECTOR(1536),
+
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -403,6 +420,7 @@ CREATE INDEX idx_listing_views_listing ON listing_views(listing_id);
 CREATE INDEX idx_listing_contacts_listing ON listing_contacts(listing_id);
 CREATE INDEX idx_contracts_participants ON contracts(creator_id, counterpart_id);
 CREATE INDEX idx_contracts_status ON contracts(status);
+CREATE INDEX idx_listings_embedding ON listings USING ivfflat (embedding vector_cosine_ops);
 ```
 
 ### Roles de usuario
@@ -420,11 +438,12 @@ CREATE INDEX idx_contracts_status ON contracts(status);
 
 ### Registro
 ```
-Landing → CTA "Publica gratis"
+Landing → CTA "Empieza gratis"
   → Seleccionar: "Quiero anunciarme" / "Tengo espacio" / "Soy agencia de marketing"
   → Sign up (Google o email)
   → Completar perfil (nombre, empresa, ciudad, país, WhatsApp y/o correo)
-  → Onboarding: crear primera publicación (guiado)
+  → Si espacio/agencia: crear primera publicación (guiado, obligatorio)
+  → Si anunciante: ir directo al feed para buscar (publicar es opcional)
   → Feed personalizado
 ```
 
@@ -440,9 +459,9 @@ Dashboard → "Nueva publicación" → "Tengo un espacio"
   → Preview → Publicar
 ```
 
-### Publicación (Anunciante)
+### Solicitud de cotización (Anunciante — opcional)
 ```
-Dashboard → "Nueva publicación" → "Quiero anunciarme"
+Dashboard → "Solicitar cotizaciones"
   → Paso 1: Tipo de espacio buscado (multi-select)
   → Paso 2: Título + Descripción (qué quieres anunciar, objetivo)
   → Paso 3: Ubicación deseada + Industria/sector
@@ -450,6 +469,7 @@ Dashboard → "Nueva publicación" → "Quiero anunciarme"
   → Paso 5: Imágenes opcionales (logo, material)
   → Paso 6: Datos de contacto (WhatsApp y/o correo, sitio web)
   → Preview → Publicar
+  → Espacios y agencias ven la solicitud y pueden contactar al anunciante
 ```
 
 ### Publicación (Agencia/Agente)
@@ -466,7 +486,9 @@ Dashboard → "Nueva publicación" → "Ofrezco servicios de marketing"
 ### Búsqueda y descubrimiento
 ```
 Feed / Barra de búsqueda
-  → Filtros: tipo de actor, tipo de espacio, ciudad, país, rango de precio
+  → Opción A (MVP): Filtros manuales — tipo de actor, tipo de espacio, ciudad, país, rango de precio
+  → Opción B (V1): Búsqueda con IA — "pantalla LED en Monterrey para evento deportivo bajo presupuesto"
+     → Claude API interpreta → resultados rankeados por relevancia
   → Cards con preview (foto, título, ubicación, precio, tipo)
   → Click → Detalle completo con botones de contactar
   → Click "Contactar por WhatsApp" → abre WhatsApp directo
@@ -528,22 +550,26 @@ Dashboard → "Crear contrato"
 - [ ] Testing y bug fixes
 - [ ] Deploy a producción (Vercel)
 
-### Semana 9-10: Pagos + Contratos (V1)
+### Semana 9-10: IA + Pagos (V1)
+- [ ] Integración Claude API para búsqueda semántica
+- [ ] pgvector para embeddings
+- [ ] Barra de búsqueda inteligente (input libre + resultados rankeados)
 - [ ] Stripe: planes de suscripción (Free / Pro / Agency)
 - [ ] Stripe: cobro por publicaciones adicionales y boost
 - [ ] Portal de facturación
+
+### Semana 11-12: Contratos + Verificación (V1)
 - [ ] Templates de contratos digitales
 - [ ] Flujo de envío, revisión y firma de contratos
 - [ ] Generación de PDF de contratos
-
-### Semana 11-12: Verificación + Iteración
 - [ ] Verificación de usuarios (badge)
 - [ ] Publicaciones destacadas (boost)
+
+### Semana 13-14: Iteración
 - [ ] Mejoras basadas en feedback de usuarios
 - [ ] Optimizaciones de performance
 
 ### Futuro (según demanda)
-- [ ] IA para búsqueda semántica (Claude API)
 - [ ] Mensajería interna
 - [ ] Analytics avanzados
 - [ ] Reviews y ratings
@@ -554,4 +580,4 @@ Dashboard → "Crear contrato"
 ---
 
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 2 de abril de 2026 (v3 — simplificación a marketplace puro, campos detallados por tipo de publicación)
+**Última actualización:** 2 de abril de 2026 (v4 — flujo híbrido anunciantes, IA en Fase 2, dinámica del marketplace)
