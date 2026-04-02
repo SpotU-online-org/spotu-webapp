@@ -4,6 +4,11 @@
 
 SpotU es un marketplace de publicidad que conecta **tres tipos de actores**: anunciantes, dueños de espacios publicitarios (físicos y digitales) y **agencias/agentes de marketing**. La plataforma centraliza la oferta y demanda de espacios publicitarios y servicios de marketing, facilitando el descubrimiento mediante IA y simplificando la negociación entre partes.
 
+### Conexiones del marketplace (3 lados)
+1. **Anunciantes ↔ Espacios publicitarios** — empresas encuentran y contratan espacios; dueños de espacios encuentran anunciantes
+2. **Agencias de marketing ↔ Anunciantes** — agencias ofrecen servicios profesionales; empresas encuentran expertos que gestionen sus campañas
+3. **Agencias de marketing ↔ Espacios publicitarios** — agencias buscan y gestionan espacios en nombre de sus clientes
+
 **Mercados objetivo inicial:** Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
 ---

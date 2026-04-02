@@ -1,8 +1,11 @@
 # SpotU — Marketplace de Publicidad
 
 ## Contexto
-Marketplace que conecta anunciantes con dueños de espacios publicitarios (físicos y digitales).
-Dos tipos de usuarios: quienes buscan anunciarse y quienes tienen espacios publicitarios.
+Marketplace de 3 lados que conecta:
+1. **Anunciantes** ↔ **Espacios publicitarios** (físicos y digitales)
+2. **Agencias de marketing** ↔ **Anunciantes** (agencias ofrecen servicios, empresas contratan)
+3. **Agencias de marketing** ↔ **Espacios publicitarios** (agencias gestionan espacios para sus clientes)
+
 Mercados objetivo inicial: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
 ## Stack Tecnológico
@@ -27,7 +30,8 @@ src/
 │   ├── ui/                 # shadcn/ui components
 │   ├── forms/              # Formularios (publicación, perfil)
 │   ├── layout/             # Header, Footer, Sidebar
-│   └── listings/           # Cards, detalles, filtros
+│   ├── listings/           # Cards, detalles, filtros
+│   └── agency/             # Perfil, dashboard, propuestas de agencia
 ├── lib/
 │   ├── supabase/           # Cliente y helpers de Supabase
 │   ├── ai/                 # Integración con Claude API
