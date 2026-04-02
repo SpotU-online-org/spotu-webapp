@@ -187,5 +187,81 @@ Lo que necesitamos:
 
 ---
 
+## Preguntas Frecuentes
+
+### ¿Qué pasa si la gente se contacta por WhatsApp y no vuelve a usar SpotU?
+
+Es un riesgo real en cualquier marketplace con contacto externo, pero hay varias razones por las que no es un problema grave:
+
+1. **El valor de SpotU no está en retener la conversación, sino en generar el match.** El usuario vuelve cada vez que necesita un nuevo espacio, una nueva agencia o un nuevo cliente. Es un marketplace transaccional, no una red social.
+2. **Los contratos digitales dan razón para volver.** Una vez que dos partes llegan a un acuerdo por WhatsApp, pueden formalizar el contrato dentro de SpotU — eso crea un registro legal y descargable que ambas partes valoran.
+3. **Las stats básicas generan retorno recurrente.** El dueño de un espacio o agencia quiere ver si su publicación está funcionando (cuántas vistas, cuántos contactos). Eso lo trae de vuelta al dashboard.
+4. **El boost y posicionamiento son incentivos pagos.** Si tu publicación no tiene suficiente visibilidad, puedes pagar para destacarla. Esto solo funciona dentro de SpotU.
+5. **Las agencias tienen múltiples clientes.** Una agencia no usa SpotU una vez — lo usa constantemente para encontrar espacios para diferentes clientes.
+
+En resumen: no competimos con WhatsApp. Dejamos que la comunicación fluya donde el usuario quiera, y nos enfocamos en ser el mejor lugar para **descubrir, comparar y formalizar**.
+
+### ¿Por qué cobrar suscripción y no comisión por transacción?
+
+En las primeras fases, cobrar comisión tiene varios problemas:
+
+1. **No controlamos la transacción.** El pago entre anunciante y espacio ocurre fuera de la plataforma (transferencia, efectivo, factura directa). No tenemos forma de rastrear ni cobrar comisión.
+2. **La comisión incentiva la desintermediación.** Si cobro 5% por cada contrato, las partes tienen incentivo para cerrar el trato fuera de SpotU después del primer contacto.
+3. **La suscripción es predecible.** $14.99/mes o $49.99/mes es un costo fijo bajo que los usuarios pagan sin pensarlo, especialmente si les genera valor constante (publicaciones ilimitadas, contratos, badge verificado).
+
+En Fase 3, cuando tengamos volumen y confianza, podemos agregar pagos entre partes (escrow con Stripe Connect) y ahí sí cobrar comisión. Pero no antes de validar que el marketplace funciona.
+
+### ¿Cómo resuelven el problema del cold start (huevo y gallina)?
+
+El cold start es el reto #1 de cualquier marketplace. Nuestra estrategia:
+
+1. **Lanzar por ciudad, no por país.** En vez de lanzar en "Colombia", lanzamos en Medellín. Es más fácil tener densidad en una ciudad que en un país entero.
+2. **Llenar la oferta manualmente primero.** Antes de lanzar, cargamos nosotros mismos los espacios publicitarios que encontremos (vallas, pantallas, influencers locales). No necesitamos que el dueño se registre — publicamos la info públicamente disponible y le avisamos que está listado.
+3. **Onboardear agencias temprano.** Una sola agencia con 10 clientes = 10 anunciantes potenciales con un solo onboarding. Las agencias son multiplicadores.
+4. **Los anunciantes no necesitan publicar.** Como los anunciantes pueden simplemente buscar y contactar, no necesitamos que "creen contenido" para que el marketplace se sienta activo. Con suficientes espacios listados, los anunciantes encuentran valor inmediato.
+5. **Primeros 100 usuarios gratis por mercado.** Eliminamos la barrera de entrada en la fase de validación.
+
+### ¿Qué diferencia a SpotU de simplemente buscar en Google?
+
+Google te puede mostrar que existe una valla publicitaria en Monterrey, pero:
+
+1. **No te muestra precio, disponibilidad ni audiencia.** SpotU sí, porque el dueño del espacio lo publica.
+2. **No te permite comparar.** En SpotU puedes filtrar por tipo, ciudad, precio y ver 20 opciones en 2 minutos. En Google es buscar uno por uno.
+3. **No tiene agencias de marketing.** Si no sabes cómo hacer una campaña, en SpotU puedes encontrar una agencia que lo haga por ti.
+4. **No tiene IA que entienda tu necesidad.** "Quiero anunciar un evento deportivo en Monterrey con bajo presupuesto" en Google te da resultados genéricos. En SpotU la IA filtra y rankea los espacios que realmente te sirven.
+5. **No formaliza el acuerdo.** En SpotU puedes cerrar un contrato digital sin salir de la plataforma.
+
+### ¿Por qué 3 mercados tan diferentes (Colombia, México, USA)?
+
+1. **Validación diversa.** Si SpotU funciona en 3 contextos económicos diferentes, tenemos evidencia fuerte de product-market fit. Si solo funciona en uno, sabemos que tenemos que pivotar.
+2. **Mercado hispano conectado.** Hay mucha conexión comercial entre estos tres puntos. Empresas colombianas que quieren pautar en Miami, agencias mexicanas con clientes en Colombia, etc.
+3. **Arbitraje de costos.** Un espacio publicitario en Medellín cuesta una fracción de lo que cuesta en Miami. Esto crea oportunidades para anunciantes que buscan reach en LATAM a bajo costo.
+4. **Cobrar en USD simplifica todo.** Al operar en dólares desde el inicio, no tenemos que manejar múltiples monedas ni conversiones.
+
+### ¿Qué pasa si un competidor grande (Google, Meta, Airbnb) lanza algo similar?
+
+1. **Google y Meta no tienen incentivo.** Su negocio es vender SU inventario publicitario, no crear un marketplace para terceros. Serían su propia competencia.
+2. **Airbnb para publicidad no existe (aún).** Nadie ha ejecutado bien este modelo en LATAM. El que llegue primero con buena ejecución tiene ventaja de red (más oferta → más demanda → más oferta).
+3. **Nuestro nicho es específico.** Espacios publicitarios no-tradicionales + LATAM + marketplace de 3 lados. Es un nicho demasiado pequeño para que un gigante lo priorice, pero suficientemente grande para construir un negocio rentable.
+4. **La defensa es la red.** Una vez que tienes miles de espacios listados y cientos de agencias operando en SpotU, es muy difícil que un competidor replique eso — el contenido y las relaciones son la barrera de entrada.
+
+### ¿Cuánto cuesta operar SpotU?
+
+En la fase de MVP/V1, muy poco:
+
+| Servicio | Costo mensual |
+|----------|--------------|
+| Supabase (Free tier → Pro) | $0 - $25 |
+| Vercel (Free tier → Pro) | $0 - $20 |
+| Claude API (búsqueda IA) | ~$20-50 (según uso) |
+| Resend (emails) | $0 - $20 |
+| Stripe | 2.9% + $0.30 por transacción (solo cuando hay revenue) |
+| Dominio + DNS | ~$15/año |
+| **Total estimado** | **$0 - $120/mes** |
+
+El stack moderno permite operar con costos casi nulos hasta tener tracción real. No necesitamos inversión para empezar — necesitamos ejecución.
+
+---
+
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 2 de abril de 2026 (v4 — flujo híbrido anunciantes, IA en Fase 2)
+**Última actualización:** 2 de abril de 2026 (v5 — FAQ detallado)
