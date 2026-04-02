@@ -2,7 +2,7 @@ PROMPT PARA GENERACION DE LOGO — SpotU
 
 ---
 
-Create a modern, minimalist logo for "SpotU", an advertising marketplace platform that connects advertisers with advertising space owners (both physical and digital).
+Create a modern, minimalist logo for "SpotU", an advertising marketplace platform that connects three types of users: advertisers, advertising space owners (physical and digital), and marketing agencies/agents.
 
 Style:
 - Clean, modern, and minimalist design
@@ -11,10 +11,10 @@ Style:
 - Flat design, no gradients unless very subtle
 
 Concept direction:
-- The logo should subtly convey the idea of "connection" or "matching" between two parties
-- Consider incorporating a subtle pin/location marker (referencing "Spot") merged with a connection/link symbol
+- The logo should subtly convey the idea of "connection" or "matching" between multiple parties (a three-sided marketplace)
+- Consider incorporating a subtle pin/location marker (referencing "Spot") merged with a connection/hub symbol — a central node linking three points works well
 - The "U" in SpotU can be stylized to represent a person, a space, or a connection point
-- Think of it as the meeting point between supply and demand
+- Think of it as the central hub where brands, spaces, and marketing experts meet
 
 Color palette:
 - Primary: Electric Indigo (#4F46E5) — trust, technology, professionalism
@@ -29,9 +29,10 @@ Typography:
 Requirements:
 - No excessive text — the icon should work standalone
 - Must be recognizable at 32x32px (favicon size)
-- Professional and trustworthy — this handles business transactions
+- Professional and trustworthy — this handles business transactions between brands, space owners, and agencies
 - Should feel like a modern SaaS/marketplace brand (think Airbnb, Stripe, Linear aesthetic)
 - Avoid cliches: no generic handshakes, globes, or megaphones
+- The icon should hint at a network or ecosystem, not just a one-to-one connection
 
 Variations needed:
 1. Full logo (icon + wordmark)
@@ -40,3 +41,8 @@ Variations needed:
 4. Dark background version
 
 Output: Vector format, clean paths, production-ready
+
+---
+
+Autor: Cesar Emilio Castaño Marin
+Última actualización: 1 de abril de 2026 (v2 — refleja marketplace 3 lados)
