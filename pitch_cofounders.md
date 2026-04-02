@@ -10,7 +10,11 @@ Lo mismo pasa con vallas publicitarias, pantallas en centros comerciales, espaci
 
 ## La solución: SpotU
 
-SpotU es el **marketplace de espacios publicitarios**. Conectamos a quienes quieren anunciarse con quienes tienen espacios disponibles — físicos y digitales — en una plataforma moderna, simple y asistida por inteligencia artificial. Además, integramos a **agencias y agentes de marketing** como un tercer actor clave del ecosistema.
+SpotU es el **marketplace de publicidad de 3 lados**. En una plataforma moderna, simple y asistida por inteligencia artificial, conectamos:
+
+1. **Anunciantes ↔ Espacios publicitarios** — empresas encuentran y contratan espacios (físicos y digitales); dueños de espacios encuentran anunciantes
+2. **Agencias de marketing ↔ Anunciantes** — agencias ofrecen servicios profesionales; empresas encuentran expertos que gestionen sus campañas
+3. **Agencias de marketing ↔ Espacios publicitarios** — agencias buscan y gestionan espacios en nombre de sus clientes
 
 **Para anunciantes:**
 - Publica lo que necesitas ("Quiero anunciar un evento deportivo en Monterrey con bajo presupuesto")
