@@ -1,0 +1,42 @@
+PROMPT PARA GENERACION DE LOGO — SpotU
+
+---
+
+Create a modern, minimalist logo for "SpotU", an advertising marketplace platform that connects advertisers with advertising space owners (both physical and digital).
+
+Style:
+- Clean, modern, and minimalist design
+- Professional yet approachable
+- Tech-forward but not cold
+- Flat design, no gradients unless very subtle
+
+Concept direction:
+- The logo should subtly convey the idea of "connection" or "matching" between two parties
+- Consider incorporating a subtle pin/location marker (referencing "Spot") merged with a connection/link symbol
+- The "U" in SpotU can be stylized to represent a person, a space, or a connection point
+- Think of it as the meeting point between supply and demand
+
+Color palette:
+- Primary: Electric Indigo (#4F46E5) — trust, technology, professionalism
+- Accent: Coral/Salmon (#F97316) — energy, creativity, advertising vibrancy
+- The logo should work in full color, single color (black), and reversed (white)
+
+Typography:
+- If text is included, use a clean geometric sans-serif font
+- "Spot" in primary color, "U" in accent color (or vice versa)
+- The wordmark should be readable at small sizes
+
+Requirements:
+- No excessive text — the icon should work standalone
+- Must be recognizable at 32x32px (favicon size)
+- Professional and trustworthy — this handles business transactions
+- Should feel like a modern SaaS/marketplace brand (think Airbnb, Stripe, Linear aesthetic)
+- Avoid cliches: no generic handshakes, globes, or megaphones
+
+Variations needed:
+1. Full logo (icon + wordmark)
+2. Icon only (for favicon, app icon)
+3. Horizontal layout
+4. Dark background version
+
+Output: Vector format, clean paths, production-ready
