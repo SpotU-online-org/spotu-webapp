@@ -508,3 +508,8 @@ Dashboard → "Analytics"
 - [ ] Reviews y ratings
 - [ ] Optimización de IA
 - [ ] Expansión de métodos de pago locales
+
+---
+
+**Autor:** Cesar Emilio Castaño Marin
+**Última actualización:** 1 de abril de 2026

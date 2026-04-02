@@ -121,3 +121,8 @@ Lo que necesitamos:
 4. **Iterar rápido** basado en feedback real
 
 **La oportunidad es real, el timing es ahora, y la ejecución es lo que va a hacer la diferencia.**
+
+---
+
+**Autor:** Cesar Emilio Castaño Marin
+**Última actualización:** 1 de abril de 2026
