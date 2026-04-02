@@ -1,19 +1,20 @@
 # SpotU — Marketplace de Publicidad
 
 ## Contexto
-Marketplace de 3 lados que conecta:
+Marketplace de 3 lados (intermediario puro) que conecta:
 1. **Anunciantes** ↔ **Espacios publicitarios** (físicos y digitales)
 2. **Agencias de marketing** ↔ **Anunciantes** (agencias ofrecen servicios, empresas contratan)
 3. **Agencias de marketing** ↔ **Espacios publicitarios** (agencias gestionan espacios para sus clientes)
 
-Mercados objetivo inicial: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
+**Alcance V1:** publicar, buscar, contactar (WhatsApp/correo directo), contratos digitales, stats básicas (vistas + clics en contactar). NO analytics de marketing, NO gestión de campañas, NO mensajería interna.
 
-## Stack Tecnológico
+Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
+
+## Stack
 - **Frontend:** Next.js 14+ (App Router), React 18+, TypeScript
 - **Styling:** TailwindCSS + shadcn/ui
-- **Backend:** Supabase (PostgreSQL, Auth, Storage, Realtime, Edge Functions)
-- **IA:** Claude API (búsqueda semántica, matching)
-- **Pagos:** Stripe (cobros en USD)
+- **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
+- **Pagos:** Stripe (USD)
 - **Email:** Resend
 - **Deploy:** Vercel
 - **Package manager:** pnpm
@@ -22,20 +23,18 @@ Mercados objetivo inicial: Colombia, norte de México (Monterrey, Chihuahua) y F
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── (auth)/             # Rutas de autenticación
-│   ├── (dashboard)/        # Panel de usuario autenticado
+│   ├── (auth)/             # Autenticación
+│   ├── (dashboard)/        # Panel de usuario
 │   ├── (public)/           # Páginas públicas (feed, search, listing)
 │   └── api/                # Route handlers
 ├── components/
-│   ├── ui/                 # shadcn/ui components
+│   ├── ui/                 # shadcn/ui
 │   ├── forms/              # Formularios (publicación, perfil)
 │   ├── layout/             # Header, Footer, Sidebar
-│   ├── listings/           # Cards, detalles, filtros
-│   └── agency/             # Perfil, dashboard, propuestas de agencia
+│   └── listings/           # Cards, detalles, filtros
 ├── lib/
-│   ├── supabase/           # Cliente y helpers de Supabase
-│   ├── ai/                 # Integración con Claude API
-│   ├── utils/              # Utilidades generales
+│   ├── supabase/           # Cliente y helpers
+│   ├── utils/              # Utilidades
 │   └── validations/        # Schemas de Zod
 ├── hooks/                  # Custom React hooks
 ├── types/                  # TypeScript types/interfaces
@@ -46,54 +45,40 @@ src/
 
 ### General
 - TypeScript estricto (`strict: true`)
-- Español para contenido de usuario, inglés para código (variables, funciones, tipos)
+- Español para contenido de usuario, inglés para código
 - Functional components con arrow functions
 - Named exports (no default exports excepto pages)
 
 ### Naming
-- Archivos de componentes: `PascalCase.tsx`
-- Hooks: `use-kebab-case.ts`
-- Utils/lib: `kebab-case.ts`
-- Types: `PascalCase` para interfaces y types
-- Variables/funciones: `camelCase`
-- Constantes: `SCREAMING_SNAKE_CASE`
-- Database columns: `snake_case`
+- Componentes: `PascalCase.tsx` | Hooks: `use-kebab-case.ts` | Utils: `kebab-case.ts`
+- Types: `PascalCase` | Variables/funciones: `camelCase` | Constantes: `SCREAMING_SNAKE_CASE` | DB columns: `snake_case`
 
 ### Componentes
-- Props definidas como `type` (no `interface`) con sufijo `Props`
-- Usar `cn()` de clsx/tailwind-merge para clases condicionales
-- Server Components por default, Client Components solo cuando se necesiten
+- Props como `type` con sufijo `Props`
+- `cn()` para clases condicionales
+- Server Components por default
 
 ### Supabase
-- Usar `createServerClient` en Server Components
-- Usar `createBrowserClient` en Client Components
-- RLS (Row Level Security) en TODAS las tablas
-- Tipado generado con `supabase gen types`
+- `createServerClient` en Server Components, `createBrowserClient` en Client
+- RLS en TODAS las tablas
+- Tipado con `supabase gen types`
 
 ### Formularios
-- Zod para validación
-- React Hook Form para manejo de estado
-- Server Actions para submit cuando sea posible
+- Zod + React Hook Form + Server Actions
 
 ### Git
-- Commits en inglés, descriptivos
-- Conventional commits: `feat:`, `fix:`, `chore:`, `docs:`
-- Branch naming: `feat/feature-name`, `fix/bug-name`
+- Commits en inglés, descriptivos, conventional commits (`feat:`, `fix:`, `chore:`, `docs:`)
 
 ## Comandos
-- `pnpm dev` — desarrollo local
-- `pnpm build` — build de producción
-- `pnpm lint` — linting
-- `pnpm db:generate` — generar tipos de Supabase
-- `pnpm db:migrate` — correr migraciones
+- `pnpm dev` / `pnpm build` / `pnpm lint`
+- `pnpm db:generate` / `pnpm db:migrate`
 
-## Reglas Importantes
+## Reglas
 - Mobile-first siempre
-- No instalar dependencias sin justificación
-- No usar `any` en TypeScript
-- Manejar loading, error y empty states en toda página
-- Variables de entorno en `.env.local`, nunca hardcodeadas
-- Toda query a Supabase debe tener manejo de errores
-- Imágenes optimizadas con `next/image`
-- Todos los cobros a clientes en USD
-- Métodos de pago: Stripe (tarjeta de crédito/débito) como método principal
+- No dependencias sin justificación
+- No `any` en TypeScript
+- Loading, error y empty states en toda página
+- Variables de entorno en `.env.local`
+- Manejo de errores en toda query a Supabase
+- Imágenes con `next/image`
+- Cobros en USD, Stripe como método principal

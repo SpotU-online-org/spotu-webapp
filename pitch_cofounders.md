@@ -6,34 +6,72 @@ La publicidad fuera de los gigantes digitales (Google, Meta) es un mercado fragm
 
 Un restaurante en Monterrey que quiere poner su anuncio en la pantalla LED de una cancha de fútbol no tiene forma eficiente de encontrar ese espacio. Tiene que llamar, preguntar, negociar uno por uno. Del otro lado, el dueño de esa pantalla tiene capacidad ociosa que no sabe cómo llenar.
 
-Lo mismo pasa con vallas publicitarias, pantallas en centros comerciales, espacios en podcasts, páginas web locales, influencers pequeños, y cientos de otros canales. **No existe un lugar centralizado donde oferta y demanda se encuentren.**
+Y las agencias de marketing que gestionan campañas para múltiples clientes tienen el mismo problema: no hay un lugar centralizado donde encontrar espacios, ni donde sus clientes potenciales las encuentren a ellas.
+
+**No existe un marketplace que conecte oferta y demanda de publicidad de forma simple.**
 
 ## La solución: SpotU
 
-SpotU es el **marketplace de publicidad de 3 lados**. En una plataforma moderna, simple y asistida por inteligencia artificial, conectamos:
+SpotU es el **marketplace de publicidad de 3 lados**. Conectamos tres tipos de actores en una plataforma simple y directa:
 
 1. **Anunciantes ↔ Espacios publicitarios** — empresas encuentran y contratan espacios (físicos y digitales); dueños de espacios encuentran anunciantes
 2. **Agencias de marketing ↔ Anunciantes** — agencias ofrecen servicios profesionales; empresas encuentran expertos que gestionen sus campañas
 3. **Agencias de marketing ↔ Espacios publicitarios** — agencias buscan y gestionan espacios en nombre de sus clientes
 
-**Para anunciantes:**
-- Publica lo que necesitas ("Quiero anunciar un evento deportivo en Monterrey con bajo presupuesto")
-- La IA te recomienda los mejores espacios disponibles
-- Contacta directamente al dueño del espacio o a una agencia que gestione tu campaña
-- Cierra contratos dentro de la plataforma
+## Cómo funciona SpotU (paso a paso)
 
-**Para dueños de espacios:**
-- Publica tu espacio (pantalla, valla, red social, podcast, lo que sea)
-- Anunciantes y agencias te encuentran y te contactan
-- Ve estadísticas de quién ve tu espacio y quién te contacta
-- Formaliza acuerdos con contratos digitales
+### 1. Te registras y eliges tu rol
+Entras a SpotU, creas tu cuenta y seleccionas quién eres:
+- **"Quiero anunciarme"** — eres una empresa o persona que busca dónde pautar
+- **"Tengo un espacio publicitario"** — tienes una valla, pantalla, sitio web, podcast, red social, etc.
+- **"Soy agencia de marketing"** — ofreces servicios de marketing y buscas clientes o espacios
 
-**Para agencias y agentes de marketing:**
-- Publica tu portafolio de servicios (gestión de campañas, diseño creativo, media buying, etc.)
-- Encuentra anunciantes que buscan ayuda profesional para sus campañas
-- Accede a un catálogo centralizado de espacios publicitarios para tus clientes
-- Gestiona múltiples clientes y campañas desde una sola plataforma
-- Genera leads calificados: empresas que ya están buscando publicidad activamente
+### 2. Creas tu publicación
+Cada actor crea una **tarjeta/publicación** con información relevante:
+
+**Si tienes un espacio publicitario**, publicas:
+- Tipo de espacio (físico o digital) y categoría (valla, pantalla LED, sitio web, podcast, etc.)
+- Descripción del espacio (ubicación, dimensiones, horarios, condiciones)
+- Fotos del espacio
+- Audiencia estimada y disponibilidad
+- Precio estimado
+- Tus datos de contacto: botón de WhatsApp y/o correo
+
+**Si quieres anunciarte**, publicas:
+- Qué tipo de espacio buscas
+- Qué quieres anunciar y tu objetivo
+- Tu ubicación y presupuesto
+- Tu industria
+- Tus datos de contacto: botón de WhatsApp y/o correo
+
+**Si eres agencia de marketing**, publicas:
+- Tus servicios (gestión de campañas, diseño, media buying, manejo de redes, etc.)
+- Descripción y experiencia
+- Mercados donde operas e industrias de especialización
+- Precio estimado
+- Tus datos de contacto: botón de WhatsApp y/o correo
+
+### 3. Exploras y buscas
+Navegas el feed de publicaciones o usas filtros (ciudad, tipo de espacio, precio, tipo de actor) para encontrar exactamente lo que necesitas.
+
+### 4. Contactas directamente
+Cada publicación tiene botones de **contactar por WhatsApp** y/o **contactar por correo**. Un clic y ya estás hablando con la otra parte. Sin intermediarios, sin esperar aprobaciones.
+
+### 5. Cierras el acuerdo con un contrato digital
+Una vez que ambas partes llegan a un acuerdo, pueden crear un **contrato digital** dentro de SpotU: eligen un template, personalizan los términos, y ambos firman digitalmente. El contrato queda guardado y descargable en PDF.
+
+### 6. Stats básicas
+Cada dueño de publicación puede ver cuántas personas vieron su publicación y cuántas presionaron el botón de contactar. Nada más, nada menos — lo justo para saber si tu publicación está funcionando.
+
+## Qué NO es SpotU (por ahora)
+
+SpotU es un **intermediario puro**. No ofrecemos:
+- Analytics de marketing avanzados
+- Gestión de campañas
+- Herramientas de automatización
+- Mensajería interna (el contacto es directo por WhatsApp/correo)
+
+Esto se puede agregar después si la demanda lo justifica. La prioridad es que el marketplace funcione: que la gente publique, encuentre y contacte.
 
 ## Mercado
 
@@ -62,15 +100,12 @@ SpotU es el **marketplace de publicidad de 3 lados**. En una plataforma moderna,
 - Boost de publicaciones: $2.99/semana
 
 **Fase 2 — Crecimiento:**
-- Plan Pro: $14.99/mes (analytics, contratos, publicaciones ilimitadas)
-- Plan Business: $39.99/mes (API, multi-usuario, analytics avanzados)
-- Plan Agency: $79.99/mes (gestión multi-cliente, dashboard de agencia, leads prioritarios, branding personalizado)
+- Plan Pro: $14.99/mes (publicaciones ilimitadas, contactos ilimitados, contratos digitales, badge verificado)
+- Plan Agency: $49.99/mes (todo Pro + perfil público de agencia, portafolio, gestión multi-cliente)
 
-**Fase 3 — Escala:**
+**Fase 3 — Escala (según demanda):**
 - Comisión 5-8% sobre transacciones en plataforma
-- Comisión por referral de agencia: 3-5% sobre contratos cerrados a través de agencias
-- Herramientas SaaS de gestión de campañas
-- Marketplace de servicios de marketing (agencias ofrecen, empresas contratan)
+- Analytics avanzados, herramientas SaaS (si se valida la necesidad)
 
 ### Unit economics objetivo (por usuario Pro)
 - ARPU: ~$15 USD/mes
@@ -78,28 +113,28 @@ SpotU es el **marketplace de publicidad de 3 lados**. En una plataforma moderna,
 - LTV objetivo: > $150 USD (10+ meses retención)
 
 ### Unit economics objetivo (por agencia)
-- ARPU: ~$80 USD/mes (suscripción) + comisiones por transacciones
+- ARPU: ~$50 USD/mes (suscripción) + potencial comisiones futuras
 - CAC objetivo: < $30 USD (las agencias traen múltiples clientes → LTV alto)
-- LTV objetivo: > $800 USD (retención alta por dependencia operativa)
+- LTV objetivo: > $500 USD (retención alta por dependencia operativa)
 
 ## Diferenciadores
 
 | SpotU | Competencia |
 |-------|-------------|
-| IA para matching semántico | Búsqueda manual por filtros |
+| Marketplace 3 lados (anunciantes + espacios + agencias) | Solo 2 lados |
+| Contacto directo (WhatsApp/correo) | Mensajería interna lenta |
 | Espacios físicos + digitales | Solo uno de los dos |
 | LATAM + hispano USA | Enfoque solo USA o solo Europa |
 | Simple, mobile-first | Plataformas enterprise complejas |
 | Contratos integrados | Negociación fuera de plataforma |
 | Precio accesible para SMBs | Pricing enterprise |
-| Marketplace 3 lados (anunciantes + espacios + agencias) | Solo 2 lados |
 
 ## Tecnología
 
-- **Frontend:** Next.js (React) — web app responsive, PWA
-- **Backend:** Supabase (PostgreSQL, Auth, Realtime)
-- **IA:** Claude API para matching semántico
+- **Frontend:** Next.js (React) — web app responsive
+- **Backend:** Supabase (PostgreSQL, Auth, Storage)
 - **Pagos:** Stripe
+- **Email:** Resend
 - **Deploy:** Vercel
 
 Stack moderno, bajo costo operativo, alta velocidad de iteración. Un equipo pequeño (2-3 personas) puede construir y operar el MVP.
@@ -111,15 +146,15 @@ Las agencias y agentes de marketing son un **multiplicador natural** del marketp
 - **Profesionalizan la demanda:** campañas mejor estructuradas → mejores contratos → más valor para dueños de espacios
 - **Reducen fricción:** empresas pequeñas que no saben cómo hacer publicidad encuentran en las agencias un intermediario experto
 - **Crean stickiness:** una agencia que opera su negocio dentro de SpotU no se va fácilmente
-- **Nuevo revenue stream:** plan premium de agencia + comisiones por intermediación
+- **Nuevo revenue stream:** plan premium de agencia + comisiones futuras
 
 ## Tracción / Plan
 
 | Hito | Timeline |
 |------|----------|
-| MVP funcional (publicaciones, búsqueda, mensajes) | 8 semanas |
+| MVP funcional (publicaciones, búsqueda, contacto directo, stats básicas) | 8 semanas |
 | Primeros 100 usuarios (3 mercados) | Semana 10-12 |
-| V1 con IA, pagos, analytics, contratos | Semana 14-16 |
+| V1 con pagos y contratos digitales | Semana 10-12 |
 | 500 usuarios activos | Mes 4-5 |
 | Revenue: $1,000 MRR | Mes 5-6 |
 | Revenue: $5,000 MRR | Mes 8-10 |
@@ -129,9 +164,9 @@ Las agencias y agentes de marketing son un **multiplicador natural** del marketp
 | Riesgo | Mitigación |
 |--------|-----------|
 | Cold start (sin oferta ni demanda) | Llenar oferta manualmente, lanzar por ciudad. Onboardear agencias que traen múltiples clientes |
-| Desintermediación (se van fuera de la plataforma) | Agregar valor continuo: analytics, contratos, pagos, gestión multi-cliente para agencias |
+| Desintermediación (se van fuera de la plataforma) | Agregar valor: contratos digitales, stats de publicación, posicionamiento/boost. Contacto ya es externo (WhatsApp) así que no hay fricción artificial |
 | Competencia de gigantes | Nicho diferente: espacios no-tradicionales + LATAM + marketplace 3 lados |
-| Complejidad del tercer actor (agencias) | Fase gradual: primero anunciantes + espacios, luego agencias en V1 |
+| Complejidad del tercer actor (agencias) | Las agencias son solo otro tipo de publicación, no requieren features complejos en MVP |
 
 ## Lo que buscamos en un cofounder
 
@@ -147,7 +182,7 @@ SpotU no necesita mucho capital para empezar. Necesita ejecución. El stack es d
 Lo que necesitamos:
 1. **Validar demanda** en los 3 mercados simultáneamente
 2. **Construir MVP** en 8 semanas
-3. **Llenar la oferta** manualmente (hablar con dueños de espacios)
+3. **Llenar la oferta** manualmente (hablar con dueños de espacios y agencias)
 4. **Iterar rápido** basado en feedback real
 
 **La oportunidad es real, el timing es ahora, y la ejecución es lo que va a hacer la diferencia.**
@@ -155,4 +190,4 @@ Lo que necesitamos:
 ---
 
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 1 de abril de 2026 (v2 — integración de agencias de marketing)
+**Última actualización:** 2 de abril de 2026 (v3 — funcionamiento detallado, simplificación a marketplace puro)
