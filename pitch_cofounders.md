@@ -10,19 +10,26 @@ Lo mismo pasa con vallas publicitarias, pantallas en centros comerciales, espaci
 
 ## La solución: SpotU
 
-SpotU es el **marketplace de espacios publicitarios**. Conectamos a quienes quieren anunciarse con quienes tienen espacios disponibles — físicos y digitales — en una plataforma moderna, simple y asistida por inteligencia artificial.
+SpotU es el **marketplace de espacios publicitarios**. Conectamos a quienes quieren anunciarse con quienes tienen espacios disponibles — físicos y digitales — en una plataforma moderna, simple y asistida por inteligencia artificial. Además, integramos a **agencias y agentes de marketing** como un tercer actor clave del ecosistema.
 
 **Para anunciantes:**
 - Publica lo que necesitas ("Quiero anunciar un evento deportivo en Monterrey con bajo presupuesto")
 - La IA te recomienda los mejores espacios disponibles
-- Contacta directamente al dueño del espacio
+- Contacta directamente al dueño del espacio o a una agencia que gestione tu campaña
 - Cierra contratos dentro de la plataforma
 
 **Para dueños de espacios:**
 - Publica tu espacio (pantalla, valla, red social, podcast, lo que sea)
-- Anunciantes te encuentran y te contactan
+- Anunciantes y agencias te encuentran y te contactan
 - Ve estadísticas de quién ve tu espacio y quién te contacta
 - Formaliza acuerdos con contratos digitales
+
+**Para agencias y agentes de marketing:**
+- Publica tu portafolio de servicios (gestión de campañas, diseño creativo, media buying, etc.)
+- Encuentra anunciantes que buscan ayuda profesional para sus campañas
+- Accede a un catálogo centralizado de espacios publicitarios para tus clientes
+- Gestiona múltiples clientes y campañas desde una sola plataforma
+- Genera leads calificados: empresas que ya están buscando publicidad activamente
 
 ## Mercado
 
@@ -53,15 +60,23 @@ SpotU es el **marketplace de espacios publicitarios**. Conectamos a quienes quie
 **Fase 2 — Crecimiento:**
 - Plan Pro: $14.99/mes (analytics, contratos, publicaciones ilimitadas)
 - Plan Business: $39.99/mes (API, multi-usuario, analytics avanzados)
+- Plan Agency: $79.99/mes (gestión multi-cliente, dashboard de agencia, leads prioritarios, branding personalizado)
 
 **Fase 3 — Escala:**
 - Comisión 5-8% sobre transacciones en plataforma
+- Comisión por referral de agencia: 3-5% sobre contratos cerrados a través de agencias
 - Herramientas SaaS de gestión de campañas
+- Marketplace de servicios de marketing (agencias ofrecen, empresas contratan)
 
 ### Unit economics objetivo (por usuario Pro)
 - ARPU: ~$15 USD/mes
 - CAC objetivo: < $10 USD (adquisición orgánica + referral)
 - LTV objetivo: > $150 USD (10+ meses retención)
+
+### Unit economics objetivo (por agencia)
+- ARPU: ~$80 USD/mes (suscripción) + comisiones por transacciones
+- CAC objetivo: < $30 USD (las agencias traen múltiples clientes → LTV alto)
+- LTV objetivo: > $800 USD (retención alta por dependencia operativa)
 
 ## Diferenciadores
 
@@ -73,6 +88,7 @@ SpotU es el **marketplace de espacios publicitarios**. Conectamos a quienes quie
 | Simple, mobile-first | Plataformas enterprise complejas |
 | Contratos integrados | Negociación fuera de plataforma |
 | Precio accesible para SMBs | Pricing enterprise |
+| Marketplace 3 lados (anunciantes + espacios + agencias) | Solo 2 lados |
 
 ## Tecnología
 
@@ -83,6 +99,15 @@ SpotU es el **marketplace de espacios publicitarios**. Conectamos a quienes quie
 - **Deploy:** Vercel
 
 Stack moderno, bajo costo operativo, alta velocidad de iteración. Un equipo pequeño (2-3 personas) puede construir y operar el MVP.
+
+### Por qué agencias
+
+Las agencias y agentes de marketing son un **multiplicador natural** del marketplace:
+- **Traen volumen:** una agencia con 10 clientes = 10 anunciantes potenciales con un solo onboarding
+- **Profesionalizan la demanda:** campañas mejor estructuradas → mejores contratos → más valor para dueños de espacios
+- **Reducen fricción:** empresas pequeñas que no saben cómo hacer publicidad encuentran en las agencias un intermediario experto
+- **Crean stickiness:** una agencia que opera su negocio dentro de SpotU no se va fácilmente
+- **Nuevo revenue stream:** plan premium de agencia + comisiones por intermediación
 
 ## Tracción / Plan
 
@@ -99,14 +124,15 @@ Stack moderno, bajo costo operativo, alta velocidad de iteración. Un equipo peq
 
 | Riesgo | Mitigación |
 |--------|-----------|
-| Cold start (sin oferta ni demanda) | Llenar oferta manualmente, lanzar por ciudad |
-| Desintermediación (se van fuera de la plataforma) | Agregar valor continuo: analytics, contratos, pagos |
-| Competencia de gigantes | Nicho diferente: espacios no-tradicionales + LATAM |
+| Cold start (sin oferta ni demanda) | Llenar oferta manualmente, lanzar por ciudad. Onboardear agencias que traen múltiples clientes |
+| Desintermediación (se van fuera de la plataforma) | Agregar valor continuo: analytics, contratos, pagos, gestión multi-cliente para agencias |
+| Competencia de gigantes | Nicho diferente: espacios no-tradicionales + LATAM + marketplace 3 lados |
+| Complejidad del tercer actor (agencias) | Fase gradual: primero anunciantes + espacios, luego agencias en V1 |
 
 ## Lo que buscamos en un cofounder
 
-- Alguien con experiencia en **ventas/growth** o **producto/marketing**
-- Red de contactos en alguno de los mercados objetivo
+- Alguien con experiencia en **ventas/growth**, **producto/marketing** o **agencias de publicidad**
+- Red de contactos en alguno de los mercados objetivo (especialmente con agencias de marketing)
 - Disposición a operar hands-on en los primeros meses
 - Visión a largo plazo: esto puede ser grande si lo ejecutamos bien
 
@@ -125,4 +151,4 @@ Lo que necesitamos:
 ---
 
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 1 de abril de 2026
+**Última actualización:** 1 de abril de 2026 (v2 — integración de agencias de marketing)

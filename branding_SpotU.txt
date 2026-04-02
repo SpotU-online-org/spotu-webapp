@@ -2,12 +2,13 @@ BRANDING GUIDELINES — SpotU
 ============================
 
 1. NOMBRE
-   SpotU — "Spot" (lugar, espacio) + "U" (you/tú). El lugar donde tú anuncias o el espacio que tú ofreces.
+   SpotU — "Spot" (lugar, espacio) + "U" (you/tú). El lugar donde tú anuncias, el espacio que tú ofreces, o la agencia que tú necesitas.
 
 2. TAGLINE
    Principal: "Tu spot publicitario ideal"
    Alternativas:
    - "Conectamos marcas con espacios"
+   - "Marcas, espacios y expertos en un solo lugar"
    - "Find your spot. Get spotted."
    - "Where ads find their place"
 
@@ -20,7 +21,8 @@ BRANDING GUIDELINES — SpotU
 
    Si SpotU fuera una persona: sería un profesional joven de marketing, bilingüe,
    que viste smart-casual, usa las últimas herramientas tech y se comunica de forma
-   clara y directa. No es pretencioso, pero sí sabe lo que hace.
+   clara y directa. No es pretencioso, pero sí sabe lo que hace. Conoce tanto a
+   los anunciantes como a las agencias que los ayudan a brillar.
 
 4. PALETA DE COLORES
 
@@ -95,6 +97,8 @@ BRANDING GUIDELINES — SpotU
    - Mal: "Complete el formulario de registro de espacio publicitario"
    - Bien: "3 anunciantes vieron tu espacio hoy"
    - Mal: "Se han registrado 3 visualizaciones en su listing"
+   - Bien: "2 empresas buscan ayuda con sus campañas en tu zona"
+   - Mal: "Existen 2 oportunidades de negocio disponibles para su agencia"
 
 8. ICONOGRAFIA
 
@@ -110,12 +114,16 @@ BRANDING GUIDELINES — SpotU
    - Star: favoritos
    - Shield/Check: verificado
    - Zap: boost / destacado
+   - Briefcase: agencia / servicios profesionales
+   - Users: multi-cliente / equipo de agencia
+   - Award: casos de éxito / portafolio
 
 9. APLICACION EN PLATAFORMA
 
    Header: fondo blanco, logo a la izquierda, navegación a la derecha
    Sidebar (dashboard): fondo slate-50, íconos + labels
    Cards de listing: imagen arriba, info abajo, CTA claro
+   Cards de agencia: logo + nombre, servicios, rating, CTA "Solicitar propuesta"
    Botón primario: fondo indigo, texto blanco, hover más oscuro
    Botón secundario: borde indigo, texto indigo, fondo transparente
    Botón CTA destacado: fondo coral, texto blanco
@@ -126,3 +134,8 @@ BRANDING GUIDELINES — SpotU
     Avatar: icono del logo (sin texto) sobre fondo indigo
     Cover: imagen de espacios publicitarios con overlay indigo + tagline
     Tono en redes: cercano, informativo, con datos y tips de publicidad
+
+============================
+
+Autor: Cesar Emilio Castaño Marin
+Última actualización: 1 de abril de 2026 (v2 — integración de agencias de marketing)

@@ -2,7 +2,7 @@
 
 ## 1. Visión General
 
-SpotU es un marketplace de publicidad que conecta anunciantes con dueños de espacios publicitarios (físicos y digitales). La plataforma centraliza la oferta y demanda de espacios publicitarios, facilitando el descubrimiento mediante IA y simplificando la negociación entre partes.
+SpotU es un marketplace de publicidad que conecta **tres tipos de actores**: anunciantes, dueños de espacios publicitarios (físicos y digitales) y **agencias/agentes de marketing**. La plataforma centraliza la oferta y demanda de espacios publicitarios y servicios de marketing, facilitando el descubrimiento mediante IA y simplificando la negociación entre partes.
 
 **Mercados objetivo inicial:** Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
@@ -25,10 +25,13 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 | **Free** | $0 | 1 publicación activa, búsqueda básica, mensajes limitados (10/mes) |
 | **Pro** | $14.99 USD/mes | Publicaciones ilimitadas, analytics de interacción, badge verificado, posicionamiento prioritario, contratos digitales, mensajes ilimitados |
 | **Business** | $39.99 USD/mes | Todo Pro + API access, analytics avanzados, soporte prioritario, múltiples usuarios por cuenta |
+| **Agency** | $79.99 USD/mes | Todo Business + dashboard multi-cliente, portafolio de servicios público, leads prioritarios de anunciantes, branding de agencia, gestión de campañas para clientes, reportes consolidados |
 
 ### Fase 3 — Escala
 - Comisión del 5-8% sobre transacciones cerradas en plataforma (cuando se habiliten pagos entre partes)
+- Comisión por referral de agencia: 3-5% sobre contratos cerrados a través de agencias
 - Herramientas SaaS de gestión de campañas
+- Marketplace de servicios de marketing (agencias publican servicios, empresas contratan)
 - API para integración programática
 
 ### Métodos de pago aceptados
@@ -40,6 +43,7 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 ### Promoción de lanzamiento
 - Primeros 100 usuarios por mercado: primera publicación gratis de por vida
 - Referral program: invita a un usuario → 1 mes de boost gratis
+- Agencias: primer mes gratis del plan Agency para agencias que traigan 5+ clientes
 
 ---
 
@@ -51,9 +55,9 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 
 **Features:**
 - Autenticación (email + Google) via Supabase Auth
-- Registro con selección de rol: "Quiero anunciarme" / "Tengo espacio publicitario" / "Ambos"
+- Registro con selección de rol: "Quiero anunciarme" / "Tengo espacio publicitario" / "Soy agencia de marketing" / "Ambos"
 - CRUD completo de publicaciones
-  - Tipo: "Quiero anunciarme" o "Tengo espacio publicitario"
+  - Tipo: "Quiero anunciarme", "Tengo espacio publicitario" o "Ofrezco servicios de marketing"
   - Campos: título, descripción, tipo de espacio, ubicación, precio estimado, audiencia, fotos
 - Búsqueda con filtros (ciudad, tipo de espacio, rango de precio, audiencia)
 - Feed/explorar publicaciones con cards
@@ -121,8 +125,18 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 - Email via Resend: nuevo mensaje, nuevo contacto, contrato pendiente
 - Notificaciones in-app (bell icon)
 
+#### Plataforma para agencias (Agency)
+- Perfil de agencia con portafolio de servicios (diseño, media buying, gestión de campañas, etc.)
+- Dashboard multi-cliente: gestionar campañas de múltiples clientes desde una cuenta
+- Feed de leads: ver anunciantes que buscan ayuda profesional o que coincidan con los servicios de la agencia
+- Publicación de servicios con pricing, casos de éxito y áreas de especialización
+- Sistema de propuestas: enviar propuestas de servicio a anunciantes directamente
+- Reportes consolidados: analytics agrupados por cliente
+- Branding personalizado: logo y colores de agencia en propuestas y contratos
+
 #### Verificación de usuarios
 - Badge "Verificado" para usuarios que confirmen identidad/empresa
+- Badge "Agencia Verificada" para agencias que confirmen registro legal
 - Proceso manual inicial (subir documento → admin aprueba)
 
 ---
@@ -134,7 +148,10 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 - App móvil nativa (React Native)
 - API pública para integración programática
 - Analytics avanzados (heatmaps geográficos, benchmarks de industria)
-- Reviews y ratings entre partes
+- Reviews y ratings entre partes (incluyendo calificación de agencias)
+- Marketplace de servicios de agencias (búsqueda y contratación directa)
+- Sistema de referral para agencias (comisión por contratos cerrados)
+- White-label para agencias premium (plataforma con branding propio)
 - Publicidad programática (automatización de compra/venta)
 - Multi-idioma (español / inglés / portugués)
 - Expansión a nuevos mercados
@@ -173,6 +190,8 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 │  ├── /profile/[id] (perfil público)          │
 │  ├── /dashboard (mi panel + analytics)       │
 │  ├── /contracts (contratos digitales)        │
+│  ├── /agency/[id] (perfil público agencia)  │
+│  ├── /agency/dashboard (panel de agencia)   │
 │  └── /search (búsqueda con IA)              │
 └──────────────┬──────────────────────────────┘
                │
@@ -205,7 +224,7 @@ SpotU es un marketplace de publicidad que conecta anunciantes con dueños de esp
 -- Usuarios (extiende auth.users de Supabase)
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id),
-  type TEXT CHECK (type IN ('advertiser', 'space_owner', 'both')),
+  type TEXT CHECK (type IN ('advertiser', 'space_owner', 'agency', 'both')),
   display_name TEXT NOT NULL,
   company_name TEXT,
   avatar_url TEXT,
@@ -216,7 +235,7 @@ CREATE TABLE profiles (
   state TEXT,
   country TEXT DEFAULT 'MX',
   is_verified BOOLEAN DEFAULT FALSE,
-  plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'business')),
+  plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'business', 'agency')),
   stripe_customer_id TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -226,7 +245,7 @@ CREATE TABLE profiles (
 CREATE TABLE listings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  type TEXT NOT NULL CHECK (type IN ('want_to_advertise', 'have_space')),
+  type TEXT NOT NULL CHECK (type IN ('want_to_advertise', 'have_space', 'offer_service')),
   title TEXT NOT NULL,
   description TEXT NOT NULL,
 
@@ -234,7 +253,10 @@ CREATE TABLE listings (
   space_type TEXT CHECK (space_type IN (
     'billboard', 'led_screen', 'sports_venue',
     'social_media', 'website', 'app',
-    'print', 'radio', 'podcast', 'other'
+    'print', 'radio', 'podcast',
+    'campaign_management', 'creative_design', 'media_buying',
+    'social_media_management', 'seo_sem', 'branding',
+    'other'
   )),
 
   -- Ubicación
@@ -351,10 +373,60 @@ CREATE TABLE subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   stripe_subscription_id TEXT UNIQUE,
-  plan TEXT NOT NULL CHECK (plan IN ('free', 'pro', 'business')),
+  plan TEXT NOT NULL CHECK (plan IN ('free', 'pro', 'business', 'agency')),
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'canceled', 'past_due', 'trialing')),
   current_period_start TIMESTAMPTZ,
   current_period_end TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Agencias (perfil extendido para agencias de marketing)
+CREATE TABLE agency_profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
+  agency_name TEXT NOT NULL,
+  logo_url TEXT,
+  website TEXT,
+  services TEXT[] NOT NULL, -- ['campaign_management', 'creative_design', 'media_buying', ...]
+  specializations TEXT[], -- ['sports', 'real_estate', 'food_beverage', ...]
+  portfolio_url TEXT,
+  case_studies JSONB, -- [{ title, description, results, images }]
+  team_size INTEGER,
+  years_experience INTEGER,
+  markets TEXT[], -- ['CO', 'MX', 'US']
+  is_verified BOOLEAN DEFAULT FALSE,
+  rating DECIMAL DEFAULT 0,
+  reviews_count INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Relación agencia-cliente (gestión multi-cliente)
+CREATE TABLE agency_clients (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  agency_id UUID REFERENCES agency_profiles(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  status TEXT DEFAULT 'active' CHECK (status IN ('pending', 'active', 'inactive')),
+  permissions JSONB DEFAULT '{"manage_listings": true, "view_analytics": true, "create_contracts": false}',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(agency_id, client_id)
+);
+
+-- Propuestas de servicio (agencia → anunciante)
+CREATE TABLE service_proposals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  agency_id UUID REFERENCES agency_profiles(id) ON DELETE CASCADE,
+  advertiser_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  listing_id UUID REFERENCES listings(id), -- listing del anunciante que motivó la propuesta
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  services_offered TEXT[],
+  price_estimate_min DECIMAL,
+  price_estimate_max DECIMAL,
+  timeline TEXT,
+  status TEXT DEFAULT 'sent' CHECK (status IN ('draft', 'sent', 'viewed', 'accepted', 'rejected', 'expired')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -373,6 +445,12 @@ CREATE INDEX idx_messages_conversation ON messages(conversation_id);
 CREATE INDEX idx_conversations_participants ON conversations(participant_1, participant_2);
 CREATE INDEX idx_contracts_participants ON contracts(creator_id, counterpart_id);
 CREATE INDEX idx_contracts_status ON contracts(status);
+CREATE INDEX idx_agency_profiles_user ON agency_profiles(user_id);
+CREATE INDEX idx_agency_clients_agency ON agency_clients(agency_id);
+CREATE INDEX idx_agency_clients_client ON agency_clients(client_id);
+CREATE INDEX idx_service_proposals_agency ON service_proposals(agency_id);
+CREATE INDEX idx_service_proposals_advertiser ON service_proposals(advertiser_id);
+CREATE INDEX idx_service_proposals_status ON service_proposals(status);
 ```
 
 ### Roles de usuario
@@ -381,10 +459,12 @@ CREATE INDEX idx_contracts_status ON contracts(status);
 | **Visitante** | Ver listings públicos, buscar, ver landing |
 | **Anunciante (Free)** | 1 publicación "quiero anunciarme", 10 mensajes/mes, búsqueda básica |
 | **Dueño de espacio (Free)** | 1 publicación "tengo espacio", 10 mensajes/mes, búsqueda básica |
+| **Agencia (Free)** | 1 publicación "ofrezco servicios", 10 mensajes/mes, búsqueda básica, perfil de agencia básico |
 | **Both (Free)** | 1 publicación de cada tipo, 10 mensajes/mes |
 | **Pro** | Publicaciones ilimitadas, analytics, contratos digitales, mensajes ilimitados, badge verificado |
 | **Business** | Todo Pro + API, multi-usuario, analytics avanzados, soporte prioritario |
-| **Admin** | Todo + moderar, verificar usuarios, analytics globales, gestión de contratos |
+| **Agency** | Todo Business + dashboard multi-cliente, portafolio público, leads prioritarios, propuestas de servicio, reportes consolidados, branding personalizado |
+| **Admin** | Todo + moderar, verificar usuarios/agencias, analytics globales, gestión de contratos |
 
 ---
 
@@ -393,9 +473,10 @@ CREATE INDEX idx_contracts_status ON contracts(status);
 ### Registro
 ```
 Landing → CTA "Publica gratis"
-  → Seleccionar: "Quiero anunciarme" / "Tengo espacio" / "Ambos"
+  → Seleccionar: "Quiero anunciarme" / "Tengo espacio" / "Soy agencia de marketing" / "Ambos"
   → Sign up (Google o email)
   → Completar perfil (nombre, empresa, ciudad, país)
+  → Si agencia: completar perfil de agencia (servicios, especialización, portafolio)
   → Onboarding: crear primera publicación (guiado)
   → Feed personalizado
 ```
@@ -455,6 +536,30 @@ Dashboard → "Analytics"
   → Exportar datos (CSV)
 ```
 
+### Flujo de Agencia (V1 - Agency)
+```
+Dashboard de agencia → Vista multi-cliente
+  → Lista de clientes vinculados
+  → Agregar cliente (invitar por email o vincular cuenta existente)
+  → Por cliente: ver publicaciones, analytics, contratos
+  → "Explorar leads" → feed de anunciantes buscando ayuda
+  → "Enviar propuesta" → seleccionar servicios, precio, timeline
+  → Anunciante recibe propuesta → acepta / rechaza / negocia
+  → Si acepta → se crea conversación + se vincula como cliente
+  → Reportes consolidados: performance de todos los clientes
+```
+
+### Portafolio de agencia (público)
+```
+Perfil público de agencia → /agency/[id]
+  → Logo, nombre, descripción, años de experiencia
+  → Servicios ofrecidos con pricing estimado
+  → Casos de éxito / portafolio
+  → Reviews y calificación
+  → Mercados donde opera
+  → CTA: "Solicitar propuesta" / "Contactar"
+```
+
 ---
 
 ## 6. Roadmap Técnico
@@ -502,14 +607,25 @@ Dashboard → "Analytics"
 - [ ] Generación de PDF de contratos
 - [ ] Notificaciones de contratos
 
-### Semana 13+: Iteración
-- [ ] Verificación de usuarios
+### Semana 13-14: Plataforma de Agencias (V1)
+- [ ] Perfil de agencia (CRUD, portafolio, servicios)
+- [ ] Tipo de publicación "ofrezco servicios de marketing"
+- [ ] Dashboard multi-cliente para agencias
+- [ ] Sistema de propuestas de servicio
+- [ ] Vinculación agencia-cliente
+- [ ] Perfil público de agencia (/agency/[id])
+- [ ] Plan de suscripción Agency en Stripe
+
+### Semana 15+: Iteración
+- [ ] Verificación de usuarios y agencias
 - [ ] Publicaciones destacadas (boost)
-- [ ] Reviews y ratings
+- [ ] Reviews y ratings (incluyendo agencias)
+- [ ] Reportes consolidados para agencias
 - [ ] Optimización de IA
 - [ ] Expansión de métodos de pago locales
+- [ ] Marketplace de servicios de agencias
 
 ---
 
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 1 de abril de 2026
+**Última actualización:** 1 de abril de 2026 (v2 — integración de agencias de marketing)
