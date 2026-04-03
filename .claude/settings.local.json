@@ -15,7 +15,23 @@
       "Bash(cp temp-init/eslint.config.mjs .)",
       "Bash(rm -rf temp-init/.gitignore-next)",
       "Bash(pnpm install:*)",
-      "Bash(pnpm dlx:*)"
+      "Bash(pnpm dlx:*)",
+      "Bash(mkdir -p public/logos)",
+      "Bash(cp images/logos/provisionalLogos/spotu_iconSVG.svg public/logos/icon.svg)",
+      "Bash(cp images/logos/provisionalLogos/spotu_horizontalLayoutSVG.svg public/logos/logo-horizontal.svg)",
+      "Bash(cp images/logos/provisionalLogos/spotu_fullLogoSVG.svg public/logos/logo-full.svg)",
+      "Bash(cp images/logos/provisionalLogos/spotu_darkBackgroundSVG.svg public/logos/logo-dark-bg.svg)",
+      "Bash(pnpm build:*)",
+      "Bash(rm -f public/file.svg public/globe.svg public/next.svg public/vercel.svg public/window.svg)",
+      "Bash(rm -f AGENTS.md .gitignore-next)",
+      "Bash(pnpm add:*)",
+      "Bash(rm -f public/logos/*.svg public/logos/*.png)",
+      "Bash(cp images/logos/provisionalLogos/spotu_icon.webp public/logos/icon.webp)",
+      "Bash(cp images/logos/provisionalLogos/spotu_horizontalLayout.webp public/logos/logo-horizontal.webp)",
+      "Bash(cp images/logos/provisionalLogos/spotu_fullLogo.webp public/logos/logo-full.webp)",
+      "Bash(cp images/logos/provisionalLogos/spotu_darkBackground.webp public/logos/logo-dark-bg.webp)",
+      "Bash(curl -s -X POST \"https://drgbdmvhojfciusvodvh.supabase.co/rest/v1/rpc\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Content-Type: application/json\" -d '{}')",
+      "Bash(curl -s -X POST \"https://drgbdmvhojfciusvodvh.supabase.co/rest/v1/rpc/exec_sql\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Content-Type: application/json\" -d '{\"\"query\"\": \"\"SELECT 1\"\"}')"
     ]
   }
 }
