@@ -47,22 +47,36 @@ Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (
 ## Estructura del Proyecto
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx            # Landing page ("use client", dark hero + light sections)
-│   └── layout.tsx          # Root layout (Providers wrapper)
+├── app/
+│   ├── page.tsx              # Landing ("use client", soft slate theme, scroll reveals)
+│   ├── layout.tsx            # Root layout (Providers wrapper)
+│   ├── auth/
+│   │   ├── layout.tsx        # Auth layout (minimal, sin Header/Footer)
+│   │   ├── register/         # Registro 2 pasos: rol → form
+│   │   ├── login/            # Login email + Google
+│   │   ├── callback/         # OAuth + email confirm code exchange
+│   │   └── confirm/          # "Revisa tu correo"
+│   ├── dashboard/            # Panel del usuario (listings, stats)
+│   ├── feed/                 # Feed público (filtros por tipo)
+│   ├── listing/[id]/         # Detalle + ViewTracker + botones contacto
+│   └── publish/              # Formulario multi-paso por tipo de usuario
 ├── components/
-│   ├── ui/                 # shadcn/ui (button, link-button)
-│   ├── layout/             # Header, Footer, SpotULogo, AnimatedGrid, LanguageToggle, Providers
-│   └── listings/           # (pendiente)
-├── lib/
-│   ├── supabase/           # client.ts, server.ts, middleware.ts
-│   └── utils/              # cn()
-├── types/                  # Profile, Listing, ClosedInteraction, etc.
-└── constants/              # USER_ROLES, SPACE_CATEGORIES, etc.
+│   ├── ui/                   # button.tsx, link-button.tsx
+│   ├── layout/               # Header, Footer, SpotULogo, AnimatedGrid, LanguageToggle, Providers, RevealOnScroll
+│   └── listings/             # ListingCard
+├── lib/supabase/             # client.ts, server.ts, middleware.ts
+├── types/                    # Profile, Listing, ClosedInteraction
+└── constants/                # USER_ROLES, SPACE_CATEGORIES, AGENCY_SERVICES, etc.
 supabase/migrations/
-├── 001_initial_schema.sql  # profiles, listings, views, contacts, favorites (YA EJECUTADA)
-└── 002_closed_interactions.sql  # closed_interactions + trigger (PENDIENTE de ejecutar en Supabase)
+├── 001_initial_schema.sql    # YA EJECUTADA
+└── 002_closed_interactions.sql  # PENDIENTE de ejecutar
 ```
+
+## Auth
+- Registro: 2 pasos (rol → form o Google), role se guarda en `options.data.role` o cookie `spotu_pending_role`
+- Callback `/auth/callback`: exchange code → UPDATE profiles SET type = role
+- Protección en proxy.ts: `/dashboard`, `/publish`, `/settings`, `/profile/edit` requieren sesión
+- Google OAuth: requiere configuración en Supabase Dashboard (ver README Setup)
 
 ## Convenciones de Código
 

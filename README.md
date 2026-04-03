@@ -59,25 +59,89 @@ Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
 ## Progreso
 
-- [x] Setup del proyecto (Next.js, TailwindCSS, shadcn/ui)
-- [x] Branding: colores (Electric Indigo + Coral), tipografía (Inter), logos
-- [x] Landing page (hero con gradient orbs animados, roles, cómo funciona, features, CTA)
-- [x] Internacionalización (ES/EN toggle en nav)
-- [x] Supabase: cliente browser/server, middleware para sesiones
-- [x] DB schema: profiles, listings (con ubicación extendida), views, contacts, favorites
-- [x] RLS policies en todas las tablas + storage bucket para imágenes
-- [x] Auto-creación de perfil al registrarse (trigger)
-- [x] Closed interactions: tabla, triggers, RLS (migración 002 lista para ejecutar)
-- [x] TypeScript types: Profile, Listing, ClosedInteraction
-- [x] i18n con React Context (ES/EN toggle funcional)
-- [x] Dark hero con AnimatedGrid (gradient orbs + dot grid)
-- [x] Next.js 16 proxy convention (middleware → proxy.ts)
-- [ ] Autenticación (Supabase Auth)
-- [ ] Perfil de usuario
-- [ ] CRUD de publicaciones
-- [ ] Feed/explorar con cards
-- [ ] Búsqueda con filtros
-- [ ] Stats básicas (vistas + contactos)
+### ✅ Completado
+- Setup del proyecto (Next.js 16, TailwindCSS 4, shadcn/ui)
+- Branding: colores (Electric Indigo + Coral), tipografía (Inter), logos webp
+- Landing page con animaciones, i18n ES/EN, scroll reveals
+- Supabase: cliente browser/server, middleware de sesiones
+- DB schema: profiles, listings, views, contacts, favorites (migración 001 ejecutada)
+- DB schema: closed_interactions (migración 002 lista para ejecutar)
+- RLS policies en todas las tablas + storage bucket
+- TypeScript types: Profile, Listing, ClosedInteraction
+- **Autenticación:** registro 2 pasos (selección de rol + form), login, Google OAuth, callback, email confirm
+- Protección de rutas en proxy.ts
+- **CRUD publicaciones:** formulario multi-paso por tipo (espacio/agencia/anunciante), feed, detalle, dashboard
+- Stats básicas: contador de vistas (ViewTracker), contactos por click
+
+### 🚧 Pendiente
+- [ ] Perfil de usuario (editar info, foto)
+- [ ] Edición de publicaciones
+- [ ] Subida de imágenes a Supabase Storage
+- [ ] Búsqueda con filtros (ciudad, precio, tipo)
+- [ ] Favoritos
+- [ ] Notificaciones por email (Resend)
+- [ ] Pagos (Stripe)
+- [ ] Búsqueda con IA (Claude API) — Fase 2
+- [ ] Contratos digitales — Fase 2
+
+### ⚙️ Configuración pendiente (para que funcione en prod)
+
+Ver la sección de Setup más abajo.
+
+## Setup
+
+### Variables de entorno (`.env.local`)
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+### Supabase — checklist de configuración
+
+1. **Migraciones SQL** — ejecutar en el SQL Editor del Dashboard:
+   - `supabase/migrations/001_initial_schema.sql` ✅ (ya ejecutada)
+   - `supabase/migrations/002_closed_interactions.sql` ⬜ (pendiente)
+
+2. **Google OAuth:**
+   - Dashboard → Authentication → Providers → Google → Enable
+   - Crear OAuth App en [Google Cloud Console](https://console.cloud.google.com)
+   - Redirect URI: `https://<tu-proyecto>.supabase.co/auth/v1/callback`
+   - Copiar Client ID y Secret a Supabase
+
+3. **URL Configuration** (Authentication → URL Configuration):
+   - Site URL: `http://localhost:3000` (dev) / tu dominio (prod)
+   - Redirect URLs: `http://localhost:3000/auth/callback`
+
+4. **Storage bucket** `listing-images`:
+   - Dashboard → Storage → New bucket → `listing-images` → Public
+   - Policy: usuarios autenticados pueden subir; todos pueden leer
+
+5. **Email templates** (Authentication → Email Templates):
+   - Personalizar con branding SpotU (opcional para MVP)
+
+## Estructura del proyecto (actualizada)
+
+```
+src/
+├── app/
+│   ├── page.tsx              # Landing
+│   ├── auth/                 # Login, register, callback, confirm
+│   ├── dashboard/            # Panel del usuario
+│   ├── feed/                 # Feed de publicaciones
+│   ├── listing/[id]/         # Detalle de publicación
+│   └── publish/              # Crear publicación
+├── components/
+│   ├── ui/                   # Button, LinkButton
+│   ├── layout/               # Header, Footer, Logo, AnimatedGrid, Providers
+│   └── listings/             # ListingCard
+├── lib/supabase/             # client.ts, server.ts, middleware.ts
+├── types/                    # Profile, Listing, ClosedInteraction
+└── constants/                # Roles, categorías, servicios
+supabase/migrations/
+├── 001_initial_schema.sql    # ✅ ejecutada
+└── 002_closed_interactions.sql  # ⬜ pendiente
+```
 
 ## Autor
 
