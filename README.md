@@ -67,6 +67,11 @@ Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 - [x] DB schema: profiles, listings (con ubicación extendida), views, contacts, favorites
 - [x] RLS policies en todas las tablas + storage bucket para imágenes
 - [x] Auto-creación de perfil al registrarse (trigger)
+- [x] Closed interactions: tabla, triggers, RLS (migración 002 lista para ejecutar)
+- [x] TypeScript types: Profile, Listing, ClosedInteraction
+- [x] i18n con React Context (ES/EN toggle funcional)
+- [x] Dark hero con AnimatedGrid (gradient orbs + dot grid)
+- [x] Next.js 16 proxy convention (middleware → proxy.ts)
 - [ ] Autenticación (Supabase Auth)
 - [ ] Perfil de usuario
 - [ ] CRUD de publicaciones

@@ -98,12 +98,12 @@ export default function HomePage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+        {/* Hero — dark section */}
+        <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-[#0C0F1A] text-white">
           <AnimatedGrid />
           <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-sm text-muted-foreground shadow-sm">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300 backdrop-blur-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald" />
@@ -118,7 +118,7 @@ export default function HomePage() {
                 </span>
               </h1>
 
-              <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
+              <p className="mt-6 text-lg text-slate-400 sm:text-xl">
                 {t("hero.description")}
               </p>
 
@@ -131,7 +131,7 @@ export default function HomePage() {
                   href="/feed"
                   size="lg"
                   variant="outline"
-                  className="px-6"
+                  className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white px-6"
                 >
                   {t("hero.cta.secondary")}
                 </LinkButton>

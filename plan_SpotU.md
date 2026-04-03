@@ -149,6 +149,16 @@ Cada publicación debe tener **al menos un método de contacto** (WhatsApp o cor
 - Contratos digitales (Fase 2)
 - Mensajería interna (el contacto es directo por WhatsApp/correo)
 
+#### Interacciones cerradas (closed interactions)
+Sistema de confianza verificable entre partes:
+1. Dos partes se contactan vía un listing (WhatsApp/email) y trabajan juntos fuera de la plataforma
+2. La parte **contratada** (provider) crea una solicitud de "interacción cerrada"
+3. La parte **contratante** (client) recibe la solicitud y puede confirmar o rechazar
+4. Si confirma → se suma al contador de `confirmed_interactions_count` en el perfil del provider
+5. Ambas partes pueden dejar un comentario breve (testimonio público)
+6. Las solicitudes expiran en 30 días sin respuesta
+7. UNIQUE constraint: un provider no puede solicitar más de una interacción cerrada por el mismo listing con el mismo client
+
 ---
 
 ### FASE 2: V1 (4-6 semanas post-MVP)
@@ -580,4 +590,4 @@ Dashboard → "Crear contrato"
 ---
 
 **Autor:** Cesar Emilio Castaño Marin
-**Última actualización:** 2 de abril de 2026 (v4 — flujo híbrido anunciantes, IA en Fase 2, dinámica del marketplace)
+**Última actualización:** 3 de abril de 2026 (v5 — interacciones cerradas, i18n, dark hero)

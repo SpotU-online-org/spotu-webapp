@@ -24,6 +24,8 @@ export type ContactMethod = "whatsapp" | "email";
 
 export type Plan = "free" | "pro" | "agency";
 
+export type InteractionStatus = "pending" | "confirmed" | "rejected" | "expired";
+
 export type Profile = {
   id: string;
   type: UserRole;
@@ -42,6 +44,24 @@ export type Profile = {
   plan: Plan;
   stripeCustomerId: string | null;
   firstListingPublishedAt: string | null;
+  confirmedInteractionsCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ClosedInteraction = {
+  id: string;
+  listingId: string | null;
+  providerId: string;
+  clientId: string;
+  status: InteractionStatus;
+  description: string;
+  clientComment: string | null;
+  amount: number | null;
+  currency: string;
+  requestedAt: string;
+  respondedAt: string | null;
+  expiresAt: string;
   createdAt: string;
   updatedAt: string;
 };

@@ -1,14 +1,26 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  type ReactNode,
+} from "react";
 import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Locale = "es" | "en";
 
-type Translations = Record<string, Record<Locale, string>>;
+type I18nContextValue = {
+  locale: Locale;
+  t: (key: string) => string;
+  toggleLocale: () => void;
+};
 
-const TRANSLATIONS: Translations = {
+const I18nContext = createContext<I18nContextValue | null>(null);
+
+const TRANSLATIONS: Record<string, Record<Locale, string>> = {
   // Nav
   "nav.explore": { es: "Explorar", en: "Explore" },
   "nav.publish": { es: "Publicar", en: "Publish" },
@@ -19,16 +31,25 @@ const TRANSLATIONS: Translations = {
     es: "Publica gratis tu primer anuncio por 30 días",
     en: "Publish your first ad free for 30 days",
   },
-  "hero.title.1": { es: "Marcas, espacios y expertos.", en: "Brands, spaces & experts." },
+  "hero.title.1": {
+    es: "Marcas, espacios y expertos.",
+    en: "Brands, spaces & experts.",
+  },
   "hero.title.2": { es: "Un solo lugar.", en: "One place." },
   "hero.description": {
     es: "SpotU conecta anunciantes con espacios publicitarios y agencias de marketing. Publica tu oferta, descubre oportunidades y contacta directo.",
     en: "SpotU connects advertisers with ad spaces and marketing agencies. Publish your offer, discover opportunities and contact directly.",
   },
   "hero.cta.primary": { es: "Empieza gratis", en: "Start free" },
-  "hero.cta.secondary": { es: "Explorar publicaciones", en: "Browse listings" },
+  "hero.cta.secondary": {
+    es: "Explorar publicaciones",
+    en: "Browse listings",
+  },
   // Roles
-  "roles.title": { es: "Un marketplace para cada actor", en: "A marketplace for every player" },
+  "roles.title": {
+    es: "Un marketplace para cada actor",
+    en: "A marketplace for every player",
+  },
   "roles.description": {
     es: "SpotU conecta los tres lados del ecosistema publicitario en una sola plataforma.",
     en: "SpotU connects the three sides of the advertising ecosystem in one platform.",
@@ -45,7 +66,10 @@ const TRANSLATIONS: Translations = {
     en: "List your billboard, LED screen, website or social media. Connect with advertisers looking for your space.",
   },
   "roles.spaces.cta": { es: "Publicar espacio", en: "List your space" },
-  "roles.agencies.title": { es: "Agencias de marketing", en: "Marketing agencies" },
+  "roles.agencies.title": {
+    es: "Agencias de marketing",
+    en: "Marketing agencies",
+  },
   "roles.agencies.description": {
     es: "Ofrece tus servicios profesionales. Encuentra clientes y gestiona espacios para ellos.",
     en: "Offer your professional services. Find clients and manage spaces for them.",
@@ -73,7 +97,10 @@ const TRANSLATIONS: Translations = {
     en: "Agree on terms and start your advertising campaign.",
   },
   // Features
-  "features.title": { es: "Simple, directo, efectivo", en: "Simple, direct, effective" },
+  "features.title": {
+    es: "Simple, directo, efectivo",
+    en: "Simple, direct, effective",
+  },
   "features.1.title": { es: "Publica en 2 minutos", en: "Publish in 2 minutes" },
   "features.1.description": {
     es: "Formulario simple y guiado para publicar tu espacio o servicio.",
@@ -121,34 +148,8 @@ const TRANSLATIONS: Translations = {
   },
 };
 
-type I18nContextValue = {
-  locale: Locale;
-  t: (key: string) => string;
-  toggleLocale: () => void;
-};
-
-// Simple global state for i18n (avoids context provider complexity for now)
-let listeners: Array<() => void> = [];
-let currentLocale: Locale = "es";
-
-function subscribe(listener: () => void) {
-  listeners.push(listener);
-  return () => {
-    listeners = listeners.filter((l) => l !== listener);
-  };
-}
-
-function getSnapshot(): Locale {
-  return currentLocale;
-}
-
-function toggleGlobalLocale() {
-  currentLocale = currentLocale === "es" ? "en" : "es";
-  listeners.forEach((l) => l());
-}
-
-export function useI18n(): I18nContextValue {
-  const locale = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocale] = useState<Locale>("es");
 
   const t = useCallback(
     (key: string): string => {
@@ -159,7 +160,23 @@ export function useI18n(): I18nContextValue {
     [locale]
   );
 
-  return { locale, t, toggleLocale: toggleGlobalLocale };
+  const toggleLocale = useCallback(() => {
+    setLocale((prev) => (prev === "es" ? "en" : "es"));
+  }, []);
+
+  return (
+    <I18nContext.Provider value={{ locale, t, toggleLocale }}>
+      {children}
+    </I18nContext.Provider>
+  );
+}
+
+export function useI18n(): I18nContextValue {
+  const ctx = useContext(I18nContext);
+  if (!ctx) {
+    throw new Error("useI18n must be used within I18nProvider");
+  }
+  return ctx;
 }
 
 export function LanguageToggle() {
@@ -172,7 +189,7 @@ export function LanguageToggle() {
       size="sm"
       onClick={toggleLocale}
       aria-label={locale === "es" ? "Switch to English" : "Cambiar a Español"}
-      className="gap-1.5 text-muted-foreground hover:text-foreground"
+      className="gap-1.5 border-white/15 text-slate-300 hover:text-white hover:bg-white/10"
     >
       <Globe className="h-4 w-4" />
       <span className="text-xs font-semibold">{nextLocale}</span>

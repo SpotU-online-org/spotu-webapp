@@ -3,45 +3,65 @@
 ## Contexto
 Marketplace de 3 lados (intermediario puro) que conecta:
 1. **Anunciantes** ↔ **Espacios publicitarios** (físicos y digitales)
-2. **Agencias de marketing** ↔ **Anunciantes** (agencias ofrecen servicios, empresas contratan)
-3. **Agencias de marketing** ↔ **Espacios publicitarios** (agencias gestionan espacios para sus clientes)
+2. **Agencias de marketing** ↔ **Anunciantes**
+3. **Agencias de marketing** ↔ **Espacios publicitarios**
 
 **Dinámica:** Espacios y agencias publican (obligatorio). Anunciantes buscan y contactan directo; opcionalmente publican solicitudes de cotización.
 
-**Alcance V1:** publicar, buscar, contactar (WhatsApp/correo directo), búsqueda con IA (Claude API), contratos digitales, stats básicas (vistas + clics en contactar). NO analytics de marketing, NO gestión de campañas, NO mensajería interna.
+**Alcance V1:** publicar, buscar, contactar (WhatsApp/correo directo), búsqueda con IA (Claude API), contratos digitales, interacciones cerradas, stats básicas (vistas + clics en contactar). NO analytics de marketing, NO gestión de campañas, NO mensajería interna.
+
+**Monetización:** Primera publicación gratis 30 días, después $4.99 USD/mes por publicación. Boost: $2.99 USD/semana.
 
 Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
 ## Stack
-- **Frontend:** Next.js 14+ (App Router), React 18+, TypeScript
-- **Styling:** TailwindCSS + shadcn/ui
+- **Frontend:** Next.js 16 (App Router), React 19, TypeScript strict
+- **Styling:** TailwindCSS 4 + shadcn/ui (base-nova, usa `@base-ui/react`)
 - **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
-- **IA:** Claude API (búsqueda semántica, matching)
+- **IA:** Claude API (búsqueda semántica, matching) — Fase 2
 - **Pagos:** Stripe (USD)
 - **Email:** Resend
 - **Deploy:** Vercel
 - **Package manager:** pnpm
 
+## Notas técnicas importantes
+
+### shadcn/ui v4 + @base-ui/react
+- Button NO soporta `asChild`. Usar `LinkButton` (`src/components/ui/link-button.tsx`) para links con estilo de botón.
+- `linkButtonVariants` exportado para usar en Server Components (CVA sin "use client").
+
+### Next.js 16
+- `middleware.ts` renombrado a `proxy.ts` con `export function proxy()` (nueva convención).
+
+### i18n
+- React Context: `I18nProvider` + `useI18n()` en `src/components/layout/LanguageToggle.tsx`
+- Wrapper: `src/components/layout/Providers.tsx` inyecta providers en layout.
+- Traducciones ES/EN inline en el mismo archivo.
+
+### Interacciones cerradas (closed interactions)
+- Migración: `supabase/migrations/002_closed_interactions.sql`
+- Flujo: provider solicita → client confirma/rechaza → incrementa `confirmed_interactions_count` en profile
+- RLS: confirmadas son públicas, provider crea, client responde
+- Expiran en 30 días si no hay respuesta
+
 ## Estructura del Proyecto
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── (auth)/             # Autenticación
-│   ├── (dashboard)/        # Panel de usuario
-│   ├── (public)/           # Páginas públicas (feed, search, listing)
-│   └── api/                # Route handlers
+│   ├── page.tsx            # Landing page ("use client", dark hero + light sections)
+│   └── layout.tsx          # Root layout (Providers wrapper)
 ├── components/
-│   ├── ui/                 # shadcn/ui
-│   ├── forms/              # Formularios (publicación, perfil)
-│   ├── layout/             # Header, Footer, Sidebar
-│   └── listings/           # Cards, detalles, filtros
+│   ├── ui/                 # shadcn/ui (button, link-button)
+│   ├── layout/             # Header, Footer, SpotULogo, AnimatedGrid, LanguageToggle, Providers
+│   └── listings/           # (pendiente)
 ├── lib/
-│   ├── supabase/           # Cliente y helpers
-│   ├── utils/              # Utilidades
-│   └── validations/        # Schemas de Zod
-├── hooks/                  # Custom React hooks
-├── types/                  # TypeScript types/interfaces
-└── constants/              # Constantes y configuración
+│   ├── supabase/           # client.ts, server.ts, middleware.ts
+│   └── utils/              # cn()
+├── types/                  # Profile, Listing, ClosedInteraction, etc.
+└── constants/              # USER_ROLES, SPACE_CATEGORIES, etc.
+supabase/migrations/
+├── 001_initial_schema.sql  # profiles, listings, views, contacts, favorites (YA EJECUTADA)
+└── 002_closed_interactions.sql  # closed_interactions + trigger (PENDIENTE de ejecutar en Supabase)
 ```
 
 ## Convenciones de Código
@@ -49,7 +69,6 @@ src/
 ### General
 - TypeScript estricto (`strict: true`)
 - Español para contenido de usuario, inglés para código
-- Functional components con arrow functions
 - Named exports (no default exports excepto pages)
 
 ### Naming
@@ -64,17 +83,16 @@ src/
 ### Supabase
 - `createServerClient` en Server Components, `createBrowserClient` en Client
 - RLS en TODAS las tablas
-- Tipado con `supabase gen types`
 
 ### Formularios
 - Zod + React Hook Form + Server Actions
 
 ### Git
-- Commits en inglés, descriptivos, conventional commits (`feat:`, `fix:`, `chore:`, `docs:`)
+- Commits en inglés, conventional commits (`feat:`, `fix:`, `chore:`, `docs:`)
+- Auto-commit después de cada cambio con mensaje descriptivo
 
 ## Comandos
 - `pnpm dev` / `pnpm build` / `pnpm lint`
-- `pnpm db:generate` / `pnpm db:migrate`
 
 ## Reglas
 - Mobile-first siempre
@@ -82,6 +100,12 @@ src/
 - No `any` en TypeScript
 - Loading, error y empty states en toda página
 - Variables de entorno en `.env.local`
-- Manejo de errores en toda query a Supabase
 - Imágenes con `next/image`
 - Cobros en USD, Stripe como método principal
+
+## Design
+- Hero: dark bg `#0C0F1A` con AnimatedGrid (gradient orbs + dot grid)
+- Header: sticky, dark `bg-[#0C0F1A]/90 backdrop-blur-xl`
+- Secciones post-hero: light theme
+- Colores: Primary (Electric Indigo #4F46E5), Accent (Coral #F97316), Emerald
+- Logos: `.webp` en `/public/logos/` (full, horizontal, icon)
