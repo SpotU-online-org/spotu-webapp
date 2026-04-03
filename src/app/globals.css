@@ -54,24 +54,24 @@
 }
 
 :root {
-  /* SpotU Light Theme — Electric Indigo primary */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
+  /* SpotU Theme — Soft slate, elegant and modern */
+  --background: oklch(0.965 0.004 264);
+  --foreground: oklch(0.205 0.03 264);
+  --card: oklch(0.985 0.002 264);
+  --card-foreground: oklch(0.205 0.03 264);
+  --popover: oklch(0.985 0.002 264);
+  --popover-foreground: oklch(0.205 0.03 264);
   --primary: oklch(0.457 0.24 277.023);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.968 0.007 264.695);
-  --secondary-foreground: oklch(0.279 0.041 264.695);
-  --muted: oklch(0.968 0.007 264.695);
-  --muted-foreground: oklch(0.551 0.027 264.695);
+  --secondary: oklch(0.94 0.006 264);
+  --secondary-foreground: oklch(0.305 0.03 264);
+  --muted: oklch(0.94 0.006 264);
+  --muted-foreground: oklch(0.505 0.02 264);
   --accent: oklch(0.702 0.183 56.823);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.007 264.695);
-  --input: oklch(0.929 0.007 264.695);
+  --border: oklch(0.905 0.008 264);
+  --input: oklch(0.905 0.008 264);
   --ring: oklch(0.457 0.24 277.023);
   --chart-1: oklch(0.457 0.24 277.023);
   --chart-2: oklch(0.702 0.183 56.823);
@@ -79,13 +79,13 @@
   --chart-4: oklch(0.551 0.027 264.695);
   --chart-5: oklch(0.279 0.041 264.695);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0.005 264.695);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar: oklch(0.975 0.003 264);
+  --sidebar-foreground: oklch(0.205 0.03 264);
   --sidebar-primary: oklch(0.457 0.24 277.023);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.968 0.007 264.695);
-  --sidebar-accent-foreground: oklch(0.279 0.041 264.695);
-  --sidebar-border: oklch(0.929 0.007 264.695);
+  --sidebar-accent: oklch(0.94 0.006 264);
+  --sidebar-accent-foreground: oklch(0.305 0.03 264);
+  --sidebar-border: oklch(0.905 0.008 264);
   --sidebar-ring: oklch(0.457 0.24 277.023);
 }
 
@@ -134,3 +134,67 @@
     @apply font-sans scroll-smooth;
   }
 }
+
+/* ------------------------------------------------
+   SpotU — Animations
+   ------------------------------------------------ */
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-8px) rotate(1deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(var(--orbit-radius, 120px)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--orbit-radius, 120px)) rotate(-360deg); }
+}
+
+.animate-fade-in-up   { animation: fade-in-up 0.7s ease-out both; }
+.animate-fade-in      { animation: fade-in 0.6s ease-out both; }
+.animate-float        { animation: float 6s ease-in-out infinite; }
+.animate-float-slow   { animation: float-slow 8s ease-in-out infinite; }
+.animate-shimmer      { animation: shimmer 3s linear infinite; }
+.animate-scale-in     { animation: scale-in 0.5s ease-out both; }
+.animate-slide-left   { animation: slide-in-left 0.6s ease-out both; }
+.animate-slide-right  { animation: slide-in-right 0.6s ease-out both; }
+.animate-gradient     { animation: gradient-shift 6s ease infinite; background-size: 200% 200%; }
+.animate-orbit        { animation: orbit var(--orbit-duration, 20s) linear infinite; }
+
+/* Staggered delay utilities */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-700 { animation-delay: 700ms; }

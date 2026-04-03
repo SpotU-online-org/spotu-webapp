@@ -5,20 +5,17 @@ export function AnimatedGrid() {
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* Subtle dot grid */}
       <div
-        className="absolute inset-0 opacity-[0.07]"
+        className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)`,
-          backgroundSize: "32px 32px",
+          backgroundImage: `radial-gradient(circle, oklch(0.457 0.24 277) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
         }}
       />
 
-      {/* Floating gradient orbs */}
-      <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-indigo/20 blur-[140px] animate-pulse" />
-      <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-coral/12 blur-[140px] animate-pulse [animation-delay:2s]" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-indigo/10 blur-[120px] animate-pulse [animation-delay:4s]" />
-
-      {/* Radial vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0C0F1A_70%)]" />
+      {/* Soft gradient orbs */}
+      <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[100px] animate-float-slow" />
+      <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-coral/[0.05] blur-[100px] animate-float-slow [animation-delay:3s]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-emerald/[0.04] blur-[80px] animate-float [animation-delay:1.5s]" />
     </div>
   );
 }

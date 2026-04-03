@@ -146,6 +146,8 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
     es: "Todos los derechos reservados.",
     en: "All rights reserved.",
   },
+  // Steps prefix
+  "steps.prefix": { es: "Paso", en: "Step" },
 };
 
 export function I18nProvider({ children }: { children: ReactNode }) {
@@ -189,7 +191,7 @@ export function LanguageToggle() {
       size="sm"
       onClick={toggleLocale}
       aria-label={locale === "es" ? "Switch to English" : "Cambiar a Español"}
-      className="gap-1.5 border-white/15 text-slate-300 hover:text-white hover:bg-white/10"
+      className="gap-1.5 text-muted-foreground hover:text-foreground"
     >
       <Globe className="h-4 w-4" />
       <span className="text-xs font-semibold">{nextLocale}</span>

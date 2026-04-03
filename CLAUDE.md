@@ -104,8 +104,12 @@ supabase/migrations/
 - Cobros en USD, Stripe como método principal
 
 ## Design
-- Hero: dark bg `#0C0F1A` con AnimatedGrid (gradient orbs + dot grid)
-- Header: sticky, dark `bg-[#0C0F1A]/90 backdrop-blur-xl`
-- Secciones post-hero: light theme
+- Theme: soft slate (bg `oklch(0.965 0.004 264)`) uniforme en todo el sitio — NO oscuro, NO blanco puro
+- Header: sticky, `bg-background/80 backdrop-blur-xl`, border sutil
+- Hero: AnimatedGrid con gradient orbs suaves (primary/coral/emerald), dot grid con opacidad baja
+- Animaciones: `fade-in-up`, `float`, `float-slow`, `gradient-shift`, hover transitions en cards/icons
+- Secciones alternas: `bg-card/60` para contraste sutil entre secciones
+- CTA final: gradient `from-primary via-primary to-indigo` con texto blanco
 - Colores: Primary (Electric Indigo #4F46E5), Accent (Coral #F97316), Emerald
 - Logos: `.webp` en `/public/logos/` (full, horizontal, icon)
+- Contrastes: `text-foreground` para títulos, `text-muted-foreground` para descripciones, `text-primary` para acciones

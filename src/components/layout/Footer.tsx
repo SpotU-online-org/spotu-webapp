@@ -8,7 +8,7 @@ export function Footer() {
   const { t } = useI18n();
 
   return (
-    <footer className="border-t bg-muted/40">
+    <footer className="border-t border-border/60 bg-card/60">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
@@ -19,7 +19,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
               {t("footer.platform")}
             </h3>
             <ul className="space-y-2">
@@ -51,7 +51,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
               {t("footer.resources")}
             </h3>
             <ul className="space-y-2">
@@ -75,7 +75,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
               {t("footer.legal")}
             </h3>
             <ul className="space-y-2">
@@ -99,7 +99,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-8">
+        <div className="mt-8 border-t border-border/60 pt-8">
           <p className="text-center text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} SpotU. {t("footer.rights")}
           </p>
