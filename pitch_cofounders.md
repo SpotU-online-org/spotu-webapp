@@ -92,7 +92,8 @@ Esto se puede agregar después si la demanda lo justifica. La prioridad es que e
 ### Ingresos (en USD)
 
 **Fase 1 — Validación:**
-- Freemium: 1 publicación gratis, adicionales a $4.99/mes
+- Primera publicación gratis por 30 días para todos los usuarios, después $4.99/mes
+- Publicaciones adicionales: $4.99/mes cada una
 - Boost de publicaciones: $2.99/semana
 
 **Fase 2 — Crecimiento:**
@@ -219,7 +220,7 @@ El cold start es el reto #1 de cualquier marketplace. Nuestra estrategia:
 2. **Llenar la oferta manualmente primero.** Antes de lanzar, cargamos nosotros mismos los espacios publicitarios que encontremos (vallas, pantallas, influencers locales). No necesitamos que el dueño se registre — publicamos la info públicamente disponible y le avisamos que está listado.
 3. **Onboardear agencias temprano.** Una sola agencia con 10 clientes = 10 anunciantes potenciales con un solo onboarding. Las agencias son multiplicadores.
 4. **Los anunciantes no necesitan publicar.** Como los anunciantes pueden simplemente buscar y contactar, no necesitamos que "creen contenido" para que el marketplace se sienta activo. Con suficientes espacios listados, los anunciantes encuentran valor inmediato.
-5. **Primeros 100 usuarios gratis por mercado.** Eliminamos la barrera de entrada en la fase de validación.
+5. **Primera publicación gratis por 30 días para todos.** Eliminamos la barrera de entrada para cualquier usuario nuevo.
 
 ### ¿Qué diferencia a SpotU de simplemente buscar en Google?
 

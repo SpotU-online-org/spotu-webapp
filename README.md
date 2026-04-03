@@ -61,7 +61,9 @@ Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
 - [x] Setup del proyecto (Next.js, TailwindCSS, shadcn/ui)
 - [x] Branding: colores (Electric Indigo + Coral), tipografía (Inter), logos
-- [x] Landing page (hero, roles, cómo funciona, features, CTA)
+- [x] Landing page (hero dark, animated grid, roles, cómo funciona, features, CTA)
+- [x] Internacionalización (ES/EN toggle en nav)
+- [x] Supabase: cliente browser/server, middleware para sesiones
 - [ ] Autenticación (Supabase Auth)
 - [ ] Perfil de usuario
 - [ ] CRUD de publicaciones

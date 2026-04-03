@@ -31,8 +31,8 @@ SpotU es un **intermediario puro**: permite a los actores publicar, buscar y con
 ### Fase 1 — MVP (Freemium con límites)
 | Concepto | Precio |
 |----------|--------|
-| Primera publicación | **GRATIS** (primeros 100 usuarios por mercado) |
-| Publicaciones adicionales | **$4.99 USD/mes** cada una |
+| Primera publicación | **GRATIS por 30 días** (todos los usuarios) |
+| Publicaciones (después del mes gratis o adicionales) | **$4.99 USD/mes** cada una |
 | Publicación destacada (boost) | **$2.99 USD/semana** |
 
 ### Fase 2 — V1 (Planes de suscripción)
@@ -55,7 +55,7 @@ SpotU es un **intermediario puro**: permite a los actores publicar, buscar y con
 - Consideración futura: PSE (Colombia), OXXO (México) vía Stripe local payment methods
 
 ### Promoción de lanzamiento
-- Primeros 100 usuarios por mercado: primera publicación gratis de por vida
+- Todos los usuarios: primera publicación gratis durante 30 días (después se cobra mensualidad)
 - Referral program: invita a un usuario → 1 mes de boost gratis
 - Agencias: primer mes gratis del plan Agency para agencias que traigan 5+ clientes
 

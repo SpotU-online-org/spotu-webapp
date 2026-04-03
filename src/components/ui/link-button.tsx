@@ -31,6 +31,8 @@ const linkButtonVariants = cva(
 type LinkButtonProps = React.ComponentProps<typeof Link> &
   VariantProps<typeof linkButtonVariants>;
 
+export { linkButtonVariants };
+
 export function LinkButton({
   className,
   variant,
