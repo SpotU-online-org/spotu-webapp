@@ -14,13 +14,13 @@ export function SpotULogo({
   height,
 }: SpotULogoProps) {
   const variants = {
-    full: { src: "/logos/logo-full.svg", w: width ?? 180, h: height ?? 180 },
+    full: { src: "/logos/logo-full.webp", w: width ?? 180, h: height ?? 180 },
     horizontal: {
-      src: "/logos/logo-horizontal.svg",
+      src: "/logos/logo-horizontal.webp",
       w: width ?? 140,
       h: height ?? 40,
     },
-    icon: { src: "/logos/icon.svg", w: width ?? 40, h: height ?? 40 },
+    icon: { src: "/logos/icon.webp", w: width ?? 40, h: height ?? 40 },
   };
 
   const { src, w, h } = variants[variant];

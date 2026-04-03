@@ -40,6 +40,8 @@ export type Profile = {
   country: string;
   isVerified: boolean;
   plan: Plan;
+  stripeCustomerId: string | null;
+  firstListingPublishedAt: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -50,25 +52,53 @@ export type Listing = {
   type: ListingType;
   title: string;
   description: string;
+
+  // Space classification
   spaceType: SpaceCategory | null;
   spaceMedium: SpaceMedium | null;
+
+  // Agency fields
   services: string[] | null;
   specializations: string[] | null;
-  city: string | null;
-  state: string | null;
-  country: string;
+
+  // Location — where the space IS (spaces) or where they WANT to advertise (advertisers)
+  locationCity: string | null;
+  locationState: string | null;
+  locationCountry: string;
+  locationAddress: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
+  isRemote: boolean;
+  coverageAreas: string[] | null;
+
+  // Advertiser's own location (company/event)
+  companyCity: string | null;
+  companyState: string | null;
+  companyCountry: string | null;
+
+  // Pricing
   priceMin: number | null;
   priceMax: number | null;
   priceCurrency: string;
   pricePeriod: PricePeriod | null;
   priceText: string | null;
+
+  // Space details
   audienceSize: string | null;
   availability: string | null;
+
+  // Advertiser details
   industry: string | null;
+
+  // Contact
   whatsapp: string | null;
   emailContact: string | null;
   websiteUrl: string | null;
+
+  // Media
   images: string[];
+
+  // Status & meta
   status: ListingStatus;
   isFeatured: boolean;
   viewsCount: number;

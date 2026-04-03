@@ -29,9 +29,9 @@ export default function HomePage() {
       description: t("roles.advertisers.description"),
       cta: t("roles.advertisers.cta"),
       href: "/feed",
-      color: "text-indigo",
-      bg: "bg-indigo/10",
-      borderHover: "hover:border-indigo/30",
+      color: "text-primary",
+      bg: "bg-primary/10",
+      borderHover: "hover:border-primary/30",
     },
     {
       icon: MapPin,
@@ -95,15 +95,15 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="bg-[#0B0F1A] text-white">
+    <>
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <section className="relative min-h-[85vh] flex items-center overflow-hidden">
           <AnimatedGrid />
           <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300 backdrop-blur-sm">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-sm text-muted-foreground shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald" />
@@ -113,12 +113,12 @@ export default function HomePage() {
 
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-7xl">
                 {t("hero.title.1")}{" "}
-                <span className="bg-gradient-to-r from-indigo to-coral bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
                   {t("hero.title.2")}
                 </span>
               </h1>
 
-              <p className="mt-6 text-lg text-slate-400 sm:text-xl">
+              <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
                 {t("hero.description")}
               </p>
 
@@ -131,7 +131,7 @@ export default function HomePage() {
                   href="/feed"
                   size="lg"
                   variant="outline"
-                  className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white px-6"
+                  className="px-6"
                 >
                   {t("hero.cta.secondary")}
                 </LinkButton>
@@ -141,13 +141,13 @@ export default function HomePage() {
         </section>
 
         {/* Roles */}
-        <section className="relative py-20 sm:py-28">
+        <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 {t("roles.title")}
               </h2>
-              <p className="mt-4 text-slate-400">
+              <p className="mt-4 text-muted-foreground">
                 {t("roles.description")}
               </p>
             </div>
@@ -156,13 +156,13 @@ export default function HomePage() {
               {ROLES.map((role) => (
                 <div
                   key={role.title}
-                  className={`group relative rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-all ${role.borderHover} hover:bg-white/[0.06]`}
+                  className={`group relative rounded-2xl border bg-card p-8 transition-all hover:shadow-lg ${role.borderHover}`}
                 >
                   <div className={`inline-flex rounded-xl ${role.bg} p-3`}>
                     <role.icon className={`h-6 w-6 ${role.color}`} />
                   </div>
                   <h3 className="mt-4 text-xl font-semibold">{role.title}</h3>
-                  <p className="mt-2 text-sm text-slate-400">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {role.description}
                   </p>
                   <Link
@@ -179,14 +179,13 @@ export default function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="relative py-20 sm:py-28">
-          <div className="absolute inset-0 bg-white/[0.02]" />
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="bg-muted/40 py-20 sm:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 {t("steps.title")}
               </h2>
-              <p className="mt-4 text-slate-400">
+              <p className="mt-4 text-muted-foreground">
                 {t("steps.description")}
               </p>
             </div>
@@ -194,14 +193,14 @@ export default function HomePage() {
             <div className="mt-16 grid gap-8 sm:grid-cols-3">
               {STEPS.map((step) => (
                 <div key={step.step} className="text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo text-white">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
                     <step.icon className="h-6 w-6" />
                   </div>
-                  <span className="mt-4 block text-xs font-bold uppercase tracking-wider text-indigo">
+                  <span className="mt-4 block text-xs font-bold uppercase tracking-wider text-primary">
                     Paso {step.step}
                   </span>
                   <h3 className="mt-2 text-xl font-semibold">{step.title}</h3>
-                  <p className="mt-2 text-sm text-slate-400">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {step.description}
                   </p>
                 </div>
@@ -225,11 +224,11 @@ export default function HomePage() {
                   key={feature.title}
                   className="flex flex-col items-center text-center"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo/10">
-                    <feature.icon className="h-5 w-5 text-indigo" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                    <feature.icon className="h-5 w-5 text-primary" />
                   </div>
                   <h3 className="mt-4 font-semibold">{feature.title}</h3>
-                  <p className="mt-2 text-sm text-slate-400">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {feature.description}
                   </p>
                 </div>
@@ -239,21 +238,20 @@ export default function HomePage() {
         </section>
 
         {/* CTA */}
-        <section className="relative overflow-hidden py-20 sm:py-28">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo/20 via-indigo/10 to-coral/20" />
-          <div className="absolute inset-0 bg-[#0B0F1A]/60" />
-          <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <section className="bg-primary py-20 sm:py-28">
+          <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
               {t("cta.title")}
             </h2>
-            <p className="mt-4 text-lg text-slate-300">
+            <p className="mt-4 text-lg text-primary-foreground/80">
               {t("cta.description")}
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <LinkButton
                 href="/auth/register"
                 size="lg"
-                className="px-6"
+                variant="secondary"
+                className="bg-white text-primary hover:bg-white/90 px-6"
               >
                 {t("cta.primary")}
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -262,7 +260,7 @@ export default function HomePage() {
                 href="/feed"
                 size="lg"
                 variant="outline"
-                className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white px-6"
+                className="border-white/30 text-primary-foreground bg-transparent hover:bg-white/10 hover:text-primary-foreground px-6"
               >
                 {t("cta.secondary")}
               </LinkButton>
@@ -271,6 +269,6 @@ export default function HomePage() {
         </section>
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

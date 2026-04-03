@@ -164,17 +164,18 @@ export function useI18n(): I18nContextValue {
 
 export function LanguageToggle() {
   const { locale, toggleLocale } = useI18n();
+  const nextLocale = locale === "es" ? "EN" : "ES";
 
   return (
     <Button
-      variant="ghost"
-      size="icon-sm"
+      variant="outline"
+      size="sm"
       onClick={toggleLocale}
       aria-label={locale === "es" ? "Switch to English" : "Cambiar a Español"}
-      className="text-muted-foreground hover:text-foreground"
+      className="gap-1.5 text-muted-foreground hover:text-foreground"
     >
       <Globe className="h-4 w-4" />
-      <span className="ml-1 text-xs font-medium uppercase">{locale}</span>
+      <span className="text-xs font-semibold">{nextLocale}</span>
     </Button>
   );
 }

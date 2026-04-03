@@ -8,25 +8,25 @@ export function Footer() {
   const { t } = useI18n();
 
   return (
-    <footer className="border-t border-white/10 bg-[#070A12]">
+    <footer className="border-t bg-muted/40">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
             <SpotULogo variant="horizontal" width={100} height={30} />
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               {t("footer.tagline")}
             </p>
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-white">
+            <h3 className="mb-3 text-sm font-semibold">
               {t("footer.platform")}
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/feed"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.explore_spaces")}
                 </Link>
@@ -34,7 +34,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/publish"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.publish")}
                 </Link>
@@ -42,7 +42,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/feed?type=agency"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.find_agencies")}
                 </Link>
@@ -51,14 +51,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-white">
+            <h3 className="mb-3 text-sm font-semibold">
               {t("footer.resources")}
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/pricing"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.pricing")}
                 </Link>
@@ -66,7 +66,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.about")}
                 </Link>
@@ -75,14 +75,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-white">
+            <h3 className="mb-3 text-sm font-semibold">
               {t("footer.legal")}
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.terms")}
                 </Link>
@@ -90,7 +90,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/privacy"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.privacy")}
                 </Link>
@@ -99,8 +99,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-white/10 pt-8">
-          <p className="text-center text-xs text-slate-500">
+        <div className="mt-8 border-t pt-8">
+          <p className="text-center text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} SpotU. {t("footer.rights")}
           </p>
         </div>
