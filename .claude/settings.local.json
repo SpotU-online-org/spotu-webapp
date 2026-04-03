@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm create:*)",
+      "Bash(where.exe pnpm:*)",
+      "Bash(where.exe npx:*)",
+      "Bash(where.exe npm:*)",
+      "Bash(where.exe node:*)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Bash(npm install:*)",
+      "Bash(export PATH=\"/c/Users/cesar/AppData/Roaming/npm:/c/Program Files/nodejs:$PATH\")",
+      "Bash(pnpm --version)",
+      "Bash(cp -r temp-init/src temp-init/public temp-init/package.json temp-init/pnpm-lock.yaml temp-init/tsconfig.json temp-init/next.config.ts temp-init/postcss.config.mjs temp-init/.eslintrc.json temp-init/next-env.d.ts .)",
+      "Bash(cp temp-init/.gitignore .gitignore-next)",
+      "Bash(cp temp-init/eslint.config.mjs .)",
+      "Bash(rm -rf temp-init/.gitignore-next)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm dlx:*)"
+    ]
+  }
+}
