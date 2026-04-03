@@ -117,10 +117,12 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
     en: "WhatsApp and direct email. You control the conversation from the start.",
   },
   // CTA
-  "cta.title": {
-    es: "Tu primera publicación es gratis por 30 días.",
-    en: "Your first listing is free for 30 days.",
+  "cta.title.line1": {
+    es: "Tu primera publicación es",
+    en: "Your first listing is",
   },
+  "cta.title.free": { es: "gratis", en: "free" },
+  "cta.title.line2": { es: "por 30 días.", en: "for 30 days." },
   "cta.description": {
     es: "Publica tu espacio, ofrece tus servicios o encuentra la publicidad perfecta para tu marca.",
     en: "List your space, offer your services or find the perfect advertising for your brand.",

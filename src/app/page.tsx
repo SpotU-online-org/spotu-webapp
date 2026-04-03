@@ -17,6 +17,7 @@ import { LinkButton } from "@/components/ui/link-button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AnimatedGrid } from "@/components/layout/AnimatedGrid";
+import { RevealOnScroll } from "@/components/layout/RevealOnScroll";
 import { useI18n } from "@/components/layout/LanguageToggle";
 
 export default function HomePage() {
@@ -165,37 +166,37 @@ export default function HomePage() {
         {/* ===================== ROLES ===================== */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
+            <RevealOnScroll className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {t("roles.title")}
               </h2>
               <p className="mt-4 text-muted-foreground">
                 {t("roles.description")}
               </p>
-            </div>
+            </RevealOnScroll>
 
             <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {ROLES.map((role, i) => (
-                <div
-                  key={role.title}
-                  className={`group relative rounded-2xl border bg-card p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${role.borderHover} animate-fade-in-up`}
-                  style={{ animationDelay: `${i * 120}ms` }}
-                >
-                  <div className={`inline-flex rounded-xl ${role.bg} p-3 transition-transform duration-300 group-hover:scale-110`}>
-                    <role.icon className={`h-6 w-6 ${role.color}`} />
-                  </div>
-                  <h3 className="mt-4 text-xl font-semibold text-foreground">{role.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {role.description}
-                  </p>
-                  <Link
-                    href={role.href}
-                    className={`mt-6 inline-flex items-center text-sm font-medium ${role.color} hover:underline transition-colors`}
+                <RevealOnScroll key={role.title} delay={i * 100}>
+                  <div
+                    className={`group relative rounded-2xl border bg-card p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${role.borderHover} h-full`}
                   >
-                    {role.cta}
-                    <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
+                    <div className={`inline-flex rounded-xl ${role.bg} p-3 transition-transform duration-300 group-hover:scale-110`}>
+                      <role.icon className={`h-6 w-6 ${role.color}`} />
+                    </div>
+                    <h3 className="mt-4 text-xl font-semibold text-foreground">{role.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {role.description}
+                    </p>
+                    <Link
+                      href={role.href}
+                      className={`mt-6 inline-flex items-center text-sm font-medium ${role.color} hover:underline transition-colors`}
+                    >
+                      {role.cta}
+                      <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                </RevealOnScroll>
               ))}
             </div>
           </div>
@@ -204,18 +205,18 @@ export default function HomePage() {
         {/* ===================== HOW IT WORKS ===================== */}
         <section className="py-20 sm:py-28 bg-card/60">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
+            <RevealOnScroll className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {t("steps.title")}
               </h2>
               <p className="mt-4 text-muted-foreground">
                 {t("steps.description")}
               </p>
-            </div>
+            </RevealOnScroll>
 
             <div className="mt-16 grid gap-8 sm:grid-cols-3">
               {STEPS.map((step, i) => (
-                <div key={step.step} className="relative text-center group">
+                <RevealOnScroll key={step.step} delay={i * 120} className="relative text-center group">
                   {/* Connector line between steps */}
                   {i < STEPS.length - 1 && (
                     <div className="hidden sm:block absolute top-7 left-[calc(50%+36px)] w-[calc(100%-72px)] h-px bg-gradient-to-r from-border to-transparent" />
@@ -231,7 +232,7 @@ export default function HomePage() {
                   <p className="mt-2 text-sm text-muted-foreground">
                     {step.description}
                   </p>
-                </div>
+                </RevealOnScroll>
               ))}
             </div>
           </div>
@@ -240,26 +241,25 @@ export default function HomePage() {
         {/* ===================== FEATURES ===================== */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
+            <RevealOnScroll className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {t("features.title")}
               </h2>
-            </div>
+            </RevealOnScroll>
 
             <div className="mt-16 grid gap-8 sm:grid-cols-3">
               {FEATURES.map((feature, i) => (
-                <div
-                  key={feature.title}
-                  className="group flex flex-col items-center text-center rounded-2xl border border-transparent p-8 transition-all duration-300 hover:border-border hover:bg-card hover:shadow-sm"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:shadow-md group-hover:shadow-primary/20">
-                    <feature.icon className="h-5 w-5 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
+                <RevealOnScroll key={feature.title} delay={i * 100}>
+                  <div className="group flex flex-col items-center text-center rounded-2xl border border-transparent p-8 transition-all duration-300 hover:border-border hover:bg-card hover:shadow-sm h-full">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:shadow-md group-hover:shadow-primary/20">
+                      <feature.icon className="h-5 w-5 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
+                    </div>
+                    <h3 className="mt-4 font-semibold text-foreground">{feature.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {feature.description}
+                    </p>
                   </div>
-                  <h3 className="mt-4 font-semibold text-foreground">{feature.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {feature.description}
-                  </p>
-                </div>
+                </RevealOnScroll>
               ))}
             </div>
           </div>
@@ -279,11 +279,16 @@ export default function HomePage() {
             />
           </div>
 
-          <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              {t("cta.title")}
+          <RevealOnScroll direction="none" className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
+              {t("cta.title.line1")}{" "}
+              <span className="inline-block rounded-lg bg-white/15 px-3 py-1 text-white backdrop-blur-sm ring-1 ring-white/20">
+                {t("cta.title.free")}
+              </span>
+              <br />
+              {t("cta.title.line2")}
             </h2>
-            <p className="mt-4 text-lg text-white/80">
+            <p className="mt-6 text-lg text-white/80">
               {t("cta.description")}
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -305,7 +310,7 @@ export default function HomePage() {
                 {t("cta.secondary")}
               </LinkButton>
             </div>
-          </div>
+          </RevealOnScroll>
         </section>
       </main>
       <Footer />
