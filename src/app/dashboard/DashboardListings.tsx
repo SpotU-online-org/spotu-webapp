@@ -34,6 +34,20 @@ const TYPE_LABELS: Record<string, string> = {
   want_to_advertise: "Solicitud de anunciante",
 };
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("es-CO", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function billingCutoff(createdAt: string) {
+  const d = new Date(createdAt);
+  d.setDate(d.getDate() + 30);
+  return d;
+}
+
 function PublishedNotice() {
   const { toast } = useToast();
   const router = useRouter();
@@ -81,14 +95,16 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
       ) : (
         <div className="rounded-2xl border bg-card overflow-hidden">
           <div className="overflow-x-auto">
-            <div className="max-h-[520px] overflow-y-auto">
+            <div className="max-h-[560px] overflow-y-auto">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 z-10">
                   <tr className="border-b bg-muted/60 backdrop-blur-sm text-xs text-muted-foreground">
                     <th className="px-5 py-3 text-left font-medium">Publicación</th>
                     <th className="px-5 py-3 text-left font-medium">Estado</th>
+                    <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Creada</th>
+                    <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Vence</th>
                     <th className="px-5 py-3 text-right font-medium">Vistas</th>
-                    <th className="px-5 py-3 text-right font-medium">Contactos</th>
+                    <th className="px-5 py-3 text-right font-medium hidden md:table-cell">Contactos</th>
                     <th className="px-5 py-3 text-right font-medium">Acciones</th>
                   </tr>
                 </thead>
@@ -97,6 +113,8 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
                     const status =
                       STATUS_CONFIG[l.status as keyof typeof STATUS_CONFIG] ??
                       STATUS_CONFIG.draft;
+                    const cutoff = billingCutoff(l.created_at);
+                    const isExpiringSoon = cutoff.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
                     return (
                       <tr key={l.id} className="hover:bg-muted/30 transition-colors">
                         <td className="px-5 py-4">
@@ -125,14 +143,24 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
                             {status.label}
                           </span>
                         </td>
+                        <td className="px-4 py-4 text-xs text-muted-foreground hidden sm:table-cell whitespace-nowrap">
+                          {formatDate(l.created_at)}
+                        </td>
+                        <td className="px-4 py-4 text-xs hidden sm:table-cell whitespace-nowrap">
+                          <span className={isExpiringSoon ? "text-amber-600 font-medium" : "text-muted-foreground"}>
+                            {formatDate(cutoff.toISOString())}
+                          </span>
+                        </td>
                         <td className="px-5 py-4 text-right font-medium text-foreground">
                           {l.views_count ?? 0}
                         </td>
-                        <td className="px-5 py-4 text-right font-medium text-foreground">
+                        <td className="px-5 py-4 text-right font-medium text-foreground hidden md:table-cell">
                           {l.contacts_count ?? 0}
                         </td>
                         <td className="px-5 py-4 text-right">
-                          <ListingActions listingId={l.id} status={l.status} />
+                          <div className="flex justify-end">
+                            <ListingActions listingId={l.id} status={l.status} />
+                          </div>
                         </td>
                       </tr>
                     );

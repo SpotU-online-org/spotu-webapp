@@ -7,6 +7,8 @@ import { FeedFilters } from "./FeedFilters";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Explorar publicaciones",
   description:

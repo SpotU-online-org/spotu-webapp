@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle } from "lucide-react";
+import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -85,16 +85,35 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
     (profile.types as Role[] | null) ?? ([profile.type as Role].filter(Boolean))
   );
   const [loading, setLoading] = useState(false);
-  const [roleWarning, setRoleWarning] = useState<string | null>(null);
+  const [listingCounts, setListingCounts] = useState<Record<Role, number>>({
+    advertiser: 0,
+    space_owner: 0,
+    agency: 0,
+  });
+
+  // Pre-load listing counts so we can disable toggles inline
+  useEffect(() => {
+    const supabase = createClient();
+    Promise.all(
+      (Object.entries(ROLE_CONFIG) as [Role, typeof ROLE_CONFIG[Role]][]).map(async ([role, cfg]) => {
+        const { count } = await supabase
+          .from("listings")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("type", cfg.listingType)
+          .in("status", ["active", "paused"]);
+        return [role, count ?? 0] as [Role, number];
+      })
+    ).then((entries) =>
+      setListingCounts(Object.fromEntries(entries) as Record<Role, number>)
+    );
+  }, [userId]);
 
   function toggleRole(role: Role) {
-    setRoleWarning(null);
     setTypes((prev) => {
       if (prev.includes(role)) {
-        if (prev.length === 1) {
-          setRoleWarning("Debes pertenecer a al menos un tipo de cuenta.");
-          return prev;
-        }
+        if (prev.length === 1) return prev; // must keep at least one
+        if (listingCounts[role] > 0) return prev; // blocked — has active listings
         return prev.filter((r) => r !== role);
       }
       return [...prev, role];
@@ -112,35 +131,6 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
     }
 
     setLoading(true);
-
-    // Check if any role is being removed — ensure no active/paused listings of that type
-    const currentTypes = (profile.types as Role[] | null) ?? [profile.type as Role].filter(Boolean);
-    const removedRoles = currentTypes.filter((r) => !types.includes(r));
-
-    if (removedRoles.length > 0) {
-      const supabase = createClient();
-      for (const role of removedRoles) {
-        const listingType = ROLE_CONFIG[role]?.listingType;
-        if (!listingType) continue;
-        const { data: activeListings } = await supabase
-          .from("listings")
-          .select("id")
-          .eq("user_id", userId)
-          .eq("type", listingType)
-          .in("status", ["active", "paused"])
-          .limit(1);
-
-        if (activeListings && activeListings.length > 0) {
-          toast(
-            `Tienes publicaciones activas o pausadas como "${ROLE_CONFIG[role].label}". Debes eliminarlas o pausarlas antes de cambiar tu tipo de cuenta.`,
-            "warning"
-          );
-          setLoading(false);
-          return;
-        }
-      }
-    }
-
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles")
@@ -281,43 +271,62 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
             Tipo de cuenta
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            Puedes pertenecer a varios tipos. Para eliminar un tipo debes primero despublicar sus publicaciones.
+            Puedes pertenecer a varios tipos. Para quitar un tipo debes primero despublicar sus publicaciones activas.
           </p>
         </div>
-
-        {roleWarning && (
-          <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-800">
-            <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-500" />
-            {roleWarning}
-          </div>
-        )}
 
         <div className="flex flex-col gap-3">
           {(Object.entries(ROLE_CONFIG) as [Role, typeof ROLE_CONFIG[Role]][]).map(([role, cfg]) => {
             const active = types.includes(role);
+            const hasListings = listingCounts[role] > 0;
+            const isOnlyRole = active && types.length === 1;
+            const blocked = active && (hasListings || isOnlyRole);
+
             return (
               <button
                 key={role}
                 type="button"
                 onClick={() => toggleRole(role)}
+                disabled={blocked}
+                title={
+                  isOnlyRole
+                    ? "Debes tener al menos un tipo de cuenta"
+                    : hasListings && active
+                    ? `Tienes ${listingCounts[role]} publicación(es) activa(s) como ${cfg.label}. Despublícalas primero.`
+                    : undefined
+                }
                 className={cn(
                   "flex items-center gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200",
                   active
                     ? `${cfg.border} bg-card ring-2 ${cfg.ring} shadow-sm`
-                    : "border-border hover:border-border/80 hover:bg-muted/40"
+                    : "border-border hover:border-border/80 hover:bg-muted/40",
+                  blocked && "opacity-60 cursor-not-allowed"
                 )}
               >
                 <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", cfg.bg)}>
                   <cfg.Icon className={cn("h-5 w-5", cfg.color)} />
                 </div>
-                <p className={cn("flex-1 font-semibold", active ? "text-foreground" : "text-muted-foreground")}>
-                  {cfg.label}
-                </p>
+                <div className="flex-1 min-w-0">
+                  <p className={cn("font-semibold", active ? "text-foreground" : "text-muted-foreground")}>
+                    {cfg.label}
+                  </p>
+                  {blocked && hasListings && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {listingCounts[role]} publicación(es) activa(s) — despublícalas para quitar este tipo
+                    </p>
+                  )}
+                </div>
                 <div className={cn(
                   "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors",
                   active ? "border-transparent bg-primary" : "border-border"
                 )}>
-                  {active && <Check className="h-3 w-3 text-white" />}
+                  {active && (
+                    blocked ? (
+                      <Lock className="h-3 w-3 text-white" />
+                    ) : (
+                      <Check className="h-3 w-3 text-white" />
+                    )
+                  )}
                 </div>
               </button>
             );

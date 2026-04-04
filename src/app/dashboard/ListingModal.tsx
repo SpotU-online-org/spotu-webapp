@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   X, MapPin, Briefcase, Megaphone, MessageCircle, Mail, ExternalLink,
-  Loader2, Eye,
+  Loader2, Eye, Phone,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -60,6 +60,7 @@ type Listing = {
   price_period: string | null;
   price_text: string | null;
   whatsapp: string | null;
+  phone: string | null;
   email_contact: string | null;
   website_url: string | null;
   images: string[] | null;
@@ -142,6 +143,10 @@ export function ListingModal({
 
   const whatsappUrl = listing?.whatsapp
     ? `https://wa.me/${String(listing.whatsapp).replace(/\D/g, "")}?text=${encodeURIComponent(`Hola, vi tu publicación "${listing.title}" en SpotU y me interesa contactarte.`)}`
+    : null;
+
+  const callNumber = listing?.whatsapp || listing?.phone
+    ? String(listing.whatsapp || listing.phone).replace(/\s/g, "")
     : null;
 
   const emailUrl = listing?.email_contact
@@ -334,6 +339,15 @@ export function ListingModal({
                     Contactar por WhatsApp
                   </a>
                 )}
+                {callNumber && (
+                  <a
+                    href={`tel:${callNumber}`}
+                    className={cn(linkButtonVariants({ variant: "outline", size: "default" }), "w-full gap-2.5")}
+                  >
+                    <Phone className="h-4 w-4" />
+                    Llamar
+                  </a>
+                )}
                 {emailUrl && (
                   <a
                     href={emailUrl}
@@ -354,7 +368,7 @@ export function ListingModal({
                     {listing.website_url as string}
                   </a>
                 )}
-                {!whatsappUrl && !emailUrl && (
+                {!whatsappUrl && !callNumber && !emailUrl && (
                   <p className="text-sm text-muted-foreground">Sin datos de contacto.</p>
                 )}
               </div>
@@ -362,12 +376,17 @@ export function ListingModal({
 
             {/* Publisher */}
             {profile && (
-              <div className="flex items-center gap-3 rounded-xl border bg-muted/30 p-4">
+              <a
+                href={`/profile/${listing.user_id}`}
+                className="flex items-center gap-3 rounded-xl border bg-muted/30 p-4 hover:bg-muted/50 transition-colors group"
+              >
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary uppercase">
                   {profile.display_name?.[0] ?? "?"}
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{profile.display_name}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                    {profile.display_name}
+                  </p>
                   {profile.company_name && (
                     <p className="text-xs text-muted-foreground truncate">{profile.company_name}</p>
                   )}
@@ -377,7 +396,7 @@ export function ListingModal({
                     ✓ Verificado
                   </span>
                 )}
-              </div>
+              </a>
             )}
           </div>
         )}
