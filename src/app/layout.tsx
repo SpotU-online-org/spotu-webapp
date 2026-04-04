@@ -46,7 +46,10 @@ export const metadata: Metadata = {
     images: ["/logos/logo-full.webp"],
   },
   icons: {
-    icon: "/logos/icon.webp",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logos/icon.webp", type: "image/webp" },
+    ],
     apple: "/logos/icon.webp",
   },
   robots: {

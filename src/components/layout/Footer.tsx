@@ -15,7 +15,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <SpotULogo variant="horizontal" width={100} height={30} />
+            <SpotULogo variant="horizontal" width={130} height={40} />
             <p className="text-sm text-muted-foreground">
               {t("footer.tagline")}
             </p>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ArrowLeft, Loader2, Check } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, Check, ImagePlus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -151,6 +151,9 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
   const [step, setStep] = useState(0); // 0-indexed
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [filePreviews, setFilePreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState<FormData>({
     title: "",
@@ -178,6 +181,45 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
 
   const set = (key: keyof FormData, value: FormData[keyof FormData]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    const allowed = files.filter((f) => f.type.startsWith("image/")).slice(0, 5 - selectedFiles.length);
+    if (allowed.length === 0) return;
+    setSelectedFiles((prev) => [...prev, ...allowed].slice(0, 5));
+    allowed.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setFilePreviews((prev) => [...prev, ev.target?.result as string].slice(0, 5));
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removeFile(index: number) {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setFilePreviews((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  async function uploadImages(): Promise<string[]> {
+    if (selectedFiles.length === 0) return [];
+    const supabase = createClient();
+    const urls: string[] = [];
+    for (const file of selectedFiles) {
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const path = `${userId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("listing-images")
+        .upload(path, file, { cacheControl: "3600", upsert: false });
+      if (uploadError) {
+        console.error("Image upload error:", uploadError.message);
+        continue;
+      }
+      const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+      urls.push(data.publicUrl);
+    }
+    return urls;
+  }
 
   const toggleArr = (key: "services" | "specializations" | "coverage_areas", value: string) => {
     setForm((prev) => ({
@@ -217,6 +259,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     setError(null);
 
     const supabase = createClient();
+    const imageUrls = await uploadImages();
     const payload = {
       user_id: userId,
       type: LISTING_TYPE[profileType],
@@ -244,6 +287,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       price_text: form.price_text.trim() || null,
       // Advertiser fields
       industry: form.industry || null,
+      images: imageUrls.length > 0 ? imageUrls : null,
       status: "active",
     };
 
@@ -565,9 +609,68 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
         {/* ──────── CONTACT STEP (last step, all types) ──────── */}
         {step === steps.length - 1 && (
           <div className="space-y-5">
-            <h2 className="text-xl font-bold text-foreground">Datos de contacto</h2>
-            <p className="text-sm text-muted-foreground">Necesitas al menos uno para que te puedan contactar.</p>
-            <Field label="WhatsApp" hint='Incluye código de país. Ej: +57 300 123 4567'>
+            <h2 className="text-xl font-bold text-foreground">Imágenes y contacto</h2>
+
+            {/* Images */}
+            <Field
+              label="Imágenes"
+              hint={
+                profileType === "space_owner"
+                  ? "Fotos del espacio, mockups, etc. Máx. 5 imágenes."
+                  : profileType === "agency"
+                  ? "Logo, portafolio o casos de éxito. Máx. 5 imágenes."
+                  : "Logo o material de tu marca. Máx. 5 imágenes. Opcional."
+              }
+            >
+              <div className="space-y-3">
+                {/* Previews */}
+                {filePreviews.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {filePreviews.map((src, i) => (
+                      <div key={i} className="relative h-20 w-20 overflow-hidden rounded-lg border bg-muted">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={src} alt={`Imagen ${i + 1}`} className="h-full w-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => removeFile(i)}
+                          className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {selectedFiles.length < 5 && (
+                  <>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border py-6 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                    >
+                      <ImagePlus className="h-5 w-5" />
+                      {selectedFiles.length === 0 ? "Agregar imágenes" : `Agregar más (${selectedFiles.length}/5)`}
+                    </button>
+                  </>
+                )}
+              </div>
+            </Field>
+
+            <div className="border-t pt-4">
+              <p className="mb-4 text-sm font-medium text-foreground">Datos de contacto</p>
+              <p className="mb-4 text-xs text-muted-foreground">Necesitas al menos uno para que te puedan contactar.</p>
+            </div>
+
+            <Field label="WhatsApp" hint="Incluye código de país. Ej: +57 300 123 4567">
               <input type="tel" value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+57 300 123 4567" className={inputCls} />
             </Field>
             <Field label="Correo electrónico">
