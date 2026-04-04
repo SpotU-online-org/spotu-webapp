@@ -49,8 +49,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
       id, type, title, description,
       location_city, location_state, location_country,
       is_remote, price_min, price_max, price_period, price_text,
-      images, views_count, space_type, industry,
-      profile:profiles(display_name)
+      images, views_count, space_type, industry
     `)
     .eq("status", "active")
     .order("is_featured", { ascending: false })
@@ -153,31 +152,25 @@ export default async function FeedPage({ searchParams }: PageProps) {
 
           {listings && listings.length > 0 && (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {listings.map((listing) => {
-                const profile = Array.isArray(listing.profile)
-                  ? listing.profile[0]
-                  : listing.profile;
-                return (
-                  <ListingCard
-                    key={listing.id}
-                    id={listing.id}
-                    type={listing.type as "want_to_advertise" | "have_space" | "offer_service"}
-                    title={listing.title}
-                    description={listing.description}
-                    locationCity={listing.location_city}
-                    locationState={listing.location_state}
-                    locationCountry={listing.location_country}
-                    isRemote={listing.is_remote}
-                    priceMin={listing.price_min}
-                    priceMax={listing.price_max}
-                    pricePeriod={listing.price_period}
-                    priceText={listing.price_text}
-                    images={listing.images ?? []}
-                    viewsCount={listing.views_count ?? 0}
-                    authorName={profile?.display_name ?? "SpotU user"}
-                  />
-                );
-              })}
+              {listings.map((listing) => (
+                <ListingCard
+                  key={listing.id}
+                  id={listing.id}
+                  type={listing.type as "want_to_advertise" | "have_space" | "offer_service"}
+                  title={listing.title}
+                  description={listing.description}
+                  locationCity={listing.location_city}
+                  locationState={listing.location_state}
+                  locationCountry={listing.location_country ?? ""}
+                  isRemote={listing.is_remote ?? false}
+                  priceMin={listing.price_min}
+                  priceMax={listing.price_max}
+                  pricePeriod={listing.price_period}
+                  priceText={listing.price_text}
+                  images={listing.images ?? []}
+                  viewsCount={listing.views_count ?? 0}
+                />
+              ))}
             </div>
           )}
         </div>

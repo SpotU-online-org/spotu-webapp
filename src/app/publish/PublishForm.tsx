@@ -184,15 +184,29 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
   const set = (key: keyof FormData, value: FormData[keyof FormData]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  const MAX_IMAGES = 5;
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
-    const allowed = files.filter((f) => f.type.startsWith("image/")).slice(0, 5 - selectedFiles.length);
+    const remaining = MAX_IMAGES - selectedFiles.length;
+    if (remaining <= 0) return;
+
+    const tooBig = files.filter((f) => f.size > MAX_FILE_SIZE);
+    if (tooBig.length > 0) {
+      setError(`Cada imagen debe pesar menos de 5 MB. ${tooBig.map((f) => f.name).join(", ")} ${tooBig.length === 1 ? "es" : "son"} demasiado pesada(s).`);
+    }
+
+    const allowed = files
+      .filter((f) => f.type.startsWith("image/") && f.size <= MAX_FILE_SIZE)
+      .slice(0, remaining);
     if (allowed.length === 0) return;
-    setSelectedFiles((prev) => [...prev, ...allowed].slice(0, 5));
+
+    setSelectedFiles((prev) => [...prev, ...allowed].slice(0, MAX_IMAGES));
     allowed.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (ev) => {
-        setFilePreviews((prev) => [...prev, ev.target?.result as string].slice(0, 5));
+        setFilePreviews((prev) => [...prev, ev.target?.result as string].slice(0, MAX_IMAGES));
       };
       reader.readAsDataURL(file);
     });
@@ -396,12 +410,13 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                     className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50 focus:ring-destructive/30")}
                   />
                 </Field>
-                <Field label="Descripción" required hint={form.description.trim().length < 20 && form.description.length > 0 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : "Dimensiones, horarios, condiciones, lo que sea relevante"}>
+                <Field label="Descripción" required hint={form.description.trim().length < 20 && form.description.length > 0 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : `Dimensiones, horarios, condiciones, lo que sea relevante (${form.description.length}/1500)`}>
                   <textarea
                     value={form.description}
                     onChange={(e) => set("description", e.target.value)}
                     placeholder="Detalla las características de tu espacio, ubicación exacta, condiciones de uso..."
                     rows={5}
+                    maxLength={1500}
                     className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50 focus:ring-destructive/30")}
                   />
                 </Field>
@@ -439,10 +454,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                   </select>
                 </Field>
                 <Field label="Audiencia estimada" hint="Ej: ~15,000 personas por evento">
-                  <input type="text" value={form.audience_size} onChange={(e) => set("audience_size", e.target.value)} placeholder="~5,000 personas diarias" className={inputCls} />
+                  <input type="text" value={form.audience_size} onChange={(e) => set("audience_size", e.target.value)} placeholder="~5,000 personas diarias" maxLength={150} className={inputCls} />
                 </Field>
                 <Field label="Disponibilidad" hint="Ej: Disponible de lunes a viernes">
-                  <input type="text" value={form.availability} onChange={(e) => set("availability", e.target.value)} placeholder="Disponible inmediatamente" className={inputCls} />
+                  <input type="text" value={form.availability} onChange={(e) => set("availability", e.target.value)} placeholder="Disponible inmediatamente" maxLength={150} className={inputCls} />
                 </Field>
               </div>
             )}
@@ -477,7 +492,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">¿Qué servicios ofreces?</h2>
                 <Field label="Nombre de la agencia o agente" required hint={form.title.trim().length > 0 && form.title.trim().length < 3 ? `Mínimo 3 caracteres (${form.title.trim().length}/3)` : undefined}>
-                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Studio Creativo MKT" className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50")} />
+                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Studio Creativo MKT" maxLength={100} className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50")} />
                 </Field>
                 <Field label="Servicios" required>
                   <MultiChip options={AGENCY_SERVICES} selected={form.services} onToggle={(v) => toggleArr("services", v)} />
@@ -488,8 +503,8 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {step === 1 && (
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">Cuéntanos más</h2>
-                <Field label="Descripción" required hint={form.description.trim().length > 0 && form.description.trim().length < 20 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : "Experiencia, enfoque, propuesta de valor"}>
-                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una agencia con 5 años de experiencia especializada en..." rows={5} className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50")} />
+                <Field label="Descripción" required hint={form.description.trim().length > 0 && form.description.trim().length < 20 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : `Experiencia, enfoque, propuesta de valor (${form.description.length}/1500)`}>
+                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una agencia con 5 años de experiencia especializada en..." rows={5} maxLength={1500} className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50")} />
                 </Field>
                 <Field label="Industrias de especialización" hint="Opcional">
                   <div className="flex flex-wrap gap-2">
@@ -529,7 +544,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                   <label htmlFor="is_remote2" className="text-sm text-foreground">Trabajo de forma remota / 100% digital</label>
                 </div>
                 <Field label="Precio orientativo" hint='Ej: "Desde $500 USD/mes" o "Cotización a medida"'>
-                  <input type="text" value={form.price_text} onChange={(e) => set("price_text", e.target.value)} placeholder="Desde $500 USD/mes" className={inputCls} />
+                  <input type="text" value={form.price_text} onChange={(e) => set("price_text", e.target.value)} placeholder="Desde $500 USD/mes" maxLength={100} className={inputCls} />
                 </Field>
               </div>
             )}
@@ -570,10 +585,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">Describe lo que necesitas</h2>
                 <Field label="Título" required hint={form.title.trim().length > 0 && form.title.trim().length < 3 ? `Mínimo 3 caracteres (${form.title.trim().length}/3)` : undefined}>
-                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Busco espacio para campaña deportiva" className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50")} />
+                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Busco espacio para campaña deportiva" maxLength={100} className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50")} />
                 </Field>
-                <Field label="Descripción" required hint={form.description.trim().length > 0 && form.description.trim().length < 20 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : "Qué quieres anunciar, objetivo, contexto"}>
-                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una empresa de... y queremos publicitar..." rows={5} className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50")} />
+                <Field label="Descripción" required hint={form.description.trim().length > 0 && form.description.trim().length < 20 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : `Qué quieres anunciar, objetivo, contexto (${form.description.length}/1500)`}>
+                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una empresa de... y queremos publicitar..." rows={5} maxLength={1500} className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50")} />
                 </Field>
                 <Field label="Industria / Sector">
                   <select value={form.industry} onChange={(e) => set("industry", e.target.value)} className={inputCls}>
@@ -589,7 +604,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                 <h2 className="text-xl font-bold text-foreground">Ubicación y presupuesto</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Ciudad donde quieres anunciar">
-                    <input type="text" value={form.location_city} onChange={(e) => set("location_city", e.target.value)} placeholder="Medellín" className={inputCls} />
+                    <input type="text" value={form.location_city} onChange={(e) => set("location_city", e.target.value)} placeholder="Medellín" maxLength={100} className={inputCls} />
                   </Field>
                   <Field label="País">
                     <select value={form.location_country} onChange={(e) => set("location_country", e.target.value)} className={inputCls}>
@@ -626,10 +641,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
               label="Imágenes"
               hint={
                 profileType === "space_owner"
-                  ? "Fotos del espacio, mockups, etc. Máx. 5 imágenes."
+                  ? "Fotos del espacio, mockups, etc. Máx. 5 imágenes · 5 MB c/u."
                   : profileType === "agency"
-                  ? "Logo, portafolio o casos de éxito. Máx. 5 imágenes."
-                  : "Logo o material de tu marca. Máx. 5 imágenes. Opcional."
+                  ? "Logo, portafolio o casos de éxito. Máx. 5 imágenes · 5 MB c/u."
+                  : "Logo o material de tu marca. Máx. 5 imágenes · 5 MB c/u. Opcional."
               }
             >
               <div className="space-y-3">
@@ -681,13 +696,13 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             </div>
 
             <Field label="WhatsApp" hint="Incluye código de país. Ej: +57 300 123 4567">
-              <input type="tel" value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+57 300 123 4567" className={inputCls} />
+              <input type="tel" value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+57 300 123 4567" maxLength={20} className={inputCls} />
             </Field>
             <Field label="Correo electrónico">
-              <input type="email" value={form.email_contact} onChange={(e) => set("email_contact", e.target.value)} placeholder="contacto@tuempresa.com" className={inputCls} />
+              <input type="email" value={form.email_contact} onChange={(e) => set("email_contact", e.target.value)} placeholder="contacto@tuempresa.com" maxLength={100} className={inputCls} />
             </Field>
             <Field label="Sitio web / portafolio" hint="Opcional">
-              <input type="url" value={form.website_url} onChange={(e) => set("website_url", e.target.value)} placeholder="https://tuempresa.com" className={inputCls} />
+              <input type="url" value={form.website_url} onChange={(e) => set("website_url", e.target.value)} placeholder="https://tuempresa.com" maxLength={200} className={inputCls} />
             </Field>
           </div>
         )}

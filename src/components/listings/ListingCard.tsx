@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPin, Briefcase, Megaphone, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ListingImageCarousel } from "./ListingImageCarousel";
 
 type ListingCardProps = {
   id: string;
@@ -9,15 +10,15 @@ type ListingCardProps = {
   description: string;
   locationCity: string | null;
   locationState: string | null;
-  locationCountry: string;
-  isRemote: boolean;
+  locationCountry: string | null;
+  isRemote: boolean | null;
   priceMin: number | null;
   priceMax: number | null;
   pricePeriod: string | null;
   priceText: string | null;
   images: string[];
   viewsCount: number;
-  authorName: string;
+  authorName?: string;
 };
 
 const TYPE_CONFIG = {
@@ -85,18 +86,13 @@ export function ListingCard({
       {/* Image area */}
       <div className="relative aspect-[16/9] bg-muted overflow-hidden">
         {images.length > 0 ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={images[0]}
-            alt={title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          <ListingImageCarousel images={images} title={title} />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <config.Icon className="h-10 w-10 text-muted-foreground/30" />
           </div>
         )}
-        <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold", config.color)}>
+        <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold z-10", config.color)}>
           {config.label}
         </span>
       </div>
@@ -123,10 +119,17 @@ export function ListingCard({
           )}
         </div>
 
-        <div className="mt-3 border-t pt-3 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground truncate">{authorName}</span>
-          <span className="text-xs font-medium text-primary shrink-0">Ver más →</span>
-        </div>
+        {authorName && (
+          <div className="mt-3 border-t pt-3 flex items-center justify-between">
+            <span className="text-xs text-muted-foreground truncate">{authorName}</span>
+            <span className="text-xs font-medium text-primary shrink-0">Ver más →</span>
+          </div>
+        )}
+        {!authorName && (
+          <div className="mt-3 border-t pt-3 flex justify-end">
+            <span className="text-xs font-medium text-primary">Ver más →</span>
+          </div>
+        )}
       </div>
     </Link>
   );
