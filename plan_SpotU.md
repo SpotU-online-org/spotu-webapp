@@ -555,7 +555,7 @@ Dashboard → "Crear contrato"
 - [ ] Loading, error, empty states
 
 ### Semana 7-8: Polish + Deploy MVP
-- [ ] SEO básico
+- [ ] SEO completo (ver sección 8)
 - [ ] Notificaciones por email (Resend) — bienvenida, nuevo contacto
 - [ ] Testing y bug fixes
 - [ ] Deploy a producción (Vercel)
@@ -586,6 +586,46 @@ Dashboard → "Crear contrato"
 - [ ] App móvil
 - [ ] API pública
 - [ ] Expansión de métodos de pago locales
+
+---
+
+## 8. SEO — Plan Completo
+
+Aplicar una vez que el sitio funcione correctamente y esté deployado.
+
+### 8.1 SEO Técnico (Next.js Metadata API)
+- `generateMetadata()` en cada página dinámica (feed, listing/[id], profile/[id])
+- `title`, `description`, `openGraph`, `twitter` en cada ruta
+- `robots.ts` — permitir indexación de páginas públicas, bloquear `/dashboard`, `/auth`, `/publish`
+- `sitemap.ts` — generar sitemap dinámico con todas las publicaciones activas
+- `manifest.ts` — PWA manifest básico
+- Canonical URLs en listings para evitar duplicate content
+- Structured data (JSON-LD) en páginas de listado: `Product`, `LocalBusiness`, `Service`
+
+### 8.2 SEO de Contenido
+- URLs descriptivas: `/espacio/pantalla-led-monterrey-[id]` vs `/listing/[id]`
+- H1 único por página, jerarquía H1→H2→H3 correcta
+- Alt text en todas las imágenes de listings
+- Open Graph images dinámicas por publicación (og:image con título y ciudad)
+- Páginas de categoría indexables: `/espacios/vallas`, `/agencias`, `/solicitudes`
+
+### 8.3 SEO Local (clave para nuestros mercados)
+- Landing pages por ciudad: `/publicidad/monterrey`, `/publicidad/medellin`, `/publicidad/miami`
+- Schema `LocalBusiness` con ciudad y país
+- Geotargeting en meta tags
+- Google Business Profile (cuando tengamos oficina/presencia física)
+
+### 8.4 Performance (impacta SEO)
+- Core Web Vitals: LCP < 2.5s, CLS < 0.1, FID < 100ms
+- Imágenes con `next/image` (ya aplicado), lazy loading automático
+- Fuentes con `next/font` (ya aplicado)
+- `loading="lazy"` en imágenes fuera del fold
+- Preload de imagen hero en landing
+
+### 8.5 Herramientas a configurar
+- Google Search Console — verificar dominio, monitorear indexación
+- Google Analytics 4 — tracking de usuarios y conversiones
+- Vercel Analytics — Core Web Vitals en producción
 
 ---
 
