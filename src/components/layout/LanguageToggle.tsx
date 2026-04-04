@@ -123,6 +123,7 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
   },
   "cta.title.free": { es: "gratis", en: "free" },
   "cta.title.line2": { es: "por 30 días.", en: "for 30 days." },
+  "cta.title.line2.suffix": { es: " por 30 días.", en: " for 30 days." },
   "cta.description": {
     es: "Publica tu espacio, ofrece tus servicios o encuentra la publicidad perfecta para tu marca.",
     en: "List your space, offer your services or find the perfect advertising for your brand.",

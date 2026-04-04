@@ -14,21 +14,46 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://spotu.online"),
   title: {
     default: "SpotU — Tu spot publicitario ideal",
     template: "%s | SpotU",
   },
   description:
-    "Marketplace de publicidad que conecta anunciantes, espacios publicitarios y agencias de marketing. Publica, descubre y conecta.",
+    "Marketplace de publicidad que conecta anunciantes, espacios publicitarios y agencias de marketing. Publica tu espacio, descubre oportunidades y contacta directo.",
   keywords: [
-    "publicidad",
-    "marketplace",
-    "espacios publicitarios",
-    "agencias de marketing",
-    "anunciantes",
-    "advertising",
+    "publicidad", "marketplace", "espacios publicitarios",
+    "agencias de marketing", "anunciantes", "advertising",
+    "vallas publicitarias", "publicidad digital", "Colombia", "México", "Florida",
   ],
-  metadataBase: new URL("https://spotu.online"),
+  authors: [{ name: "SpotU", url: "https://spotu.online" }],
+  creator: "SpotU",
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    alternateLocale: "en_US",
+    url: "https://spotu.online",
+    siteName: "SpotU",
+    title: "SpotU — Tu spot publicitario ideal",
+    description:
+      "Marketplace de publicidad que conecta anunciantes, espacios publicitarios y agencias de marketing.",
+    images: [{ url: "/logos/logo-full.webp", width: 1200, height: 630, alt: "SpotU" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SpotU — Tu spot publicitario ideal",
+    description: "Marketplace de publicidad. Publica, descubre y conecta.",
+    images: ["/logos/logo-full.webp"],
+  },
+  icons: {
+    icon: "/logos/icon.webp",
+    apple: "/logos/icon.webp",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
 };
 
 export default function RootLayout({

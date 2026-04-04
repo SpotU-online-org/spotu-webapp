@@ -281,12 +281,15 @@ export default function HomePage() {
 
           <RevealOnScroll direction="none" className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
-              {t("cta.title.line1")}{" "}
-              <span className="inline-block rounded-lg bg-white/15 px-3 py-1 text-white backdrop-blur-sm ring-1 ring-white/20">
-                {t("cta.title.free")}
-              </span>
+              {t("cta.title.line1")}
               <br />
-              {t("cta.title.line2")}
+              <span className="relative inline-block">
+                <span className="relative z-10 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-sm">
+                  {t("cta.title.free")}
+                </span>
+                <span className="absolute inset-x-0 bottom-0.5 h-2 rounded bg-white/20" />
+              </span>
+              {t("cta.title.line2.suffix")}
             </h2>
             <p className="mt-6 text-lg text-white/80">
               {t("cta.description")}
