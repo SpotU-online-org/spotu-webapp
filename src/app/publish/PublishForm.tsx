@@ -32,6 +32,7 @@ type FormData = {
   // Space
   space_medium: "physical" | "digital" | "";
   space_type: string;
+  space_types: string[]; // multi-select for advertisers
   location_city: string;
   location_state: string;
   location_country: string;
@@ -163,6 +164,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     website_url: "",
     space_medium: "",
     space_type: "",
+    space_types: [],
     location_city: "",
     location_state: "",
     location_country: "CO",
@@ -221,10 +223,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     return urls;
   }
 
-  const toggleArr = (key: "services" | "specializations" | "coverage_areas", value: string) => {
+  const toggleArr = (key: "services" | "specializations" | "coverage_areas" | "space_types", value: string) => {
     setForm((prev) => ({
       ...prev,
-      [key]: prev[key].includes(value)
+      [key]: (prev[key] as string[]).includes(value)
         ? (prev[key] as string[]).filter((v) => v !== value)
         : [...(prev[key] as string[]), value],
     }));
@@ -233,15 +235,15 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
   const canAdvance = (): boolean => {
     if (profileType === "space_owner") {
       if (step === 0) return !!form.space_type && !!form.space_medium;
-      if (step === 1) return !!form.title.trim() && !!form.description.trim();
+      if (step === 1) return form.title.trim().length >= 3 && form.description.trim().length >= 20;
     }
     if (profileType === "agency") {
-      if (step === 0) return !!form.title.trim() && form.services.length > 0;
-      if (step === 1) return !!form.description.trim();
+      if (step === 0) return form.title.trim().length >= 3 && form.services.length > 0;
+      if (step === 1) return form.description.trim().length >= 20;
     }
     if (profileType === "advertiser") {
-      if (step === 0) return !!form.space_type;
-      if (step === 1) return !!form.title.trim() && !!form.description.trim();
+      if (step === 0) return form.space_types.length > 0;
+      if (step === 1) return form.title.trim().length >= 3 && form.description.trim().length >= 20;
     }
     return true;
   };
@@ -269,7 +271,9 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       email_contact: form.email_contact.trim() || null,
       website_url: form.website_url.trim() || null,
       // Space fields
-      space_type: form.space_type || null,
+      space_type: profileType === "advertiser"
+        ? (form.space_types[0] || null)
+        : (form.space_type || null),
       space_medium: form.space_medium || null,
       location_city: form.location_city.trim() || null,
       location_state: form.location_state.trim() || null,
@@ -277,33 +281,30 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       is_remote: form.is_remote,
       audience_size: form.audience_size.trim() || null,
       availability: form.availability.trim() || null,
-      price_min: form.price_min ? parseFloat(form.price_min) : null,
-      price_max: form.price_max ? parseFloat(form.price_max) : null,
+      price_min: form.price_min ? parseInt(form.price_min, 10) : null,
+      price_max: form.price_max ? parseInt(form.price_max, 10) : null,
       price_period: form.price_period || null,
-      // Agency fields
-      services: form.services.length > 0 ? form.services : null,
+      // Agency/advertiser fields
+      services: profileType === "advertiser"
+        ? (form.space_types.length > 1 ? form.space_types : null)
+        : (form.services.length > 0 ? form.services : null),
       specializations: form.specializations.length > 0 ? form.specializations : null,
       coverage_areas: form.coverage_areas.length > 0 ? form.coverage_areas : null,
       price_text: form.price_text.trim() || null,
-      // Advertiser fields
       industry: form.industry || null,
       images: imageUrls.length > 0 ? imageUrls : null,
       status: "active",
     };
 
-    const { data, error: insertError } = await supabase
-      .from("listings")
-      .insert(payload)
-      .select("id")
-      .single();
+    const { error: insertError } = await supabase.from("listings").insert(payload);
 
-    if (insertError || !data) {
+    if (insertError) {
       setError("Error al publicar. Intenta de nuevo.");
       setLoading(false);
       return;
     }
 
-    router.push(`/listing/${data.id}`);
+    router.push("/dashboard?published=1");
   }
 
   const isLastStep = step === steps.length - 1;
@@ -385,23 +386,23 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {step === 1 && (
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">Describe tu espacio</h2>
-                <Field label="Título" required>
+                <Field label="Título" required hint={form.title.trim().length < 3 && form.title.length > 0 ? `Mínimo 3 caracteres (${form.title.trim().length}/3)` : undefined}>
                   <input
                     type="text"
                     value={form.title}
                     onChange={(e) => set("title", e.target.value)}
                     placeholder="Ej: Pantalla LED en estadio Monterrey"
                     maxLength={100}
-                    className={inputCls}
+                    className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50 focus:ring-destructive/30")}
                   />
                 </Field>
-                <Field label="Descripción" required hint="Dimensiones, horarios, condiciones, lo que sea relevante">
+                <Field label="Descripción" required hint={form.description.trim().length < 20 && form.description.length > 0 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : "Dimensiones, horarios, condiciones, lo que sea relevante"}>
                   <textarea
                     value={form.description}
                     onChange={(e) => set("description", e.target.value)}
                     placeholder="Detalla las características de tu espacio, ubicación exacta, condiciones de uso..."
                     rows={5}
-                    className={textareaCls}
+                    className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50 focus:ring-destructive/30")}
                   />
                 </Field>
               </div>
@@ -452,10 +453,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                 <p className="text-sm text-muted-foreground">Opcional — puedes dejar libre para negociar directamente.</p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Precio mínimo (USD)">
-                    <input type="number" min="0" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} placeholder="100" className={inputCls} />
+                    <input type="number" min="0" step="1" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} placeholder="100" className={inputCls} />
                   </Field>
                   <Field label="Precio máximo (USD)">
-                    <input type="number" min="0" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} placeholder="500" className={inputCls} />
+                    <input type="number" min="0" step="1" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} placeholder="500" className={inputCls} />
                   </Field>
                 </div>
                 <Field label="Período">
@@ -475,8 +476,8 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {step === 0 && (
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">¿Qué servicios ofreces?</h2>
-                <Field label="Nombre de la agencia o agente" required>
-                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Studio Creativo MKT" className={inputCls} />
+                <Field label="Nombre de la agencia o agente" required hint={form.title.trim().length > 0 && form.title.trim().length < 3 ? `Mínimo 3 caracteres (${form.title.trim().length}/3)` : undefined}>
+                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Studio Creativo MKT" className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50")} />
                 </Field>
                 <Field label="Servicios" required>
                   <MultiChip options={AGENCY_SERVICES} selected={form.services} onToggle={(v) => toggleArr("services", v)} />
@@ -487,8 +488,8 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {step === 1 && (
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">Cuéntanos más</h2>
-                <Field label="Descripción" required hint="Experiencia, enfoque, propuesta de valor">
-                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una agencia con 5 años de experiencia especializada en..." rows={5} className={textareaCls} />
+                <Field label="Descripción" required hint={form.description.trim().length > 0 && form.description.trim().length < 20 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : "Experiencia, enfoque, propuesta de valor"}>
+                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una agencia con 5 años de experiencia especializada en..." rows={5} className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50")} />
                 </Field>
                 <Field label="Industrias de especialización" hint="Opcional">
                   <div className="flex flex-wrap gap-2">
@@ -541,16 +542,25 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {step === 0 && (
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">¿Qué tipo de publicidad buscas?</h2>
-                <Field label="Tipo de espacio" required>
+                <Field label="Tipos de espacio" required hint="Puedes seleccionar varios">
                   <div className="grid grid-cols-2 gap-2">
-                    {SPACE_CATEGORIES.map((c) => (
-                      <button key={c.value} type="button" onClick={() => set("space_type", c.value)}
-                        className={cn("rounded-lg border px-3 py-2 text-left text-sm transition-colors",
-                          form.space_type === c.value ? "border-primary bg-primary/5 font-medium text-primary" : "border-border hover:border-primary/30"
-                        )}>
-                        {c.label}
-                      </button>
-                    ))}
+                    {SPACE_CATEGORIES.map((c) => {
+                      const active = form.space_types.includes(c.value);
+                      return (
+                        <button
+                          key={c.value}
+                          type="button"
+                          onClick={() => toggleArr("space_types", c.value)}
+                          className={cn(
+                            "flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition-colors",
+                            active ? "border-primary bg-primary/5 font-medium text-primary" : "border-border hover:border-primary/30"
+                          )}
+                        >
+                          {active && <Check className="h-3.5 w-3.5 shrink-0" />}
+                          {c.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </Field>
               </div>
@@ -559,11 +569,11 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {step === 1 && (
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-foreground">Describe lo que necesitas</h2>
-                <Field label="Título" required>
-                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Busco espacio para campaña deportiva" className={inputCls} />
+                <Field label="Título" required hint={form.title.trim().length > 0 && form.title.trim().length < 3 ? `Mínimo 3 caracteres (${form.title.trim().length}/3)` : undefined}>
+                  <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Busco espacio para campaña deportiva" className={cn(inputCls, form.title.trim().length > 0 && form.title.trim().length < 3 && "border-destructive/50")} />
                 </Field>
-                <Field label="Descripción" required hint="Qué quieres anunciar, objetivo, contexto">
-                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una empresa de... y queremos publicitar..." rows={5} className={textareaCls} />
+                <Field label="Descripción" required hint={form.description.trim().length > 0 && form.description.trim().length < 20 ? `Mínimo 20 caracteres (${form.description.trim().length}/20)` : "Qué quieres anunciar, objetivo, contexto"}>
+                  <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Somos una empresa de... y queremos publicitar..." rows={5} className={cn(textareaCls, form.description.trim().length > 0 && form.description.trim().length < 20 && "border-destructive/50")} />
                 </Field>
                 <Field label="Industria / Sector">
                   <select value={form.industry} onChange={(e) => set("industry", e.target.value)} className={inputCls}>
@@ -589,10 +599,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Presupuesto mínimo (USD)">
-                    <input type="number" min="0" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} placeholder="100" className={inputCls} />
+                    <input type="number" min="0" step="1" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} placeholder="100" className={inputCls} />
                   </Field>
                   <Field label="Presupuesto máximo (USD)">
-                    <input type="number" min="0" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} placeholder="1000" className={inputCls} />
+                    <input type="number" min="0" step="1" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} placeholder="1000" className={inputCls} />
                   </Field>
                 </div>
                 <Field label="Período">

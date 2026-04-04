@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MoreHorizontal, Pause, Play, Pencil, Trash2, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
 type ListingActionsProps = {
@@ -13,6 +14,7 @@ type ListingActionsProps = {
 
 export function ListingActions({ listingId, status }: ListingActionsProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
 
@@ -20,9 +22,17 @@ export function ListingActions({ listingId, status }: ListingActionsProps) {
     setLoading(newStatus);
     setOpen(false);
     const supabase = createClient();
-    await supabase.from("listings").update({ status: newStatus }).eq("id", listingId);
+    const { error } = await supabase
+      .from("listings")
+      .update({ status: newStatus })
+      .eq("id", listingId);
     setLoading(null);
-    router.refresh();
+    if (error) {
+      toast("No se pudo actualizar el estado. Intenta de nuevo.", "error");
+    } else {
+      toast(newStatus === "active" ? "Publicación activada." : "Publicación pausada.", "success");
+      router.refresh();
+    }
   }
 
   async function deleteListing() {
@@ -30,9 +40,14 @@ export function ListingActions({ listingId, status }: ListingActionsProps) {
     setLoading("delete");
     setOpen(false);
     const supabase = createClient();
-    await supabase.from("listings").delete().eq("id", listingId);
+    const { error } = await supabase.from("listings").delete().eq("id", listingId);
     setLoading(null);
-    router.refresh();
+    if (error) {
+      toast("No se pudo eliminar la publicación. Intenta de nuevo.", "error");
+    } else {
+      toast("Publicación eliminada.", "success");
+      router.refresh();
+    }
   }
 
   return (
@@ -42,7 +57,11 @@ export function ListingActions({ listingId, status }: ListingActionsProps) {
         className="flex h-8 w-8 items-center justify-center rounded-lg border bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         disabled={!!loading}
       >
-        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <MoreHorizontal className="h-3.5 w-3.5" />}
+        {loading ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <MoreHorizontal className="h-3.5 w-3.5" />
+        )}
       </button>
 
       {open && (

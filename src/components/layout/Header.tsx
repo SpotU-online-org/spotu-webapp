@@ -84,7 +84,7 @@ export function Header() {
                     onClick={() => setMenuOpen(false)}
                   />
                   {/* Dropdown */}
-                  <div className="absolute right-0 z-20 mt-2 w-44 rounded-xl border bg-card shadow-lg overflow-hidden">
+                  <div className="absolute right-0 z-20 mt-2 w-48 rounded-xl border bg-card shadow-lg overflow-hidden">
                     <Link
                       href="/dashboard"
                       onClick={() => setMenuOpen(false)}
@@ -98,6 +98,13 @@ export function Header() {
                       className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
                     >
                       {t("nav.publish")}
+                    </Link>
+                    <Link
+                      href="/profile/edit"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+                    >
+                      Mi perfil
                     </Link>
                     <div className="border-t" />
                     <button
