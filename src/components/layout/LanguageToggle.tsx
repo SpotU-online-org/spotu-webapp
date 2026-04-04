@@ -118,9 +118,10 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
   },
   // CTA
   "cta.title.line1": {
-    es: "Tu primera publicación es",
-    en: "Your first listing is",
+    es: "Tu primera publicación",
+    en: "Your first listing",
   },
+  "cta.title.line2.prefix": { es: "es ", en: "is " },
   "cta.title.free": { es: "gratis", en: "free" },
   "cta.title.line2": { es: "por 30 días.", en: "for 30 days." },
   "cta.title.line2.suffix": { es: " por 30 días.", en: " for 30 days." },

@@ -153,7 +153,7 @@ export function HomeClient({ stats }: { stats: Stats }) {
 
               {/* CTAs */}
               <div className="animate-fade-in-up delay-300 mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <LinkButton href="/auth/register" size="lg" className="px-8 h-12 text-base">
+                <LinkButton href="/auth/register" size="lg" className="w-full sm:w-auto px-8 h-12 text-base">
                   {t("hero.cta.primary")}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/button:translate-x-0.5" />
                 </LinkButton>
@@ -161,7 +161,7 @@ export function HomeClient({ stats }: { stats: Stats }) {
                   href="/feed"
                   size="lg"
                   variant="outline"
-                  className="px-8 h-12 text-base"
+                  className="w-full sm:w-auto px-8 h-12 text-base"
                 >
                   {t("hero.cta.secondary")}
                 </LinkButton>
@@ -183,16 +183,16 @@ export function HomeClient({ stats }: { stats: Stats }) {
             </div>
 
             {/* Floating decorative elements */}
-            <div className="absolute top-16 left-8 hidden lg:block animate-float opacity-20">
+            <div className="absolute top-16 left-8 hidden sm:block animate-float opacity-20">
               <div className="h-16 w-16 rounded-2xl border-2 border-primary/40 rotate-12" />
             </div>
-            <div className="absolute bottom-20 right-12 hidden lg:block animate-float-slow opacity-15">
+            <div className="absolute bottom-20 right-12 hidden sm:block animate-float-slow opacity-15">
               <div className="h-12 w-20 rounded-xl border-2 border-coral/40 -rotate-6" />
             </div>
-            <div className="absolute top-1/3 right-8 hidden lg:block animate-float opacity-10 [animation-delay:2s]">
+            <div className="absolute top-1/3 right-8 hidden md:block animate-float opacity-10 [animation-delay:2s]">
               <Megaphone className="h-10 w-10 text-primary" />
             </div>
-            <div className="absolute bottom-1/3 left-12 hidden lg:block animate-float-slow opacity-10 [animation-delay:1s]">
+            <div className="absolute bottom-1/3 left-12 hidden md:block animate-float-slow opacity-10 [animation-delay:1s]">
               <MapPin className="h-8 w-8 text-coral" />
             </div>
           </div>
@@ -316,11 +316,10 @@ export function HomeClient({ stats }: { stats: Stats }) {
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl leading-tight">
               {t("cta.title.line1")}
               <br />
-              <span className="relative inline-block">
-                <span className="relative z-10 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-sm">
-                  {t("cta.title.free")}
-                </span>
-                <span className="absolute inset-x-0 bottom-0.5 h-2 rounded bg-white/20" />
+              {t("cta.title.line2.prefix")}
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10">{t("cta.title.free")}</span>
+                <span className="absolute -inset-x-1.5 inset-y-[18%] rounded bg-amber-400/50 -rotate-1" />
               </span>
               {t("cta.title.line2.suffix")}
             </h2>
@@ -332,7 +331,7 @@ export function HomeClient({ stats }: { stats: Stats }) {
                 href="/auth/register"
                 size="lg"
                 variant="secondary"
-                className="bg-white text-primary hover:bg-white/90 px-8 h-12 text-base shadow-lg shadow-black/10"
+                className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 px-8 h-12 text-base shadow-lg shadow-black/10"
               >
                 {t("cta.primary")}
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -341,7 +340,7 @@ export function HomeClient({ stats }: { stats: Stats }) {
                 href="/feed"
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white px-8 h-12 text-base"
+                className="w-full sm:w-auto border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white px-8 h-12 text-base"
               >
                 {t("cta.secondary")}
               </LinkButton>

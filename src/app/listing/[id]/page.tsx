@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ViewTracker } from "./ViewTracker";
 import { ContactButtons } from "./ContactButtons";
 import { ListingImageCarousel } from "@/components/listings/ListingImageCarousel";
+import { FavoriteButton } from "@/components/listings/FavoriteButton";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -83,6 +84,18 @@ export default async function ListingPage({ params }: PageProps) {
     .select("id, display_name, company_name, avatar_url, is_verified, confirmed_interactions_count")
     .eq("id", listing.user_id)
     .single();
+
+  // Check if current user has favorited this listing
+  let isFavorited = false;
+  if (user) {
+    const { data: fav } = await supabase
+      .from("favorites")
+      .select("listing_id")
+      .eq("user_id", user.id)
+      .eq("listing_id", id)
+      .maybeSingle();
+    isFavorited = !!fav;
+  }
 
   const config = TYPE_CONFIG[listing.type as keyof typeof TYPE_CONFIG] ?? TYPE_CONFIG.have_space;
 
@@ -233,6 +246,10 @@ export default async function ListingPage({ params }: PageProps) {
                 </div>
               )}
 
+              <div className="flex items-center justify-between">
+                <FavoriteButton listingId={id} initialFavorited={isFavorited} />
+              </div>
+
               <div className="rounded-2xl border bg-card p-5">
                 <h2 className="mb-3 text-sm font-semibold text-foreground">Contactar</h2>
                 <ContactButtons
@@ -245,14 +262,22 @@ export default async function ListingPage({ params }: PageProps) {
               </div>
 
               {profile && (
-                <div className="rounded-2xl border bg-card p-5">
+                <Link
+                  href={`/profile/${listing.user_id}`}
+                  className="block rounded-2xl border bg-card p-5 transition-colors hover:border-primary/30 hover:bg-card/80 group"
+                >
                   <h2 className="mb-3 text-sm font-semibold text-foreground">Publicado por</h2>
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary uppercase">
-                      {profile.display_name?.[0] ?? "?"}
+                    <div className="shrink-0 h-10 w-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center text-sm font-bold text-primary uppercase">
+                      {profile.avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={profile.avatar_url} alt={profile.display_name ?? ""} className="h-full w-full object-cover" />
+                      ) : (
+                        profile.display_name?.[0] ?? "?"
+                      )}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-medium text-foreground truncate">{profile.display_name}</p>
+                      <p className="font-medium text-foreground truncate group-hover:text-primary transition-colors">{profile.display_name}</p>
                       {profile.company_name && (
                         <p className="text-xs text-muted-foreground truncate">{profile.company_name}</p>
                       )}
@@ -266,7 +291,8 @@ export default async function ListingPage({ params }: PageProps) {
                       <span className="font-semibold text-foreground">{profile.confirmed_interactions_count}</span> interacciones confirmadas
                     </p>
                   )}
-                </div>
+                  <p className="mt-3 text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">Ver perfil completo →</p>
+                </Link>
               )}
 
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground px-1">

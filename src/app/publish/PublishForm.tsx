@@ -49,6 +49,9 @@ type FormData = {
   price_text: string;
   // Advertiser
   industry: string;
+  // Audience
+  audience_demographics: string;
+  target_audience: string;
 };
 
 const LISTING_TYPE: Record<ProfileType, "want_to_advertise" | "have_space" | "offer_service"> = {
@@ -179,6 +182,8 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     coverage_areas: [],
     price_text: "",
     industry: "",
+    audience_demographics: "",
+    target_audience: "",
   });
 
   const set = (key: keyof FormData, value: FormData[keyof FormData]) =>
@@ -306,6 +311,8 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       coverage_areas: form.coverage_areas.length > 0 ? form.coverage_areas : null,
       price_text: form.price_text.trim() || null,
       industry: form.industry || null,
+      audience_demographics: form.audience_demographics.trim() || null,
+      target_audience: form.target_audience.trim() || null,
       images: imageUrls.length > 0 ? imageUrls : null,
       status: "active",
     };
@@ -456,6 +463,9 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                 <Field label="Audiencia estimada" hint="Ej: ~15,000 personas por evento">
                   <input type="text" value={form.audience_size} onChange={(e) => set("audience_size", e.target.value)} placeholder="~5,000 personas diarias" maxLength={150} className={inputCls} />
                 </Field>
+                <Field label="Perfil del público" hint="Opcional — rango de edad, intereses, características principales">
+                  <input type="text" value={form.audience_demographics} onChange={(e) => set("audience_demographics", e.target.value)} placeholder="Ej: Jóvenes 18-35 años, afición al deporte" maxLength={200} className={inputCls} />
+                </Field>
                 <Field label="Disponibilidad" hint="Ej: Disponible de lunes a viernes">
                   <input type="text" value={form.availability} onChange={(e) => set("availability", e.target.value)} placeholder="Disponible inmediatamente" maxLength={150} className={inputCls} />
                 </Field>
@@ -595,6 +605,9 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                     <option value="">Seleccionar...</option>
                     {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
                   </select>
+                </Field>
+                <Field label="Público objetivo" hint="Opcional — rango de edad, intereses, perfil del cliente que quieres alcanzar">
+                  <input type="text" value={form.target_audience} onChange={(e) => set("target_audience", e.target.value)} placeholder="Ej: Hombres 25-45 años, nivel socioeconómico medio-alto" maxLength={200} className={inputCls} />
                 </Field>
               </div>
             )}
