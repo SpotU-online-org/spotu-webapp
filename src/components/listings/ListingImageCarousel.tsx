@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Props = { images: string[]; title: string };
+type Props = { images: string[]; title: string; alwaysShowControls?: boolean };
 
-export function ListingImageCarousel({ images, title }: Props) {
+export function ListingImageCarousel({ images, title, alwaysShowControls }: Props) {
   const [idx, setIdx] = useState(0);
   const total = images.length;
 
@@ -37,7 +37,10 @@ export function ListingImageCarousel({ images, title }: Props) {
           <button
             onClick={prev}
             aria-label="Imagen anterior"
-            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-background/80 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background z-10"
+            className={cn(
+              "absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 shadow-sm transition-opacity hover:bg-background z-10",
+              alwaysShowControls ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            )}
           >
             <ChevronLeft className="h-4 w-4 text-foreground" />
           </button>
@@ -46,7 +49,10 @@ export function ListingImageCarousel({ images, title }: Props) {
           <button
             onClick={next}
             aria-label="Imagen siguiente"
-            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-background/80 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background z-10"
+            className={cn(
+              "absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 shadow-sm transition-opacity hover:bg-background z-10",
+              alwaysShowControls ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            )}
           >
             <ChevronRight className="h-4 w-4 text-foreground" />
           </button>

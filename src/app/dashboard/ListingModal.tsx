@@ -153,6 +153,12 @@ export function ListingModal({
     ? `mailto:${listing.email_contact}?subject=${encodeURIComponent(`Contacto desde SpotU — ${listing.title}`)}`
     : null;
 
+  const websiteUrl = listing?.website_url
+    ? (String(listing.website_url).startsWith("http://") || String(listing.website_url).startsWith("https://")
+        ? String(listing.website_url)
+        : `https://${listing.website_url}`)
+    : null;
+
   const location = listing?.is_remote
     ? "Remoto / Digital"
     : [listing?.location_city, listing?.location_state, listing?.location_country]
@@ -351,15 +357,17 @@ export function ListingModal({
                 {emailUrl && (
                   <a
                     href={emailUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={cn(linkButtonVariants({ variant: "outline", size: "default" }), "w-full gap-2.5")}
                   >
                     <Mail className="h-4 w-4" />
                     Enviar correo
                   </a>
                 )}
-                {listing.website_url && (
+                {websiteUrl && (
                   <a
-                    href={listing.website_url as string}
+                    href={websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"

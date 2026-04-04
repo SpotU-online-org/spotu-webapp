@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Globe, MessageCircle, Mail, ExternalLink, Eye, ArrowLeft, Briefcase, Megaphone } from "lucide-react";
+import { MapPin, Globe, MessageCircle, Mail, ExternalLink, Eye, ArrowLeft, Briefcase, Megaphone, Phone } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { linkButtonVariants } from "@/components/ui/link-button";
 import { ViewTracker } from "./ViewTracker";
+import { ListingImageCarousel } from "@/components/listings/ListingImageCarousel";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -107,6 +108,18 @@ export default async function ListingPage({ params }: PageProps) {
     ? `mailto:${listing.email_contact}?subject=${encodeURIComponent(`Contacto desde SpotU — ${listing.title}`)}`
     : null;
 
+  const callNumber = listing.whatsapp || listing.phone
+    ? String(listing.whatsapp || listing.phone).replace(/\s/g, "")
+    : null;
+
+  const websiteUrl = listing.website_url
+    ? (listing.website_url.startsWith("http://") || listing.website_url.startsWith("https://")
+        ? listing.website_url
+        : `https://${listing.website_url}`)
+    : null;
+
+  const images: string[] = Array.isArray(listing.images) ? listing.images : [];
+
   return (
     <>
       <Header />
@@ -121,10 +134,9 @@ export default async function ListingPage({ params }: PageProps) {
           <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
             {/* ── Main ── */}
             <div className="space-y-6">
-              {listing.images && listing.images.length > 0 && (
-                <div className="overflow-hidden rounded-2xl border bg-muted aspect-[16/9]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={listing.images[0]} alt={listing.title} className="h-full w-full object-cover" />
+              {images.length > 0 && (
+                <div className="relative overflow-hidden rounded-2xl border bg-muted aspect-[16/9] group">
+                  <ListingImageCarousel images={images} title={listing.title} alwaysShowControls />
                 </div>
               )}
 
@@ -229,20 +241,26 @@ export default async function ListingPage({ params }: PageProps) {
                     <MessageCircle className="h-4 w-4" /> Contactar por WhatsApp
                   </a>
                 )}
+                {callNumber && (
+                  <a href={`tel:${callNumber}`}
+                    className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}>
+                    <Phone className="h-4 w-4" /> Llamar
+                  </a>
+                )}
                 {emailUrl && (
-                  <a href={emailUrl}
+                  <a href={emailUrl} target="_blank" rel="noopener noreferrer"
                     className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}>
                     <Mail className="h-4 w-4" /> Enviar correo
                   </a>
                 )}
-                {!whatsappUrl && !emailUrl && (
-                  <p className="text-sm text-muted-foreground">Sin datos de contacto.</p>
-                )}
-                {listing.website_url && (
-                  <a href={listing.website_url} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    <ExternalLink className="h-3.5 w-3.5" /> {listing.website_url}
+                {websiteUrl && (
+                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
+                    className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}>
+                    <ExternalLink className="h-4 w-4" /> Visitar sitio web
                   </a>
+                )}
+                {!whatsappUrl && !callNumber && !emailUrl && (
+                  <p className="text-sm text-muted-foreground">Sin datos de contacto.</p>
                 )}
               </div>
 
