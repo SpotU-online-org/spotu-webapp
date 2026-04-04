@@ -2,16 +2,19 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { SPACE_CATEGORIES, MARKETS } from "@/constants";
+import { SPACE_CATEGORIES } from "@/constants";
+
+type Country = { value: string; label: string };
 
 type FeedFiltersProps = {
   currentCountry: string;
   currentCity: string;
   currentSpaceType: string;
   currentType: string;
+  availableCountries: Country[];
 };
 
-function FiltersInner({ currentCountry, currentCity, currentSpaceType, currentType }: FeedFiltersProps) {
+function FiltersInner({ currentCountry, currentCity, currentSpaceType, currentType, availableCountries }: FeedFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -28,23 +31,24 @@ function FiltersInner({ currentCountry, currentCity, currentSpaceType, currentTy
   const selectCls =
     "rounded-lg border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 transition-colors min-w-0";
 
-  // Only show space_type filter for spaces and advertiser searches (not agencies)
   const showSpaceType = currentType !== "offer_service";
 
   return (
     <div className="mt-4 flex flex-wrap gap-3">
-      {/* Country */}
-      <select
-        value={currentCountry}
-        onChange={(e) => update("country", e.target.value)}
-        className={selectCls}
-        aria-label="Filtrar por país"
-      >
-        <option value="">Todos los países</option>
-        {MARKETS.map((m) => (
-          <option key={m.value} value={m.value}>{m.label}</option>
-        ))}
-      </select>
+      {/* Country — only show if there are active listings with countries */}
+      {availableCountries.length > 0 && (
+        <select
+          value={currentCountry}
+          onChange={(e) => update("country", e.target.value)}
+          className={selectCls}
+          aria-label="Filtrar por país"
+        >
+          <option value="">Todos los países</option>
+          {availableCountries.map((c) => (
+            <option key={c.value} value={c.value}>{c.label}</option>
+          ))}
+        </select>
+      )}
 
       {/* City */}
       <input

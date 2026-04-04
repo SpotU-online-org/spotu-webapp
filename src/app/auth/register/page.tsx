@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Megaphone, MapPin, Briefcase, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Megaphone, MapPin, Briefcase, ArrowRight, Eye, EyeOff, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -42,7 +42,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { t } = useI18n();
   const [step, setStep] = useState<1 | 2>(1);
-  const [role, setRole] = useState<Role | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,10 +50,16 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedRole = ROLES.find((r) => r.value === role);
+  function toggleRole(role: Role) {
+    setRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
+  }
+
+  const primaryRole = roles[0] ?? null;
 
   async function handleEmailSignUp() {
-    if (!role || !name.trim() || !email.trim() || !password) return;
+    if (!primaryRole || !name.trim() || !email.trim() || !password) return;
     setLoading(true);
     setError(null);
 
@@ -63,7 +69,7 @@ export default function RegisterPage() {
       email: email.trim(),
       password,
       options: {
-        data: { display_name: name.trim(), role },
+        data: { display_name: name.trim(), role: primaryRole, types: roles },
         emailRedirectTo: `${location.origin}/auth/callback?next=/dashboard`,
       },
     });
@@ -74,11 +80,11 @@ export default function RegisterPage() {
       return;
     }
 
-    // If session is returned immediately (email confirmation disabled)
+    // Immediate session (email confirmation disabled)
     if (data.session && data.user) {
       await supabase
         .from("profiles")
-        .update({ type: role, display_name: name.trim() })
+        .update({ type: primaryRole, types: roles, display_name: name.trim() })
         .eq("id", data.user.id);
       router.push("/dashboard");
       return;
@@ -89,12 +95,13 @@ export default function RegisterPage() {
   }
 
   async function handleGoogleSignUp() {
-    if (!role) return;
+    if (!primaryRole) return;
     setLoading(true);
     setError(null);
 
-    // Store role in cookie for 5 minutes (survives the OAuth redirect)
-    document.cookie = `spotu_pending_role=${role}; path=/; max-age=300; SameSite=Lax`;
+    // Store roles in cookies (survive the OAuth redirect, 5 min TTL)
+    document.cookie = `spotu_pending_role=${primaryRole}; path=/; max-age=300; SameSite=Lax`;
+    document.cookie = `spotu_pending_types=${roles.join(",")}; path=/; max-age=300; SameSite=Lax`;
 
     const supabase = createClient();
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
@@ -125,9 +132,7 @@ export default function RegisterPage() {
           <div className={cn(
             "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors",
             step >= 1 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-          )}>
-            1
-          </div>
+          )}>1</div>
           <span className={cn("text-sm font-medium", step >= 1 ? "text-foreground" : "text-muted-foreground")}>
             {t("auth.register.step1")}
           </span>
@@ -137,9 +142,7 @@ export default function RegisterPage() {
           <div className={cn(
             "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors",
             step >= 2 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-          )}>
-            2
-          </div>
+          )}>2</div>
           <span className={cn("text-sm font-medium", step >= 2 ? "text-foreground" : "text-muted-foreground")}>
             {t("auth.register.step2")}
           </span>
@@ -147,56 +150,60 @@ export default function RegisterPage() {
       </div>
 
       <div className="rounded-2xl border bg-card p-8 shadow-sm">
-        {/* ── STEP 1: Role selection ── */}
+        {/* ── STEP 1: Role selection (multi) ── */}
         {step === 1 && (
           <>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {t("auth.register.how")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {t("auth.register.pick_role")}
+              Selecciona todos los perfiles que te describen. Puedes combinar más de uno.
             </p>
 
             <div className="mt-6 flex flex-col gap-3">
-              {ROLES.map((r) => (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => setRole(r.value)}
-                  className={cn(
-                    "group flex items-start gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200",
-                    role === r.value
-                      ? `${r.border} bg-card ring-2 ${r.ring} shadow-sm`
-                      : "border-border hover:border-border/80 hover:bg-muted/40"
-                  )}
-                >
-                  <div className={cn("mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", r.bg)}>
-                    <r.icon className={cn("h-5 w-5", r.color)} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-foreground">{t(`role.${r.value}.title`)}</p>
-                    <p className="mt-0.5 text-sm text-muted-foreground">{t(`role.${r.value}.desc`)}</p>
-                  </div>
-                  <div className={cn(
-                    "mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                    role === r.value ? `border-transparent ${r.bg}` : "border-border"
-                  )}>
-                    {role === r.value && (
-                      <div className={cn("h-2.5 w-2.5 rounded-full", r.color.replace("text-", "bg-"))} />
+              {ROLES.map((r) => {
+                const active = roles.includes(r.value);
+                return (
+                  <button
+                    key={r.value}
+                    type="button"
+                    onClick={() => toggleRole(r.value)}
+                    className={cn(
+                      "group flex items-start gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200",
+                      active
+                        ? `${r.border} bg-card ring-2 ${r.ring} shadow-sm`
+                        : "border-border hover:border-border/80 hover:bg-muted/40"
                     )}
-                  </div>
-                </button>
-              ))}
+                  >
+                    <div className={cn("mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", r.bg)}>
+                      <r.icon className={cn("h-5 w-5", r.color)} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-foreground">{t(`role.${r.value}.title`)}</p>
+                      <p className="mt-0.5 text-sm text-muted-foreground">{t(`role.${r.value}.desc`)}</p>
+                    </div>
+                    {/* Checkbox indicator */}
+                    <div className={cn(
+                      "mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-all",
+                      active
+                        ? `border-transparent bg-primary`
+                        : "border-border"
+                    )}>
+                      {active && <Check className="h-3 w-3 text-white" />}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             <button
               type="button"
-              disabled={!role}
+              disabled={roles.length === 0}
               onClick={() => setStep(2)}
               className={cn(
                 linkButtonVariants({ size: "lg" }),
                 "mt-6 w-full h-11",
-                !role && "opacity-50 cursor-not-allowed"
+                roles.length === 0 && "opacity-50 cursor-not-allowed"
               )}
             >
               {t("auth.register.continue")}
@@ -221,12 +228,20 @@ export default function RegisterPage() {
               className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("auth.register.change_role")}
-              {selectedRole && (
-                <span className={cn("ml-1 font-medium", selectedRole.color)}>
-                  ({t(`role.${selectedRole.value}.title`)})
-                </span>
-              )}
             </button>
+
+            {/* Show selected roles as pills */}
+            <div className="mb-4 flex flex-wrap gap-2">
+              {roles.map((r) => {
+                const cfg = ROLES.find((x) => x.value === r)!;
+                return (
+                  <span key={r} className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium", cfg.bg, cfg.color)}>
+                    <cfg.icon className="h-3 w-3" />
+                    {t(`role.${r}.title`)}
+                  </span>
+                );
+              })}
+            </div>
 
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {t("auth.register.create_title")}
@@ -265,7 +280,6 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-4">
-              {/* Name */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
                   {t("auth.register.name")}
@@ -281,7 +295,6 @@ export default function RegisterPage() {
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
                   {t("auth.email")}
@@ -297,7 +310,6 @@ export default function RegisterPage() {
                 />
               </div>
 
-              {/* Password */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1.5">
                   {t("auth.password")}

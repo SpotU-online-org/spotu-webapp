@@ -6,7 +6,7 @@ import { Loader2, X, ImagePlus, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
-import { SPACE_CATEGORIES, AGENCY_SERVICES, PRICE_PERIODS, MARKETS } from "@/constants";
+import { SPACE_CATEGORIES, AGENCY_SERVICES, PRICE_PERIODS, MARKETS, ALL_COUNTRIES } from "@/constants";
 import { useToast } from "@/components/ui/toast";
 
 const INDUSTRIES = [
@@ -304,7 +304,7 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
           )}
           <Field label="País">
             <select value={locationCountry} onChange={(e) => setLocationCountry(e.target.value)} className={inputCls}>
-              {MARKETS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+              {ALL_COUNTRIES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
             </select>
           </Field>
           {type === "have_space" && (

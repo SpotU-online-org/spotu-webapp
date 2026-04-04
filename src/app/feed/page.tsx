@@ -5,6 +5,7 @@ import { ListingCard } from "@/components/listings/ListingCard";
 import { linkButtonVariants } from "@/components/ui/link-button";
 import { FeedFilters } from "./FeedFilters";
 import Link from "next/link";
+import { ALL_COUNTRIES } from "@/constants";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -42,6 +43,16 @@ export default async function FeedPage({ searchParams }: PageProps) {
   const spaceTypeFilter = params.space_type ?? "";
 
   const supabase = await createClient();
+
+  // Fetch distinct countries from active listings for the filter dropdown
+  const { data: countryRows } = await supabase
+    .from("listings")
+    .select("location_country")
+    .eq("status", "active")
+    .not("location_country", "is", null);
+
+  const activeCountryCodes = [...new Set((countryRows ?? []).map((r) => r.location_country).filter(Boolean))] as string[];
+  const availableCountries = ALL_COUNTRIES.filter((c) => activeCountryCodes.includes(c.value));
 
   let query = supabase
     .from("listings")
@@ -112,6 +123,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
               currentCity={cityFilter}
               currentSpaceType={spaceTypeFilter}
               currentType={typeFilter}
+              availableCountries={availableCountries}
             />
           </div>
         </div>

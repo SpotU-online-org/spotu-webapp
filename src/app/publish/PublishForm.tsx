@@ -11,6 +11,7 @@ import {
   AGENCY_SERVICES,
   PRICE_PERIODS,
   MARKETS,
+  ALL_COUNTRIES,
 } from "@/constants";
 
 type ProfileType = "advertiser" | "space_owner" | "agency";
@@ -457,7 +458,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                 )}
                 <Field label="País">
                   <select value={form.location_country} onChange={(e) => set("location_country", e.target.value)} className={inputCls}>
-                    {MARKETS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                    {ALL_COUNTRIES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
                   </select>
                 </Field>
                 <Field label="Audiencia estimada" hint="Ej: ~15,000 personas por evento">
@@ -621,7 +622,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                   </Field>
                   <Field label="País">
                     <select value={form.location_country} onChange={(e) => set("location_country", e.target.value)} className={inputCls}>
-                      {MARKETS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                      {ALL_COUNTRIES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
                     </select>
                   </Field>
                 </div>
