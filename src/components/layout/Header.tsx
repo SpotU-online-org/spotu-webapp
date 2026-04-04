@@ -44,9 +44,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo — fixed size, never shrinks */}
+        {/* Logo — 80% of nav height (64px * 0.8 = ~51px), preserves aspect ratio */}
         <Link href="/" className="flex items-center shrink-0" onClick={() => setMobileOpen(false)}>
-          <SpotULogo variant="horizontal" width={120} height={36} className="w-[120px] h-[36px] object-contain" />
+          <SpotULogo variant="horizontal" width={178} height={51} className="h-[51px] w-auto object-contain" />
         </Link>
 
         {/* Desktop nav */}

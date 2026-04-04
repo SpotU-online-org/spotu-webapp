@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/toast";
 import { linkButtonVariants } from "@/components/ui/link-button";
 import { ListingActions } from "./ListingActions";
 import { ListingModal } from "./ListingModal";
+import { BillingActions } from "./BillingActions";
 
 export type DashboardListing = {
   id: string;
@@ -19,6 +20,11 @@ export type DashboardListing = {
   contacts_count: number | null;
   created_at: string;
   is_featured: boolean | null;
+  billing_status: string | null;
+  trial_ends_at: string | null;
+  paid_until: string | null;
+  is_boosted: boolean | null;
+  boost_ends_at: string | null;
 };
 
 const STATUS_CONFIG = {
@@ -48,19 +54,31 @@ function billingCutoff(createdAt: string) {
   return d;
 }
 
-function PublishedNotice() {
+function NoticeHandler() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("published") === "1") {
-      toast("¡Publicación creada exitosamente!", "success");
-      const next = new URLSearchParams(searchParams.toString());
-      next.delete("published");
-      const qs = next.toString();
-      router.replace(`/dashboard${qs ? `?${qs}` : ""}`, { scroll: false });
-    }
+    const billing = searchParams.get("billing");
+    const published = searchParams.get("published");
+
+    const messages: Record<string, [string, "success" | "error" | "info"]> = {
+      "1":              ["¡Publicación creada exitosamente!", "success"],
+      success:          ["✓ Pago completado. Tu publicación está activa.", "success"],
+      boost_success:    ["✓ Boost activado. Tu publicación aparecerá primero por 7 días.", "success"],
+      cancelled:        ["Pago cancelado.", "info"],
+    };
+
+    const key = published === "1" ? "1" : billing ?? "";
+    const [msg, type] = messages[key] ?? [];
+    if (msg) toast(msg, type);
+
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete("published");
+    next.delete("billing");
+    const qs = next.toString();
+    router.replace(`/dashboard${qs ? `?${qs}` : ""}`, { scroll: false });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -73,7 +91,7 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
   return (
     <>
       <Suspense>
-        <PublishedNotice />
+        <NoticeHandler />
       </Suspense>
 
       <ListingModal listingId={modalId} onClose={() => setModalId(null)} />
@@ -101,10 +119,11 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
                   <tr className="border-b bg-muted/60 backdrop-blur-sm text-xs text-muted-foreground">
                     <th className="px-5 py-3 text-left font-medium">Publicación</th>
                     <th className="px-5 py-3 text-left font-medium">Estado</th>
-                    <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Creada</th>
-                    <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Vence</th>
-                    <th className="px-5 py-3 text-right font-medium">Vistas</th>
-                    <th className="px-5 py-3 text-right font-medium hidden md:table-cell">Contactos</th>
+                    <th className="px-4 py-3 text-left font-medium hidden lg:table-cell">Creada</th>
+                    <th className="px-4 py-3 text-left font-medium hidden lg:table-cell">Vence</th>
+                    <th className="px-5 py-3 text-left font-medium hidden md:table-cell">Facturación</th>
+                    <th className="px-5 py-3 text-right font-medium hidden sm:table-cell">Vistas</th>
+                    <th className="px-5 py-3 text-right font-medium hidden lg:table-cell">Contactos</th>
                     <th className="px-5 py-3 text-right font-medium">Acciones</th>
                   </tr>
                 </thead>
@@ -143,18 +162,28 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
                             {status.label}
                           </span>
                         </td>
-                        <td className="px-4 py-4 text-xs text-muted-foreground hidden sm:table-cell whitespace-nowrap">
+                        <td className="px-4 py-4 text-xs text-muted-foreground hidden lg:table-cell whitespace-nowrap">
                           {formatDate(l.created_at)}
                         </td>
-                        <td className="px-4 py-4 text-xs hidden sm:table-cell whitespace-nowrap">
+                        <td className="px-4 py-4 text-xs hidden lg:table-cell whitespace-nowrap">
                           <span className={isExpiringSoon ? "text-amber-600 font-medium" : "text-muted-foreground"}>
                             {formatDate(cutoff.toISOString())}
                           </span>
                         </td>
-                        <td className="px-5 py-4 text-right font-medium text-foreground">
+                        <td className="px-5 py-4 hidden md:table-cell">
+                          <BillingActions
+                            listingId={l.id}
+                            billingStatus={l.billing_status ?? "trial"}
+                            trialEndsAt={l.trial_ends_at}
+                            paidUntil={l.paid_until}
+                            isBoosted={l.is_boosted ?? false}
+                            boostEndsAt={l.boost_ends_at}
+                          />
+                        </td>
+                        <td className="px-5 py-4 text-right font-medium text-foreground hidden sm:table-cell">
                           {l.views_count ?? 0}
                         </td>
-                        <td className="px-5 py-4 text-right font-medium text-foreground hidden md:table-cell">
+                        <td className="px-5 py-4 text-right font-medium text-foreground hidden lg:table-cell">
                           {l.contacts_count ?? 0}
                         </td>
                         <td className="px-5 py-4 text-right">

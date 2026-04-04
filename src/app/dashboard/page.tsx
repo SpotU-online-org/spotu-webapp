@@ -29,7 +29,7 @@ export default async function DashboardPage() {
       .single(),
     supabase
       .from("listings")
-      .select("id, type, title, status, views_count, contacts_count, created_at, is_featured")
+      .select("id, type, title, status, views_count, contacts_count, created_at, is_featured, billing_status, trial_ends_at, paid_until, is_boosted, boost_ends_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
     supabase
