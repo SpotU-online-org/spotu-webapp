@@ -119,6 +119,20 @@ export function HomeClient({ stats }: { stats: Stats }) {
           <AnimatedGrid />
 
           <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+            {/* Floating decorative shapes */}
+            <div className="absolute top-16 left-6 hidden sm:block animate-float opacity-[0.18]">
+              <div className="h-14 w-14 rounded-2xl border-2 border-primary/50 rotate-12" />
+            </div>
+            <div className="absolute bottom-24 right-10 hidden sm:block animate-float-slow opacity-[0.15]">
+              <div className="h-10 w-16 rounded-xl border-2 border-coral/50 -rotate-6" />
+            </div>
+            <div className="absolute top-1/3 right-6 hidden md:block animate-float opacity-[0.13] [animation-delay:2s]">
+              <Megaphone className="h-9 w-9 text-primary" />
+            </div>
+            <div className="absolute bottom-1/3 left-10 hidden md:block animate-float-slow opacity-[0.12] [animation-delay:1s]">
+              <MapPin className="h-7 w-7 text-coral" />
+            </div>
+
             <div className="mx-auto max-w-3xl text-center">
               {/* Single early-access badge */}
               <div className="animate-fade-in-up mb-8 inline-flex items-center gap-2 rounded-full border border-amber-300/50 bg-amber-50 px-4 py-1.5 text-sm text-amber-700">

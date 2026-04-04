@@ -36,7 +36,7 @@ type FormData = {
   space_types: string[]; // multi-select for advertisers
   location_city: string;
   location_state: string;
-  location_country: string;
+  location_countries: string[]; // up to 10 countries
   is_remote: boolean;
   audience_size: string;
   availability: string;
@@ -148,6 +148,79 @@ function Field({
 const inputCls =
   "w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors";
 
+function CountryMultiSelect({
+  selected,
+  onToggle,
+  max,
+}: {
+  selected: string[];
+  onToggle: (v: string) => void;
+  max: number;
+}) {
+  const [search, setSearch] = useState("");
+  const filtered = search.trim()
+    ? ALL_COUNTRIES.filter((c) => c.label.toLowerCase().includes(search.toLowerCase()))
+    : ALL_COUNTRIES;
+
+  return (
+    <div>
+      <label className="block text-sm font-medium text-foreground mb-1.5">
+        País / Países
+        <span className="ml-1.5 text-xs font-normal text-muted-foreground">(máx. {max})</span>
+      </label>
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {selected.map((code) => {
+            const label = ALL_COUNTRIES.find((c) => c.value === code)?.label ?? code;
+            return (
+              <button
+                key={code}
+                type="button"
+                onClick={() => onToggle(code)}
+                className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+              >
+                {label} ×
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Buscar país..."
+        className={inputCls + " mb-2"}
+      />
+      <div className="max-h-44 overflow-y-auto rounded-lg border bg-background">
+        {filtered.length === 0 && (
+          <p className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</p>
+        )}
+        {filtered.map((c) => {
+          const active = selected.includes(c.value);
+          const disabled = !active && selected.length >= max;
+          return (
+            <button
+              key={c.value}
+              type="button"
+              onClick={() => onToggle(c.value)}
+              disabled={disabled}
+              className={cn(
+                "flex w-full items-center justify-between px-3 py-2 text-sm transition-colors",
+                active ? "bg-primary/5 text-primary font-medium" : "hover:bg-muted text-foreground",
+                disabled && "opacity-40 cursor-not-allowed"
+              )}
+            >
+              {c.label}
+              {active && <Check className="h-3.5 w-3.5 shrink-0" />}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const textareaCls = inputCls + " resize-none";
 
 export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail }: PublishFormProps) {
@@ -171,7 +244,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     space_types: [],
     location_city: "",
     location_state: "",
-    location_country: "CO",
+    location_countries: [],
     is_remote: false,
     audience_size: "",
     availability: "",
@@ -243,13 +316,16 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     return urls;
   }
 
-  const toggleArr = (key: "services" | "specializations" | "coverage_areas" | "space_types", value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [key]: (prev[key] as string[]).includes(value)
-        ? (prev[key] as string[]).filter((v) => v !== value)
-        : [...(prev[key] as string[]), value],
-    }));
+  const MAX_COUNTRIES = 10;
+
+  const toggleArr = (key: "services" | "specializations" | "coverage_areas" | "space_types" | "location_countries", value: string) => {
+    setForm((prev) => {
+      const arr = prev[key] as string[];
+      if (arr.includes(value)) return { ...prev, [key]: arr.filter((v) => v !== value) };
+      // Enforce max 10 for countries
+      if (key === "location_countries" && arr.length >= MAX_COUNTRIES) return prev;
+      return { ...prev, [key]: [...arr, value] };
+    });
   };
 
   const canAdvance = (): boolean => {
@@ -297,7 +373,8 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       space_medium: form.space_medium || null,
       location_city: form.location_city.trim() || null,
       location_state: form.location_state.trim() || null,
-      location_country: form.location_country || "CO",
+      location_country: form.location_countries[0] ?? null,
+      location_countries: form.location_countries.length > 0 ? form.location_countries : null,
       is_remote: form.is_remote,
       audience_size: form.audience_size.trim() || null,
       availability: form.availability.trim() || null,
@@ -456,11 +533,11 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                     </Field>
                   </div>
                 )}
-                <Field label="País">
-                  <select value={form.location_country} onChange={(e) => set("location_country", e.target.value)} className={inputCls}>
-                    {ALL_COUNTRIES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-                  </select>
-                </Field>
+                <CountryMultiSelect
+                  selected={form.location_countries}
+                  onToggle={(v) => toggleArr("location_countries", v)}
+                  max={MAX_COUNTRIES}
+                />
                 <Field label="Audiencia estimada" hint="Ej: ~15,000 personas por evento">
                   <input type="text" value={form.audience_size} onChange={(e) => set("audience_size", e.target.value)} placeholder="~5,000 personas diarias" maxLength={150} className={inputCls} />
                 </Field>
@@ -620,11 +697,11 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                   <Field label="Ciudad donde quieres anunciar">
                     <input type="text" value={form.location_city} onChange={(e) => set("location_city", e.target.value)} placeholder="Medellín" maxLength={100} className={inputCls} />
                   </Field>
-                  <Field label="País">
-                    <select value={form.location_country} onChange={(e) => set("location_country", e.target.value)} className={inputCls}>
-                      {ALL_COUNTRIES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-                    </select>
-                  </Field>
+                  <CountryMultiSelect
+                    selected={form.location_countries}
+                    onToggle={(v) => toggleArr("location_countries", v)}
+                    max={MAX_COUNTRIES}
+                  />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Presupuesto mínimo (USD)">

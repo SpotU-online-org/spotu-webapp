@@ -17,6 +17,79 @@ const INDUSTRIES = [
 const inputCls =
   "w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors";
 
+const MAX_COUNTRIES = 10;
+
+function CountryMultiSelect({
+  selected,
+  onToggle,
+}: {
+  selected: string[];
+  onToggle: (v: string) => void;
+}) {
+  const [search, setSearch] = useState("");
+  const filtered = search.trim()
+    ? ALL_COUNTRIES.filter((c) => c.label.toLowerCase().includes(search.toLowerCase()))
+    : ALL_COUNTRIES;
+
+  return (
+    <div>
+      <label className="block text-sm font-medium text-foreground mb-1.5">
+        País / Países
+        <span className="ml-1.5 text-xs font-normal text-muted-foreground">(máx. {MAX_COUNTRIES})</span>
+      </label>
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {selected.map((code) => {
+            const label = ALL_COUNTRIES.find((c) => c.value === code)?.label ?? code;
+            return (
+              <button
+                key={code}
+                type="button"
+                onClick={() => onToggle(code)}
+                className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+              >
+                {label} ×
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Buscar país..."
+        className={inputCls + " mb-2"}
+      />
+      <div className="max-h-44 overflow-y-auto rounded-lg border bg-background">
+        {filtered.length === 0 && (
+          <p className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</p>
+        )}
+        {filtered.map((c) => {
+          const active = selected.includes(c.value);
+          const disabled = !active && selected.length >= MAX_COUNTRIES;
+          return (
+            <button
+              key={c.value}
+              type="button"
+              onClick={() => onToggle(c.value)}
+              disabled={disabled}
+              className={cn(
+                "flex w-full items-center justify-between px-3 py-2 text-sm transition-colors",
+                active ? "bg-primary/5 text-primary font-medium" : "hover:bg-muted text-foreground",
+                disabled && "opacity-40 cursor-not-allowed"
+              )}
+            >
+              {c.label}
+              {active && <Check className="h-3.5 w-3.5 shrink-0" />}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <div>
@@ -50,7 +123,11 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
   const [spaceMedium, setSpaceMedium] = useState<string>(listing.space_medium ?? "");
   const [locationCity, setLocationCity] = useState<string>(listing.location_city ?? "");
   const [locationState, setLocationState] = useState<string>(listing.location_state ?? "");
-  const [locationCountry, setLocationCountry] = useState<string>(listing.location_country ?? "CO");
+  const [locationCountries, setLocationCountries] = useState<string[]>(
+    listing.location_countries?.length > 0
+      ? listing.location_countries
+      : listing.location_country ? [listing.location_country] : []
+  );
   const [isRemote, setIsRemote] = useState<boolean>(listing.is_remote ?? false);
   const [audienceSize, setAudienceSize] = useState<string>(listing.audience_size ?? "");
   const [availability, setAvailability] = useState<string>(listing.availability ?? "");
@@ -146,7 +223,8 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
       images: allImages.length > 0 ? allImages : null,
       location_city: locationCity.trim() || null,
       location_state: locationState.trim() || null,
-      location_country: locationCountry || "CO",
+      location_country: locationCountries[0] ?? null,
+      location_countries: locationCountries.length > 0 ? locationCountries : null,
       is_remote: isRemote,
       audience_size: audienceSize.trim() || null,
       availability: availability.trim() || null,
@@ -303,9 +381,14 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
             </div>
           )}
           <Field label="País">
-            <select value={locationCountry} onChange={(e) => setLocationCountry(e.target.value)} className={inputCls}>
-              {ALL_COUNTRIES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-            </select>
+            <CountryMultiSelect
+              selected={locationCountries}
+              onToggle={(v) => setLocationCountries((prev) => {
+                if (prev.includes(v)) return prev.filter((c) => c !== v);
+                if (prev.length >= MAX_COUNTRIES) return prev;
+                return [...prev, v];
+              })}
+            />
           </Field>
           {type === "have_space" && (
             <>

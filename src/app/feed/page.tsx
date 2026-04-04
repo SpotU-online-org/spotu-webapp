@@ -47,11 +47,20 @@ export default async function FeedPage({ searchParams }: PageProps) {
   // Fetch distinct countries from active listings for the filter dropdown
   const { data: countryRows } = await supabase
     .from("listings")
-    .select("location_country")
-    .eq("status", "active")
-    .not("location_country", "is", null);
+    .select("location_country, location_countries")
+    .eq("status", "active");
 
-  const activeCountryCodes = [...new Set((countryRows ?? []).map((r) => r.location_country).filter(Boolean))] as string[];
+  const activeCountryCodes = [...new Set(
+    (countryRows ?? []).flatMap((r) => {
+      const codes: string[] = [];
+      if (Array.isArray(r.location_countries) && r.location_countries.length > 0) {
+        codes.push(...r.location_countries);
+      } else if (r.location_country) {
+        codes.push(r.location_country);
+      }
+      return codes;
+    }).filter(Boolean)
+  )] as string[];
   const availableCountries = ALL_COUNTRIES.filter((c) => activeCountryCodes.includes(c.value));
 
   let query = supabase
@@ -68,7 +77,11 @@ export default async function FeedPage({ searchParams }: PageProps) {
     .limit(48);
 
   if (typeFilter !== "all") query = query.eq("type", typeFilter);
-  if (countryFilter) query = query.eq("location_country", countryFilter);
+  if (countryFilter) {
+    // Match listings where location_countries array contains the filter value,
+    // OR (for legacy listings) where location_country equals it
+    query = query.or(`location_countries.cs.{${countryFilter}},location_country.eq.${countryFilter}`);
+  }
   if (cityFilter) query = query.ilike("location_city", `%${cityFilter}%`);
   if (spaceTypeFilter) query = query.eq("space_type", spaceTypeFilter);
 
