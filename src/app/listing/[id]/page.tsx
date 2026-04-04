@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Globe, MessageCircle, Mail, ExternalLink, Eye, ArrowLeft, Briefcase, Megaphone, Phone } from "lucide-react";
+import { MapPin, Globe, Eye, ArrowLeft, Briefcase, Megaphone } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { linkButtonVariants } from "@/components/ui/link-button";
 import { ViewTracker } from "./ViewTracker";
+import { ContactButtons } from "./ContactButtons";
 import { ListingImageCarousel } from "@/components/listings/ListingImageCarousel";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -233,35 +233,15 @@ export default async function ListingPage({ params }: PageProps) {
                 </div>
               )}
 
-              <div className="rounded-2xl border bg-card p-5 space-y-3">
-                <h2 className="text-sm font-semibold text-foreground">Contactar</h2>
-                {whatsappUrl && (
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                    className={cn(linkButtonVariants({ size: "lg" }), "w-full gap-2.5 bg-[#25D366] hover:bg-[#20bd5a] border-transparent")}>
-                    <MessageCircle className="h-4 w-4" /> Contactar por WhatsApp
-                  </a>
-                )}
-                {callNumber && (
-                  <a href={`tel:${callNumber}`}
-                    className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}>
-                    <Phone className="h-4 w-4" /> Llamar
-                  </a>
-                )}
-                {emailUrl && (
-                  <a href={emailUrl} target="_blank" rel="noopener noreferrer"
-                    className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}>
-                    <Mail className="h-4 w-4" /> Enviar correo
-                  </a>
-                )}
-                {websiteUrl && (
-                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer"
-                    className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}>
-                    <ExternalLink className="h-4 w-4" /> Visitar sitio web
-                  </a>
-                )}
-                {!whatsappUrl && !callNumber && !emailUrl && (
-                  <p className="text-sm text-muted-foreground">Sin datos de contacto.</p>
-                )}
+              <div className="rounded-2xl border bg-card p-5">
+                <h2 className="mb-3 text-sm font-semibold text-foreground">Contactar</h2>
+                <ContactButtons
+                  listingId={id}
+                  whatsappUrl={whatsappUrl}
+                  callNumber={callNumber}
+                  emailUrl={emailUrl}
+                  websiteUrl={websiteUrl}
+                />
               </div>
 
               {profile && (

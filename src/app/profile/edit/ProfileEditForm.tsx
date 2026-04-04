@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle, Lock } from "lucide-react";
+import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle, Lock, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -53,6 +53,7 @@ type Profile = {
   country: string | null;
   type: string | null;
   types: string[] | null;
+  avatar_url: string | null;
 };
 
 const inputCls =
@@ -71,6 +72,7 @@ function Field({ label, children, hint }: { label: string; children: React.React
 export function ProfileEditForm({ userId, profile }: { userId: string; profile: Profile }) {
   const router = useRouter();
   const { toast } = useToast();
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const [displayName, setDisplayName] = useState(profile.display_name ?? "");
   const [companyName, setCompanyName] = useState(profile.company_name ?? "");
@@ -85,6 +87,10 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
     (profile.types as Role[] | null) ?? ([profile.type as Role].filter(Boolean))
   );
   const [loading, setLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(profile.avatar_url ?? null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const [listingCounts, setListingCounts] = useState<Record<Role, number>>({
     advertiser: 0,
     space_owner: 0,
@@ -109,6 +115,35 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
     );
   }, [userId]);
 
+  function handleAvatarFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast("La imagen no puede superar 2 MB.", "error");
+      return;
+    }
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  }
+
+  async function uploadAvatar(): Promise<string | null> {
+    if (!avatarFile) return avatarUrl;
+    setAvatarUploading(true);
+    const supabase = createClient();
+    const ext = avatarFile.name.split(".").pop() ?? "jpg";
+    const path = `${userId}/avatar-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("avatars").upload(path, avatarFile, { upsert: true });
+    setAvatarUploading(false);
+    if (error) {
+      toast("No se pudo subir la imagen. Intenta de nuevo.", "error");
+      return avatarUrl;
+    }
+    const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
+    setAvatarUrl(publicUrl);
+    setAvatarFile(null);
+    return publicUrl;
+  }
+
   function toggleRole(role: Role) {
     setTypes((prev) => {
       if (prev.includes(role)) {
@@ -131,6 +166,7 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
     }
 
     setLoading(true);
+    const uploadedAvatarUrl = await uploadAvatar();
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles")
@@ -146,6 +182,7 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
         country: country || "CO",
         type: types[0],
         types,
+        avatar_url: uploadedAvatarUrl,
       })
       .eq("id", userId);
 
@@ -159,8 +196,51 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
     }
   }
 
+  const displaySrc = avatarPreview ?? avatarUrl;
+  const initials = (profile.display_name ?? displayName ?? "?")[0]?.toUpperCase() ?? "?";
+
   return (
     <div className="space-y-6">
+      {/* Avatar */}
+      <div className="rounded-2xl border bg-card p-6">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+          Foto de perfil
+        </h2>
+        <div className="flex items-center gap-5">
+          <button
+            type="button"
+            onClick={() => avatarInputRef.current?.click()}
+            className="relative group shrink-0 h-20 w-20 rounded-full overflow-hidden border-2 border-border focus:outline-none focus:ring-2 focus:ring-ring/50"
+          >
+            {displaySrc ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={displaySrc} alt="Avatar" className="h-full w-full object-cover" />
+            ) : (
+              <div className="h-full w-full flex items-center justify-center bg-primary/10 text-2xl font-bold text-primary">
+                {initials}
+              </div>
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
+              <Camera className="h-5 w-5 text-white" />
+            </div>
+          </button>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p>Haz clic en la imagen para cambiarla.</p>
+            <p className="text-xs">JPG, PNG o WebP · Máximo 2 MB</p>
+            {avatarFile && (
+              <p className="text-xs text-primary font-medium">Nueva imagen seleccionada — se guardará al hacer clic en "Guardar cambios".</p>
+            )}
+          </div>
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleAvatarFileChange}
+          />
+        </div>
+      </div>
+
       {/* Personal info */}
       <div className="rounded-2xl border bg-card p-6 space-y-5">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -338,14 +418,14 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
       <button
         type="button"
         onClick={handleSave}
-        disabled={loading || !displayName.trim()}
+        disabled={loading || avatarUploading || !displayName.trim()}
         className={cn(
           linkButtonVariants({ size: "lg" }),
           "w-full h-11",
-          (loading || !displayName.trim()) && "opacity-50 cursor-not-allowed"
+          (loading || avatarUploading || !displayName.trim()) && "opacity-50 cursor-not-allowed"
         )}
       >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Guardar cambios"}
+        {(loading || avatarUploading) ? <Loader2 className="h-4 w-4 animate-spin" /> : "Guardar cambios"}
       </button>
     </div>
   );
