@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       const paidUntil = new Date((subscription as unknown as { current_period_end: number }).current_period_end * 1000);
       await supabase
         .from("listings")
-        .update({ billing_status: "active", paid_until: paidUntil.toISOString() })
+        .update({ billing_status: "active", status: "active", paid_until: paidUntil.toISOString() })
         .eq("id", listingId);
       break;
     }

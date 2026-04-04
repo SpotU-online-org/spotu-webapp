@@ -43,10 +43,10 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo — 80% of nav height (64px * 0.8 = ~51px), preserves aspect ratio */}
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo — fills nav height, preserves aspect ratio */}
         <Link href="/" className="flex items-center shrink-0" onClick={() => setMobileOpen(false)}>
-          <SpotULogo variant="horizontal" width={178} height={51} className="h-[51px] w-auto object-contain" />
+          <SpotULogo variant="horizontal" width={224} height={64} className="h-[64px] w-auto object-contain" />
         </Link>
 
         {/* Desktop nav */}
@@ -146,7 +146,7 @@ export function Header() {
       {mobileOpen && (
         <>
           <div
-            className="fixed inset-0 top-16 z-40 bg-background/60 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 top-[72px] z-40 bg-background/60 backdrop-blur-sm md:hidden"
             onClick={() => setMobileOpen(false)}
           />
           <div className="absolute inset-x-0 top-full z-50 border-b bg-background shadow-lg md:hidden">

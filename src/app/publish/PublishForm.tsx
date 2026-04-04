@@ -53,6 +53,8 @@ type FormData = {
   // Audience
   audience_demographics: string;
   target_audience: string;
+  // Publishing
+  publish_status: "active" | "paused";
 };
 
 const LISTING_TYPE: Record<ProfileType, "want_to_advertise" | "have_space" | "offer_service"> = {
@@ -258,6 +260,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     industry: "",
     audience_demographics: "",
     target_audience: "",
+    publish_status: "active",
   });
 
   const set = (key: keyof FormData, value: FormData[keyof FormData]) =>
@@ -358,9 +361,10 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
 
     const supabase = createClient();
     const imageUrls = await uploadImages();
+    const listingType = LISTING_TYPE[profileType];
     const payload = {
       user_id: userId,
-      type: LISTING_TYPE[profileType],
+      type: listingType,
       title: form.title.trim(),
       description: form.description.trim(),
       whatsapp: form.whatsapp.trim() || null,
@@ -392,17 +396,49 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       audience_demographics: form.audience_demographics.trim() || null,
       target_audience: form.target_audience.trim() || null,
       images: imageUrls.length > 0 ? imageUrls : null,
-      status: "active",
+      // If user chose paused, save as paused (no billing); if active, billing flow handles it
+      status: form.publish_status === "paused" ? "paused" : "active",
+      billing_status: form.publish_status === "paused" ? "trial" : "trial",
     };
 
-    const { error: insertError } = await supabase.from("listings").insert(payload);
+    const { data: inserted, error: insertError } = await supabase
+      .from("listings")
+      .insert(payload)
+      .select("id")
+      .single();
 
-    if (insertError) {
+    if (insertError || !inserted) {
       setError("Error al publicar. Intenta de nuevo.");
       setLoading(false);
       return;
     }
 
+    // If user chose to publish as paused — just go to dashboard
+    if (form.publish_status === "paused") {
+      router.push("/dashboard?published=1");
+      return;
+    }
+
+    // If user chose to publish as active — initiate billing checkout
+    const res = await fetch("/api/stripe/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ listingId: inserted.id, mode: "subscription" }),
+    });
+    const data = await res.json();
+
+    if (data.pioneer) {
+      // Pioneer users skip payment — listing already set active by checkout API
+      router.push("/dashboard?published=1");
+      return;
+    }
+
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    // Fallback — checkout failed but listing was created
     router.push("/dashboard?published=1");
   }
 
@@ -804,8 +840,43 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
           </div>
         )}
 
+        {/* Publish status toggle — only on last step */}
+        {isLastStep && (
+          <div className="mt-6 rounded-xl border bg-muted/40 p-4">
+            <p className="mb-3 text-sm font-medium text-foreground">¿Cuándo publicar?</p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => set("publish_status", "active")}
+                className={cn(
+                  "flex-1 rounded-lg border-2 p-3 text-sm font-medium transition-colors text-left",
+                  form.publish_status === "active"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-border hover:border-primary/30 text-foreground"
+                )}
+              >
+                <span className="block font-semibold">Publicar activa</span>
+                <span className="block text-xs mt-0.5 opacity-75">Visible de inmediato. El periodo de facturación inicia ahora.</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => set("publish_status", "paused")}
+                className={cn(
+                  "flex-1 rounded-lg border-2 p-3 text-sm font-medium transition-colors text-left",
+                  form.publish_status === "paused"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-border hover:border-primary/30 text-foreground"
+                )}
+              >
+                <span className="block font-semibold">Guardar en pausa</span>
+                <span className="block text-xs mt-0.5 opacity-75">Puedes activarla luego desde tu dashboard.</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Navigation */}
-        <div className="mt-8 flex gap-3">
+        <div className="mt-6 flex gap-3">
           {step > 0 && (
             <button
               type="button"
@@ -829,7 +900,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : isLastStep ? (
-              "Publicar ahora"
+              form.publish_status === "paused" ? "Guardar publicación" : "Publicar ahora"
             ) : (
               <>Siguiente <ArrowRight className="h-4 w-4" /></>
             )}

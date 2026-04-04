@@ -173,6 +173,7 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
                         <td className="px-5 py-4 hidden md:table-cell">
                           <BillingActions
                             listingId={l.id}
+                            listingType={l.type}
                             billingStatus={l.billing_status ?? "trial"}
                             trialEndsAt={l.trial_ends_at}
                             paidUntil={l.paid_until}
