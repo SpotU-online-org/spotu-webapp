@@ -148,6 +148,10 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
     es: "Todos los derechos reservados.",
     en: "All rights reserved.",
   },
+  "footer.whatsapp": {
+    es: "WhatsApp (próximamente)",
+    en: "WhatsApp (coming soon)",
+  },
   // Steps prefix
   "steps.prefix": { es: "Paso", en: "Step" },
 };

@@ -14,6 +14,11 @@ Marketplace de 3 lados (intermediario puro) que conecta:
 
 Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
+**Dominio:** `spotu.online` (comprado en Hostinger, 3 años)
+**Correo público:** `admin@spotu.online` (mailbox Hostinger)
+**Gmail base:** `spotu.online@gmail.com` (cuenta raíz de Supabase/Vercel/GitHub)
+**WhatsApp SpotU:** placeholder `+1 000 000 0000` — reemplazar cuando se tenga número real
+
 ## Stack
 - **Frontend:** Next.js 16 (App Router), React 19, TypeScript strict
 - **Styling:** TailwindCSS 4 + shadcn/ui (base-nova, usa `@base-ui/react`)

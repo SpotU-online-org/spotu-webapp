@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     "anunciantes",
     "advertising",
   ],
+  metadataBase: new URL("https://spotu.online"),
 };
 
 export default function RootLayout({

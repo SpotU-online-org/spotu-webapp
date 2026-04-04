@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { Mail, MessageCircle } from "lucide-react";
 import { SpotULogo } from "./SpotULogo";
 import { useI18n } from "./LanguageToggle";
+
+const WHATSAPP_PLACEHOLDER = "https://wa.me/10000000000"; // TODO: reemplazar con número real de SpotU
 
 export function Footer() {
   const { t } = useI18n();
@@ -16,6 +19,25 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">
               {t("footer.tagline")}
             </p>
+            {/* Contacto SpotU */}
+            <div className="space-y-2 pt-1">
+              <a
+                href="mailto:admin@spotu.online"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Mail className="h-3.5 w-3.5 shrink-0" />
+                admin@spotu.online
+              </a>
+              <a
+                href={WHATSAPP_PLACEHOLDER}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+                {t("footer.whatsapp")}
+              </a>
+            </div>
           </div>
 
           <div>
