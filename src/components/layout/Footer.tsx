@@ -13,31 +13,12 @@ export function Footer() {
   return (
     <footer className="border-t border-border/60 bg-card/60">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-4">
+        <div className="grid gap-8 grid-cols-2 lg:grid-cols-5">
+          <div className="col-span-2 lg:col-span-1 space-y-4">
             <SpotULogo variant="horizontal" width={130} height={40} />
             <p className="text-sm text-muted-foreground">
               {t("footer.tagline")}
             </p>
-            {/* Contacto SpotU */}
-            <div className="space-y-2 pt-1">
-              <a
-                href="mailto:admin@spotu.online"
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Mail className="h-3.5 w-3.5 shrink-0" />
-                admin@spotu.online
-              </a>
-              <a
-                href={WHATSAPP_PLACEHOLDER}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <MessageCircle className="h-3.5 w-3.5 shrink-0" />
-                {t("footer.whatsapp")}
-              </a>
-            </div>
           </div>
 
           <div>
@@ -68,6 +49,34 @@ export function Footer() {
                 >
                   {t("footer.find_agencies")}
                 </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
+              {t("footer.contact")}
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="mailto:admin@spotu.online"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-3.5 w-3.5 shrink-0" />
+                  admin@spotu.online
+                </a>
+              </li>
+              <li>
+                <a
+                  href={WHATSAPP_PLACEHOLDER}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+                  {t("footer.whatsapp")}
+                </a>
               </li>
             </ul>
           </div>

@@ -153,8 +153,53 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
     es: "WhatsApp (próximamente)",
     en: "WhatsApp (coming soon)",
   },
+  "footer.contact": { es: "Contáctanos", en: "Contact us" },
   // Steps prefix
   "steps.prefix": { es: "Paso", en: "Step" },
+  // Auth - shared
+  "auth.google": { es: "Continuar con Google", en: "Continue with Google" },
+  "auth.or_email": { es: "o con correo", en: "or with email" },
+  "auth.email": { es: "Correo electrónico", en: "Email" },
+  "auth.email_ph": { es: "tu@correo.com", en: "you@email.com" },
+  "auth.password": { es: "Contraseña", en: "Password" },
+  "auth.forgot_password": { es: "¿Olvidaste tu contraseña?", en: "Forgot your password?" },
+  // Auth - Login
+  "auth.login.title": { es: "Bienvenido de vuelta", en: "Welcome back" },
+  "auth.login.subtitle": { es: "Inicia sesión en tu cuenta de SpotU.", en: "Sign in to your SpotU account." },
+  "auth.login.password_ph": { es: "Tu contraseña", en: "Your password" },
+  "auth.login.submit": { es: "Iniciar sesión", en: "Sign in" },
+  "auth.login.no_account": { es: "¿No tienes cuenta?", en: "Don't have an account?" },
+  "auth.login.register_link": { es: "Regístrate gratis", en: "Register free" },
+  // Auth - Register
+  "auth.register.step1": { es: "Tu perfil", en: "Your profile" },
+  "auth.register.step2": { es: "Tu cuenta", en: "Your account" },
+  "auth.register.how": { es: "¿Cómo usarás SpotU?", en: "How will you use SpotU?" },
+  "auth.register.pick_role": { es: "Selecciona el perfil que mejor te describe.", en: "Select the profile that best describes you." },
+  "auth.register.continue": { es: "Continuar", en: "Continue" },
+  "auth.register.already": { es: "¿Ya tienes cuenta?", en: "Already have an account?" },
+  "auth.register.login_link": { es: "Inicia sesión", en: "Sign in" },
+  "auth.register.change_role": { es: "← Cambiar perfil", en: "← Change profile" },
+  "auth.register.create_title": { es: "Crea tu cuenta", en: "Create your account" },
+  "auth.register.create_subtitle": { es: "Primera publicación gratis por 30 días. Sin tarjeta.", en: "First listing free for 30 days. No card needed." },
+  "auth.register.name": { es: "Nombre completo", en: "Full name" },
+  "auth.register.name_ph": { es: "Tu nombre o el de tu empresa", en: "Your name or company name" },
+  "auth.register.password_ph": { es: "Mínimo 6 caracteres", en: "Minimum 6 characters" },
+  "auth.register.submit": { es: "Crear cuenta gratis", en: "Create free account" },
+  "auth.register.terms_pre": { es: "Al registrarte aceptas nuestros", en: "By registering you accept our" },
+  "auth.register.terms_link": { es: "Términos de uso", en: "Terms of use" },
+  "auth.register.and": { es: "y", en: "and" },
+  "auth.register.privacy_link": { es: "Política de privacidad", en: "Privacy policy" },
+  // Auth - Setup
+  "auth.setup.title": { es: "¿Cómo usarás SpotU?", en: "How will you use SpotU?" },
+  "auth.setup.subtitle": { es: "Puedes seleccionar más de uno si aplica.", en: "You can select more than one if applicable." },
+  "auth.setup.continue": { es: "Continuar al dashboard", en: "Continue to dashboard" },
+  // Role labels (shared across register + setup)
+  "role.advertiser.title": { es: "Anunciante", en: "Advertiser" },
+  "role.advertiser.desc": { es: "Busco espacios publicitarios o agencias para mi marca.", en: "Looking for ad spaces or agencies for my brand." },
+  "role.space_owner.title": { es: "Espacio publicitario", en: "Ad space" },
+  "role.space_owner.desc": { es: "Tengo un espacio publicitario para ofrecer.", en: "I have an advertising space to offer." },
+  "role.agency.title": { es: "Agencia de marketing", en: "Marketing agency" },
+  "role.agency.desc": { es: "Ofrezco servicios profesionales de marketing.", en: "I offer professional marketing services." },
 };
 
 export function I18nProvider({ children }: { children: ReactNode }) {

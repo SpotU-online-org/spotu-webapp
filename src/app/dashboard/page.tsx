@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Eye, MessageCircle, Pencil } from "lucide-react";
+import { Plus, Eye, MessageCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { linkButtonVariants } from "@/components/ui/link-button";
 import { cn } from "@/lib/utils";
+import { ListingActions } from "./ListingActions";
 
 const STATUS_CONFIG = {
   active:  { label: "Activa",   color: "bg-emerald-100 text-emerald-700" },
@@ -141,12 +142,7 @@ export default async function DashboardPage() {
                               {l.contacts_count ?? 0}
                             </td>
                             <td className="px-5 py-4 text-right">
-                              <Link
-                                href={`/listing/${l.id}/edit`}
-                                className={cn(linkButtonVariants({ variant: "ghost", size: "sm" }), "gap-1.5 text-xs")}
-                              >
-                                <Pencil className="h-3 w-3" /> Editar
-                              </Link>
+                              <ListingActions listingId={l.id} status={l.status} />
                             </td>
                           </tr>
                         );

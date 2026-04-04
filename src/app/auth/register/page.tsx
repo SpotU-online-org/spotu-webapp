@@ -7,7 +7,7 @@ import { Megaphone, MapPin, Briefcase, ArrowRight, Eye, EyeOff, Loader2 } from "
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
-import { Button } from "@/components/ui/button";
+import { useI18n } from "@/components/layout/LanguageToggle";
 
 type Role = "advertiser" | "space_owner" | "agency";
 
@@ -15,8 +15,6 @@ const ROLES = [
   {
     value: "advertiser" as Role,
     icon: Megaphone,
-    title: "Anunciante",
-    description: "Quiero encontrar espacios publicitarios o agencias para mi marca.",
     color: "text-primary",
     bg: "bg-primary/10",
     border: "border-primary/30",
@@ -25,8 +23,6 @@ const ROLES = [
   {
     value: "space_owner" as Role,
     icon: MapPin,
-    title: "Espacio publicitario",
-    description: "Tengo una valla, pantalla LED, sitio web u otro espacio para ofrecer.",
     color: "text-[oklch(0.702_0.183_56.823)]",
     bg: "bg-[oklch(0.702_0.183_56.823)]/10",
     border: "border-[oklch(0.702_0.183_56.823)]/30",
@@ -35,8 +31,6 @@ const ROLES = [
   {
     value: "agency" as Role,
     icon: Briefcase,
-    title: "Agencia de marketing",
-    description: "Ofrezco servicios profesionales de marketing y gestión de campañas.",
     color: "text-[oklch(0.696_0.17_162.48)]",
     bg: "bg-[oklch(0.696_0.17_162.48)]/10",
     border: "border-[oklch(0.696_0.17_162.48)]/30",
@@ -46,6 +40,7 @@ const ROLES = [
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<Role | null>(null);
   const [name, setName] = useState("");
@@ -134,7 +129,7 @@ export default function RegisterPage() {
             1
           </div>
           <span className={cn("text-sm font-medium", step >= 1 ? "text-foreground" : "text-muted-foreground")}>
-            Tu perfil
+            {t("auth.register.step1")}
           </span>
         </div>
         <div className="h-px flex-1 bg-border" />
@@ -146,7 +141,7 @@ export default function RegisterPage() {
             2
           </div>
           <span className={cn("text-sm font-medium", step >= 2 ? "text-foreground" : "text-muted-foreground")}>
-            Tu cuenta
+            {t("auth.register.step2")}
           </span>
         </div>
       </div>
@@ -156,10 +151,10 @@ export default function RegisterPage() {
         {step === 1 && (
           <>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              ¿Cómo usarás SpotU?
+              {t("auth.register.how")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Selecciona el perfil que mejor te describe.
+              {t("auth.register.pick_role")}
             </p>
 
             <div className="mt-6 flex flex-col gap-3">
@@ -179,8 +174,8 @@ export default function RegisterPage() {
                     <r.icon className={cn("h-5 w-5", r.color)} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-foreground">{r.title}</p>
-                    <p className="mt-0.5 text-sm text-muted-foreground">{r.description}</p>
+                    <p className="font-semibold text-foreground">{t(`role.${r.value}.title`)}</p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">{t(`role.${r.value}.desc`)}</p>
                   </div>
                   <div className={cn(
                     "mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
@@ -204,14 +199,14 @@ export default function RegisterPage() {
                 !role && "opacity-50 cursor-not-allowed"
               )}
             >
-              Continuar
+              {t("auth.register.continue")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </button>
 
             <p className="mt-5 text-center text-sm text-muted-foreground">
-              ¿Ya tienes cuenta?{" "}
+              {t("auth.register.already")}{" "}
               <Link href="/auth/login" className="font-medium text-primary hover:underline">
-                Inicia sesión
+                {t("auth.register.login_link")}
               </Link>
             </p>
           </>
@@ -225,19 +220,19 @@ export default function RegisterPage() {
               onClick={() => { setStep(1); setError(null); }}
               className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              ← Cambiar perfil
+              {t("auth.register.change_role")}
               {selectedRole && (
                 <span className={cn("ml-1 font-medium", selectedRole.color)}>
-                  ({selectedRole.title})
+                  ({t(`role.${selectedRole.value}.title`)})
                 </span>
               )}
             </button>
 
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Crea tu cuenta
+              {t("auth.register.create_title")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Primera publicación gratis por 30 días. Sin tarjeta.
+              {t("auth.register.create_subtitle")}
             </p>
 
             {/* Google OAuth */}
@@ -260,12 +255,12 @@ export default function RegisterPage() {
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
               )}
-              Continuar con Google
+              {t("auth.google")}
             </button>
 
             <div className="my-5 flex items-center gap-3">
               <div className="h-px flex-1 bg-border" />
-              <span className="text-xs text-muted-foreground">o con correo</span>
+              <span className="text-xs text-muted-foreground">{t("auth.or_email")}</span>
               <div className="h-px flex-1 bg-border" />
             </div>
 
@@ -273,7 +268,7 @@ export default function RegisterPage() {
               {/* Name */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
-                  Nombre completo
+                  {t("auth.register.name")}
                 </label>
                 <input
                   id="name"
@@ -281,7 +276,7 @@ export default function RegisterPage() {
                   autoComplete="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Tu nombre o el de tu empresa"
+                  placeholder={t("auth.register.name_ph")}
                   className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
                 />
               </div>
@@ -289,7 +284,7 @@ export default function RegisterPage() {
               {/* Email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
-                  Correo electrónico
+                  {t("auth.email")}
                 </label>
                 <input
                   id="email"
@@ -297,7 +292,7 @@ export default function RegisterPage() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@correo.com"
+                  placeholder={t("auth.email_ph")}
                   className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
                 />
               </div>
@@ -305,7 +300,7 @@ export default function RegisterPage() {
               {/* Password */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1.5">
-                  Contraseña
+                  {t("auth.password")}
                 </label>
                 <div className="relative">
                   <input
@@ -314,7 +309,7 @@ export default function RegisterPage() {
                     autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mínimo 6 caracteres"
+                    placeholder={t("auth.register.password_ph")}
                     className="w-full rounded-lg border bg-background px-3 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
                   />
                   <button
@@ -345,25 +340,25 @@ export default function RegisterPage() {
                 (loading || !name.trim() || !email.trim() || password.length < 6) && "opacity-50 cursor-not-allowed"
               )}
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Crear cuenta gratis"}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("auth.register.submit")}
             </button>
 
             <p className="mt-4 text-center text-xs text-muted-foreground">
-              Al registrarte aceptas nuestros{" "}
+              {t("auth.register.terms_pre")}{" "}
               <Link href="/terms" className="underline hover:text-foreground transition-colors">
-                Términos de uso
+                {t("auth.register.terms_link")}
               </Link>{" "}
-              y{" "}
+              {t("auth.register.and")}{" "}
               <Link href="/privacy" className="underline hover:text-foreground transition-colors">
-                Política de privacidad
+                {t("auth.register.privacy_link")}
               </Link>
               .
             </p>
 
             <p className="mt-4 text-center text-sm text-muted-foreground">
-              ¿Ya tienes cuenta?{" "}
+              {t("auth.register.already")}{" "}
               <Link href="/auth/login" className="font-medium text-primary hover:underline">
-                Inicia sesión
+                {t("auth.register.login_link")}
               </Link>
             </p>
           </>

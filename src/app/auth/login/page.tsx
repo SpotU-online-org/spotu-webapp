@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
+import { useI18n } from "@/components/layout/LanguageToggle";
 
 const ERROR_MAP: Record<string, string> = {
   auth_failed: "El enlace de confirmación expiró o es inválido. Intenta iniciar sesión.",
@@ -16,6 +17,7 @@ const ERROR_MAP: Record<string, string> = {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useI18n();
   const urlError = searchParams.get("error");
 
   const [email, setEmail] = useState("");
@@ -76,10 +78,10 @@ function LoginForm() {
     <div className="w-full max-w-md">
       <div className="rounded-2xl border bg-card p-8 shadow-sm">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Bienvenido de vuelta
+          {t("auth.login.title")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Inicia sesión en tu cuenta de SpotU.
+          {t("auth.login.subtitle")}
         </p>
 
         {/* Google OAuth */}
@@ -102,12 +104,12 @@ function LoginForm() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
           )}
-          Continuar con Google
+          {t("auth.google")}
         </button>
 
         <div className="my-5 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-muted-foreground">o con correo</span>
+          <span className="text-xs text-muted-foreground">{t("auth.or_email")}</span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
@@ -115,7 +117,7 @@ function LoginForm() {
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
-              Correo electrónico
+              {t("auth.email")}
             </label>
             <input
               id="email"
@@ -124,7 +126,7 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleEmailLogin()}
-              placeholder="tu@correo.com"
+              placeholder={t("auth.email_ph")}
               className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
             />
           </div>
@@ -133,13 +135,13 @@ function LoginForm() {
           <div>
             <div className="mb-1.5 flex items-center justify-between">
               <label htmlFor="password" className="text-sm font-medium text-foreground">
-                Contraseña
+                {t("auth.password")}
               </label>
               <Link
                 href="/auth/forgot-password"
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
-                ¿Olvidaste tu contraseña?
+                {t("auth.forgot_password")}
               </Link>
             </div>
             <div className="relative">
@@ -150,7 +152,7 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleEmailLogin()}
-                placeholder="Tu contraseña"
+                placeholder={t("auth.login.password_ph")}
                 className="w-full rounded-lg border bg-background px-3 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
               />
               <button
@@ -181,13 +183,13 @@ function LoginForm() {
             (loading || !email.trim() || !password) && "opacity-50 cursor-not-allowed"
           )}
         >
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Iniciar sesión"}
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("auth.login.submit")}
         </button>
 
         <p className="mt-5 text-center text-sm text-muted-foreground">
-          ¿No tienes cuenta?{" "}
+          {t("auth.login.no_account")}{" "}
           <Link href="/auth/register" className="font-medium text-primary hover:underline">
-            Regístrate gratis
+            {t("auth.login.register_link")}
           </Link>
         </p>
       </div>
