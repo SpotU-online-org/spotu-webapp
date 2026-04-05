@@ -1,147 +1,147 @@
 # SpotU — Tu spot publicitario ideal
 
-Marketplace de publicidad que conecta **anunciantes**, **espacios publicitarios** (físicos y digitales) y **agencias de marketing** en una sola plataforma.
+Marketplace de 3 lados que conecta **anunciantes**, **espacios publicitarios** (físicos y digitales) y **agencias de marketing**.
+
+**Dominio:** `spotu.online` · **Correo:** `admin@spotu.online` · **Deploy:** Vercel (producción activa)
 
 ## Stack
 
 | Capa | Tecnología |
 |------|-----------|
-| Frontend | Next.js 16, React 19, TypeScript |
-| Styling | TailwindCSS 4 + shadcn/ui |
-| Backend | Supabase (PostgreSQL, Auth, Storage, Edge Functions) |
-| IA (V1) | Claude API (búsqueda semántica) |
-| Pagos | Stripe |
+| Frontend | Next.js 16, React 19, TypeScript strict |
+| Styling | TailwindCSS 4 + shadcn/ui (base-nova / @base-ui/react) |
+| Backend | Supabase (PostgreSQL, Auth, Storage) |
+| Pagos | Stripe (live) |
 | Email | Resend |
 | Deploy | Vercel |
 | Package manager | pnpm |
+| IA (Fase 2) | Claude API (búsqueda semántica) |
 
-## Inicio rápido
+## Comandos
 
 ```bash
-# Instalar dependencias
-pnpm install
-
-# Servidor de desarrollo
-pnpm dev
-
-# Build de producción
-pnpm build
-
-# Lint
-pnpm lint
+pnpm install      # instalar dependencias
+pnpm dev          # servidor de desarrollo
+pnpm build        # build de producción
+pnpm lint         # lint
 ```
+
+## Variables de entorno (`.env.local`)
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_LISTING_MONTHLY=
+STRIPE_PRICE_LISTING_BOOST=
+STRIPE_PRICE_AGENCY_MONTHLY=
+STRIPE_PRICE_AGENCY_BOOST=
+```
+
+## Migraciones Supabase
+
+Ejecutar en orden en **Supabase Dashboard → SQL Editor**:
+
+| Archivo | Estado |
+|---------|--------|
+| `001_initial_schema.sql` | ✅ ejecutada |
+| `002_closed_interactions.sql` | ✅ ejecutada |
+| `003_multi_role_setup.sql` | ✅ ejecutada |
+| `004_increment_contacts_avatars.sql` | ✅ ejecutada |
+| `005_favorites_audience_fields.sql` | ✅ ejecutada |
+| `006_location_countries.sql` | ✅ ejecutada |
+| `007_billing.sql` | ✅ ejecutada |
+| `008_user_number.sql` | ✅ ejecutada |
 
 ## Estructura del proyecto
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── (auth)/             # Autenticación
-│   ├── (dashboard)/        # Panel de usuario
-│   └── (public)/           # Páginas públicas
+├── app/
+│   ├── page.tsx                  # Landing (HomeClient.tsx)
+│   ├── layout.tsx                # Root layout (Providers)
+│   ├── auth/                     # login, register, callback, confirm
+│   ├── dashboard/                # Panel usuario (listings, billing, stats)
+│   ├── feed/                     # Feed público con filtros
+│   ├── listing/[id]/             # Detalle + ViewTracker + contacto
+│   ├── publish/                  # Form multi-paso por tipo de usuario
+│   ├── profile/[id]/             # Perfil público
+│   ├── profile/edit/             # Editar perfil propio
+│   ├── privacy/                  # Política de privacidad
+│   └── terms/                    # Términos de uso
+│   └── api/stripe/
+│       ├── checkout/             # POST → crea Checkout Session
+│       └── webhook/              # Stripe events handler
 ├── components/
-│   ├── ui/                 # shadcn/ui components
-│   ├── forms/              # Formularios
-│   ├── layout/             # Header, Footer, Logo
-│   └── listings/           # Cards, detalles, filtros
+│   ├── ui/                       # button, link-button, toast
+│   ├── layout/                   # Header, Footer, SpotULogo, AnimatedGrid,
+│   │                             #   LanguageToggle, Providers, RevealOnScroll
+│   └── listings/                 # ListingCard, FavoriteButton
 ├── lib/
-│   ├── supabase/           # Cliente y helpers
-│   ├── utils/              # Utilidades (cn)
-│   └── validations/        # Schemas Zod
-├── hooks/                  # Custom React hooks
-├── types/                  # TypeScript types
-└── constants/              # Constantes y config
+│   ├── supabase/                 # client.ts, server.ts, middleware.ts
+│   ├── stripe.ts                 # getStripe(), STRIPE_PRICES, helpers de precio
+│   └── utils.ts                  # cn()
+├── types/                        # Profile, Listing, ClosedInteraction
+└── constants/                    # USER_ROLES, SPACE_CATEGORIES, ALL_COUNTRIES…
 ```
 
-## Mercados objetivo
+## Configuración Supabase (producción)
 
-Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
+- **Site URL:** `https://spotu.online`
+- **Redirect URLs:** `https://spotu.online/auth/callback`
+- **Storage bucket:** `listing-images` (público)
+- **Google OAuth:** habilitado
+
+## Configuración Stripe (live)
+
+- **4 precios creados:** listing_monthly ($4.99), listing_boost ($2.99), agency_monthly ($9.99), agency_boost ($4.99)
+- **Webhook endpoint:** `https://spotu.online/api/stripe/webhook`
+- **Eventos escuchados:** `checkout.session.completed`, `invoice.payment_succeeded`, `invoice.payment_failed`, `customer.subscription.deleted`
+- **API version:** `2026-03-25.dahlia`
+
+## Monetización
+
+| Tipo de usuario | Suscripción | Boost |
+|---|---|---|
+| Espacios / Anunciantes | $4.99 USD/mes | $2.99 USD/sem |
+| Agencias | $9.99 USD/mes | $4.99 USD/sem |
+| Pioneros (primeros 100) | Gratis ilimitado | — |
+
+- 1ra publicación: 30 días gratis, tarjeta requerida para auto-cobro
+- Publicaciones pausadas: sin cobro hasta activación
+- Renovación automática mensual por suscripción
 
 ## Progreso
 
 ### ✅ Completado
-- Setup del proyecto (Next.js 16, TailwindCSS 4, shadcn/ui)
-- Branding: colores (Electric Indigo + Coral), tipografía (Inter), logos webp
-- Landing page con animaciones, i18n ES/EN, scroll reveals
-- Supabase: cliente browser/server, middleware de sesiones
-- DB schema: profiles, listings, views, contacts, favorites (migración 001 ejecutada)
-- DB schema: closed_interactions (migración 002 lista para ejecutar)
-- RLS policies en todas las tablas + storage bucket
-- TypeScript types: Profile, Listing, ClosedInteraction
-- **Autenticación:** registro 2 pasos (selección de rol + form), login, Google OAuth, callback, email confirm
-- Protección de rutas en proxy.ts
-- **CRUD publicaciones:** formulario multi-paso por tipo (espacio/agencia/anunciante), feed, detalle, dashboard
-- Stats básicas: contador de vistas (ViewTracker), contactos por click
 
-### 🚧 Pendiente
-- [ ] Perfil de usuario (editar info, foto)
-- [ ] Edición de publicaciones
-- [ ] Subida de imágenes a Supabase Storage
-- [ ] Búsqueda con filtros (ciudad, precio, tipo)
-- [ ] Favoritos
-- [ ] Notificaciones por email (Resend)
-- [ ] Pagos (Stripe)
-- [ ] Búsqueda con IA (Claude API) — Fase 2
-- [ ] Contratos digitales — Fase 2
+- Setup (Next.js 16, TailwindCSS 4, shadcn/ui, TypeScript strict)
+- Branding: Electric Indigo + Coral, logos .webp, tema soft slate
+- Landing page editorial con animaciones, i18n ES/EN, scroll reveals
+- Autenticación: registro multi-rol, login, Google OAuth, email confirm
+- Protección de rutas (proxy.ts)
+- Feed público con filtros (tipo, país dinámico)
+- CRUD publicaciones: form multi-paso, múltiples países (hasta 10), imágenes
+- Toggle activa/pausa al publicar
+- Dashboard: listado de publicaciones, stats (vistas + contactos), billing
+- Detalle de publicación: ViewTracker, contacto WhatsApp/email, favoritos
+- Perfil público (`/profile/[id]`) y edición propia
+- Favoritos (tabla con RLS, botón toggle)
+- Stripe live: checkout, suscripciones, boosts, webhooks, lógica pionero/trial/prorrateo
+- Billing dashboard: BillingActions por publicación (estado, precio correcto por tipo)
+- Páginas legales: `/privacy` y `/terms` en español
+- Deploy en Vercel + dominio `spotu.online`
 
-### ⚙️ Configuración pendiente (para que funcione en prod)
+### 🚧 Pendiente (Fase 2)
 
-Ver la sección de Setup más abajo.
-
-## Setup
-
-### Variables de entorno (`.env.local`)
-```
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-```
-
-### Supabase — checklist de configuración
-
-1. **Migraciones SQL** — ejecutar en el SQL Editor del Dashboard:
-   - `supabase/migrations/001_initial_schema.sql` ✅ (ya ejecutada)
-   - `supabase/migrations/002_closed_interactions.sql` ⬜ (pendiente)
-
-2. **Google OAuth:**
-   - Dashboard → Authentication → Providers → Google → Enable
-   - Crear OAuth App en [Google Cloud Console](https://console.cloud.google.com)
-   - Redirect URI: `https://<tu-proyecto>.supabase.co/auth/v1/callback`
-   - Copiar Client ID y Secret a Supabase
-
-3. **URL Configuration** (Authentication → URL Configuration):
-   - Site URL: `http://localhost:3000` (dev) / tu dominio (prod)
-   - Redirect URLs: `http://localhost:3000/auth/callback`
-
-4. **Storage bucket** `listing-images`:
-   - Dashboard → Storage → New bucket → `listing-images` → Public
-   - Policy: usuarios autenticados pueden subir; todos pueden leer
-
-5. **Email templates** (Authentication → Email Templates):
-   - Personalizar con branding SpotU (opcional para MVP)
-
-## Estructura del proyecto (actualizada)
-
-```
-src/
-├── app/
-│   ├── page.tsx              # Landing
-│   ├── auth/                 # Login, register, callback, confirm
-│   ├── dashboard/            # Panel del usuario
-│   ├── feed/                 # Feed de publicaciones
-│   ├── listing/[id]/         # Detalle de publicación
-│   └── publish/              # Crear publicación
-├── components/
-│   ├── ui/                   # Button, LinkButton
-│   ├── layout/               # Header, Footer, Logo, AnimatedGrid, Providers
-│   └── listings/             # ListingCard
-├── lib/supabase/             # client.ts, server.ts, middleware.ts
-├── types/                    # Profile, Listing, ClosedInteraction
-└── constants/                # Roles, categorías, servicios
-supabase/migrations/
-├── 001_initial_schema.sql    # ✅ ejecutada
-└── 002_closed_interactions.sql  # ⬜ pendiente
-```
+- [ ] Búsqueda semántica con IA (Claude API)
+- [ ] Notificaciones por email (Resend) — bienvenida, contacto recibido, trial por vencer
+- [ ] Contratos digitales con firma simple
+- [ ] Portal de facturación Stripe (ver/cancelar suscripciones desde el dashboard)
+- [ ] Analytics básico (gráficas de vistas/contactos en el tiempo)
+- [ ] Interacciones cerradas (migración 002 lista)
 
 ## Autor
 

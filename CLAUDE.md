@@ -10,7 +10,12 @@ Marketplace de 3 lados (intermediario puro) que conecta:
 
 **Alcance V1:** publicar, buscar, contactar (WhatsApp/correo directo), búsqueda con IA (Claude API), contratos digitales, interacciones cerradas, stats básicas (vistas + clics en contactar). NO analytics de marketing, NO gestión de campañas, NO mensajería interna.
 
-**Monetización:** Primera publicación gratis 30 días, después $4.99 USD/mes por publicación. Boost: $2.99 USD/semana.
+**Monetización:**
+- Espacios / Anunciantes: $4.99 USD/mes por publicación activa, Boost $2.99 USD/semana
+- Agencias: $9.99 USD/mes por publicación activa, Boost $4.99 USD/semana
+- Pioneros (primeros 100 users por `user_number`): gratis ilimitado
+- 1ra publicación no-pionero: 30 días gratis con tarjeta requerida (trial Stripe), auto-cobro al vencer
+- Publicaciones pausadas: sin cobro hasta activación manual
 
 Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
@@ -22,11 +27,11 @@ Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (
 ## Stack
 - **Frontend:** Next.js 16 (App Router), React 19, TypeScript strict
 - **Styling:** TailwindCSS 4 + shadcn/ui (base-nova, usa `@base-ui/react`)
-- **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
+- **Backend:** Supabase (PostgreSQL, Auth, Storage)
 - **IA:** Claude API (búsqueda semántica, matching) — Fase 2
-- **Pagos:** Stripe (USD)
-- **Email:** Resend
-- **Deploy:** Vercel
+- **Pagos:** Stripe live (USD), API version `2026-03-25.dahlia`
+- **Email:** Resend — pendiente de implementar
+- **Deploy:** Vercel (producción activa en spotu.online)
 - **Package manager:** pnpm
 
 ## Notas técnicas importantes
@@ -43,8 +48,14 @@ Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (
 - Wrapper: `src/components/layout/Providers.tsx` inyecta providers en layout.
 - Traducciones ES/EN inline en el mismo archivo.
 
+### Stripe
+- Lazy singleton: `getStripe()` en `src/lib/stripe.ts` — nunca instanciar Stripe directamente.
+- Helpers de precio: `getMonthlyPriceId(listingType)`, `getBoostPriceId(listingType)` — elegir precio correcto por tipo.
+- Webhook en `src/app/api/stripe/webhook/route.ts` — maneja 4 eventos.
+- Checkout en `src/app/api/stripe/checkout/route.ts` — lógica pionero / trial / inmediato.
+
 ### Interacciones cerradas (closed interactions)
-- Migración: `supabase/migrations/002_closed_interactions.sql`
+- Migración: `supabase/migrations/002_closed_interactions.sql` ✅ ejecutada
 - Flujo: provider solicita → client confirma/rechaza → incrementa `confirmed_interactions_count` en profile
 - RLS: confirmadas son públicas, provider crea, client responde
 - Expiran en 30 días si no hay respuesta
@@ -53,35 +64,72 @@ Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (
 ```
 src/
 ├── app/
-│   ├── page.tsx              # Landing ("use client", soft slate theme, scroll reveals)
+│   ├── page.tsx              # Landing (delega a HomeClient.tsx)
 │   ├── layout.tsx            # Root layout (Providers wrapper)
 │   ├── auth/
 │   │   ├── layout.tsx        # Auth layout (minimal, sin Header/Footer)
-│   │   ├── register/         # Registro 2 pasos: rol → form
+│   │   ├── register/         # Registro multi-rol con checkboxes
 │   │   ├── login/            # Login email + Google
 │   │   ├── callback/         # OAuth + email confirm code exchange
 │   │   └── confirm/          # "Revisa tu correo"
-│   ├── dashboard/            # Panel del usuario (listings, stats)
-│   ├── feed/                 # Feed público (filtros por tipo)
-│   ├── listing/[id]/         # Detalle + ViewTracker + botones contacto
-│   └── publish/              # Formulario multi-paso por tipo de usuario
+│   ├── dashboard/            # Panel del usuario (listings, billing, stats)
+│   │   ├── page.tsx          # Server component, fetch listings
+│   │   ├── DashboardListings.tsx  # Client — tabla con billing
+│   │   └── BillingActions.tsx     # Client — botones por listing
+│   ├── feed/                 # Feed público (filtros tipo + país dinámico)
+│   ├── listing/[id]/         # Detalle + ViewTracker + botones contacto + FavoriteButton
+│   ├── publish/              # Form multi-paso + toggle activa/pausa
+│   ├── profile/[id]/         # Perfil público
+│   ├── profile/edit/         # Editar perfil propio (avatar, datos)
+│   ├── privacy/              # Política de privacidad (ES)
+│   ├── terms/                # Términos de uso (ES)
+│   └── api/stripe/
+│       ├── checkout/route.ts # POST — crea Checkout Session con lógica completa
+│       └── webhook/route.ts  # Stripe events handler
 ├── components/
-│   ├── ui/                   # button.tsx, link-button.tsx
-│   ├── layout/               # Header, Footer, SpotULogo, AnimatedGrid, LanguageToggle, Providers, RevealOnScroll
-│   └── listings/             # ListingCard
-├── lib/supabase/             # client.ts, server.ts, middleware.ts
+│   ├── ui/                   # button.tsx, link-button.tsx, toast.tsx
+│   ├── layout/               # Header, Footer, SpotULogo, AnimatedGrid,
+│   │                         #   LanguageToggle, Providers, RevealOnScroll
+│   └── listings/             # ListingCard, FavoriteButton
+├── lib/
+│   ├── supabase/             # client.ts, server.ts, middleware.ts
+│   ├── stripe.ts             # getStripe(), STRIPE_PRICES, helpers precio
+│   └── utils.ts              # cn()
 ├── types/                    # Profile, Listing, ClosedInteraction
-└── constants/                # USER_ROLES, SPACE_CATEGORIES, AGENCY_SERVICES, etc.
+└── constants/                # USER_ROLES, SPACE_CATEGORIES, AGENCY_SERVICES,
+                              #   ALL_COUNTRIES (~100), MARKETS, PRICE_PERIODS
 supabase/migrations/
-├── 001_initial_schema.sql    # YA EJECUTADA
-└── 002_closed_interactions.sql  # PENDIENTE de ejecutar
+├── 001_initial_schema.sql              # ✅ ejecutada
+├── 002_closed_interactions.sql         # ✅ ejecutada
+├── 003_multi_role_setup.sql            # ✅ ejecutada
+├── 004_increment_contacts_avatars.sql  # ✅ ejecutada
+├── 005_favorites_audience_fields.sql   # ✅ ejecutada
+├── 006_location_countries.sql          # ✅ ejecutada
+├── 007_billing.sql                     # ✅ ejecutada
+└── 008_user_number.sql                 # ✅ ejecutada
 ```
 
 ## Auth
-- Registro: 2 pasos (rol → form o Google), role se guarda en `options.data.role` o cookie `spotu_pending_role`
-- Callback `/auth/callback`: exchange code → UPDATE profiles SET type = role
+- Registro: multi-rol con checkboxes, `primaryRole = roles[0]`, se guarda en `options.data.role` / cookie `spotu_pending_role`
+- `types[]` cookie `spotu_pending_types` para múltiples roles
+- Callback `/auth/callback`: exchange code → UPDATE profiles SET type, types, setup_completed
 - Protección en proxy.ts: `/dashboard`, `/publish`, `/settings`, `/profile/edit` requieren sesión
-- Google OAuth: requiere configuración en Supabase Dashboard (ver README Setup)
+- Google OAuth: configurado en Supabase Dashboard
+
+## Billing — Columnas en listings
+```sql
+billing_status  TEXT  -- 'trial'|'active'|'past_due'|'paused'|'cancelled'|'pioneer'
+trial_ends_at   TIMESTAMPTZ
+paid_until      TIMESTAMPTZ
+stripe_checkout_session_id TEXT
+is_boosted      BOOLEAN
+boost_ends_at   TIMESTAMPTZ
+```
+```sql
+-- En profiles:
+stripe_customer_id TEXT
+user_number        INTEGER  -- ≤ 100 = usuario pionero (gratis)
+```
 
 ## Convenciones de Código
 
@@ -89,6 +137,7 @@ supabase/migrations/
 - TypeScript estricto (`strict: true`)
 - Español para contenido de usuario, inglés para código
 - Named exports (no default exports excepto pages)
+- Actualizar CLAUDE.md y README.md al final de cada sesión con cambios significativos
 
 ### Naming
 - Componentes: `PascalCase.tsx` | Hooks: `use-kebab-case.ts` | Utils: `kebab-case.ts`
@@ -124,7 +173,7 @@ supabase/migrations/
 
 ## Design
 - Theme: soft slate (bg `oklch(0.965 0.004 264)`) uniforme en todo el sitio — NO oscuro, NO blanco puro
-- Header: sticky, `bg-background/80 backdrop-blur-xl`, border sutil
+- Header: sticky, `bg-background/80 backdrop-blur-xl`, border sutil, h-18 (72px), logo 224×64px
 - Hero: AnimatedGrid con gradient orbs suaves (primary/coral/emerald), dot grid con opacidad baja
 - Animaciones: `fade-in-up`, `float`, `float-slow`, `gradient-shift`, hover transitions en cards/icons
 - Secciones alternas: `bg-card/60` para contraste sutil entre secciones
