@@ -54,6 +54,8 @@ Ejecutar en orden en **Supabase Dashboard → SQL Editor**:
 | `006_location_countries.sql` | ✅ ejecutada |
 | `007_billing.sql` | ✅ ejecutada |
 | `008_user_number.sql` | ✅ ejecutada |
+| `009_listing_tags.sql` | ✅ ejecutada |
+| `010_total_listings_created.sql` | ✅ ejecutada |
 
 ## Estructura del proyecto
 
@@ -63,17 +65,18 @@ src/
 │   ├── page.tsx                  # Landing (HomeClient.tsx)
 │   ├── layout.tsx                # Root layout (Providers)
 │   ├── auth/                     # login, register, callback, confirm
-│   ├── dashboard/                # Panel usuario (listings, billing, stats)
-│   ├── feed/                     # Feed público con filtros
-│   ├── listing/[id]/             # Detalle + ViewTracker + contacto
-│   ├── publish/                  # Form multi-paso por tipo de usuario
+│   ├── dashboard/                # Panel usuario (listings, billing, stats, favoritos)
+│   ├── feed/                     # Feed público con filtros + búsqueda keyword
+│   ├── listing/[id]/             # Detalle + ViewTracker + contacto + favorito
+│   ├── publish/                  # Selector de tipo (multi-rol) + form multi-paso
 │   ├── profile/[id]/             # Perfil público
-│   ├── profile/edit/             # Editar perfil propio
-│   ├── privacy/                  # Política de privacidad
-│   └── terms/                    # Términos de uso
+│   ├── profile/edit/             # Editar perfil propio (lista completa de países)
+│   ├── privacy/                  # Política de privacidad (ES)
+│   ├── terms/                    # Términos de uso (ES)
 │   └── api/stripe/
-│       ├── checkout/             # POST → crea Checkout Session
-│       └── webhook/              # Stripe events handler
+│       ├── checkout/             # POST → pioneer / boost / trial / inmediato
+│       ├── webhook/              # 4 eventos Stripe
+│       └── portal/               # POST → Stripe Customer Portal
 ├── components/
 │   ├── ui/                       # button, link-button, toast
 │   ├── layout/                   # Header, Footer, SpotULogo, AnimatedGrid,
@@ -209,26 +212,31 @@ Disponible en el dashboard para usuarios que hayan realizado al menos un pago. P
 - Landing page editorial con animaciones, i18n ES/EN, scroll reveals
 - Autenticación: registro multi-rol, login, Google OAuth, email confirm
 - Protección de rutas (proxy.ts)
-- Feed público con filtros (tipo, país dinámico)
-- CRUD publicaciones: form multi-paso, múltiples países (hasta 10), imágenes
-- Toggle activa/pausa al publicar
-- Dashboard: listado de publicaciones, stats (vistas + contactos), billing
+- Feed público con filtros (tipo, país dinámico) + búsqueda por keyword (título, descripción, tags)
+- CRUD publicaciones: form multi-paso, múltiples países (hasta 10), imágenes, tags (max 5)
+- Toggle activa/pausa al publicar; selector de tipo para usuarios multi-rol (con precio por tipo)
+- Dashboard: tabla de publicaciones con filtros (título, estado, tipo), stats (vistas + contactos)
+- Dashboard billing: estado correcto por publicación, columna "Vence/Renueva" contextual, banner Boost
 - Detalle de publicación: ViewTracker, contacto WhatsApp/email, favoritos
-- Perfil público (`/profile/[id]`) y edición propia
+- Perfil público (`/profile/[id]`) y edición propia (lista completa de ~100 países)
+- Multi-rol en dashboard: badges con todos los tipos del usuario
 - Favoritos (tabla con RLS, botón toggle)
-- Stripe live: checkout, suscripciones, boosts, webhooks, lógica pionero/trial/prorrateo
-- Billing dashboard: BillingActions por publicación (estado, precio correcto por tipo)
+- Stripe live: checkout, suscripciones con trial, boosts, webhooks, lógica pionero/trial/prorrateo
+- Anti-fraude: `total_listings_created` con trigger para evitar re-grant del trial al borrar listing
+- Billing bypass fix: "Activar" en menú de listing pasa por checkout API (no Supabase directo)
+- Portal de suscripciones Stripe (PortalButton en dashboard para usuarios con stripe_customer_id)
+- PioneerBanner con countdown regresivo de días restantes del año gratuito
 - Páginas legales: `/privacy` y `/terms` en español
 - Deploy en Vercel + dominio `spotu.online`
 
 ### 🚧 Pendiente (Fase 2)
 
 - [ ] Búsqueda semántica con IA (Claude API)
-- [ ] Notificaciones por email (Resend) — bienvenida, contacto recibido, trial por vencer
+- [ ] Notificaciones por email (Resend) — bienvenida, trial por vencer, renovación, pionero expirando
 - [ ] Contratos digitales con firma simple
-- [ ] Portal de facturación Stripe (ver/cancelar suscripciones desde el dashboard)
 - [ ] Analytics básico (gráficas de vistas/contactos en el tiempo)
-- [ ] Interacciones cerradas (migración 002 lista)
+- [ ] Interacciones cerradas (migración 002 lista, UI pendiente)
+- [ ] Número de WhatsApp real para SpotU (actualmente placeholder)
 
 ## Autor
 

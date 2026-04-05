@@ -75,21 +75,26 @@ src/
 │   │   ├── callback/         # OAuth + email confirm code exchange
 │   │   └── confirm/          # "Revisa tu correo"
 │   ├── dashboard/            # Panel del usuario (listings, billing, stats)
-│   │   ├── page.tsx          # Server component, fetch listings + profile
-│   │   ├── DashboardListings.tsx  # Client — tabla con billing
-│   │   ├── BillingActions.tsx     # Client — botones por listing
+│   │   ├── page.tsx               # Server component: profile (types[], user_number, stripe_customer_id)
+│   │   ├── DashboardListings.tsx  # Client — tabla con filtros (título, estado, tipo), boost banner
+│   │   ├── BillingActions.tsx     # Client — estado billing + botones por listing (precio por tipo)
+│   │   ├── ListingActions.tsx     # Client — menú (editar/pausar/activar/borrar), con validación billing
+│   │   ├── ListingModal.tsx       # Client — modal detalle de publicación
 │   │   ├── PioneerBanner.tsx      # Client — banner + countdown pioneros
 │   │   └── PortalButton.tsx       # Client — abre Stripe Customer Portal
-│   ├── feed/                 # Feed público (filtros tipo + país dinámico)
+│   ├── feed/                 # Feed público (búsqueda keyword + filtros tipo + país)
 │   ├── listing/[id]/         # Detalle + ViewTracker + botones contacto + FavoriteButton
-│   ├── publish/              # Form multi-paso + toggle activa/pausa
+│   ├── publish/
+│   │   ├── page.tsx               # Server: si multi-rol → PublishTypeSelector, si mono-rol → PublishForm
+│   │   ├── PublishTypeSelector.tsx # Client — elige tipo (space_owner/agency/advertiser) con precio
+│   │   └── PublishForm.tsx        # Client — form multi-paso + tags + toggle activa/pausa
 │   ├── profile/[id]/         # Perfil público
-│   ├── profile/edit/         # Editar perfil propio (avatar, datos)
+│   ├── profile/edit/         # Editar perfil propio (avatar, datos, país — lista completa ~100)
 │   ├── privacy/              # Política de privacidad (ES)
 │   ├── terms/                # Términos de uso (ES)
 │   └── api/stripe/
-│       ├── checkout/route.ts # POST — crea Checkout Session con lógica completa
-│       ├── webhook/route.ts  # Stripe events handler
+│       ├── checkout/route.ts # POST — lógica: pioneer→skip / boost→one-time / trial / inmediato
+│       ├── webhook/route.ts  # 4 eventos: completed, payment_succeeded, payment_failed, sub.deleted
 │       └── portal/route.ts   # POST — crea sesión Stripe Customer Portal
 ├── components/
 │   ├── ui/                   # button.tsx, link-button.tsx, toast.tsx
@@ -111,7 +116,9 @@ supabase/migrations/
 ├── 005_favorites_audience_fields.sql   # ✅ ejecutada
 ├── 006_location_countries.sql          # ✅ ejecutada
 ├── 007_billing.sql                     # ✅ ejecutada
-└── 008_user_number.sql                 # ✅ ejecutada
+├── 008_user_number.sql                 # ✅ ejecutada
+├── 009_listing_tags.sql                # ✅ ejecutada — tags TEXT[] + GIN index
+└── 010_total_listings_created.sql      # ✅ ejecutada — total_listings_created + AFTER INSERT trigger
 ```
 
 ## Auth
@@ -129,12 +136,26 @@ paid_until      TIMESTAMPTZ
 stripe_checkout_session_id TEXT
 is_boosted      BOOLEAN
 boost_ends_at   TIMESTAMPTZ
+tags            TEXT[]  -- max 5, GIN index para búsqueda por keyword
 ```
 ```sql
 -- En profiles:
-stripe_customer_id TEXT
-user_number        INTEGER  -- ≤ 100 = usuario pionero (gratis)
+stripe_customer_id       TEXT
+user_number              INTEGER  -- ≤ 100 = usuario pionero (gratis 1 año desde created_at)
+total_listings_created   INTEGER  -- contador incremental (nunca decrece), evita re-grant del trial
 ```
+
+### Lógica anti-fraude del trial
+- `total_listings_created` se incrementa con un AFTER INSERT trigger en listings
+- Nunca se decrementa (ni al borrar listings)
+- El checkout API usa `total_listings_created ≤ 1` para determinar si aplica el trial de 30 días
+- Esto evita que el usuario borre su 1ra publicación y vuelva a recibir 30 días gratis
+
+### Flujo billing checkout (`/api/stripe/checkout`)
+1. **Pioneer** (`user_number ≤ 100` AND `created_at + 365 días > now()`): retorna `{ pioneer: true }`, marca listing con `billing_status: "pioneer"`, sin Stripe
+2. **Boost** (`mode: "boost"`): one-time payment con `getBoostPriceId(listingType)`
+3. **Suscripción, primera vez** (`total_listings_created ≤ 1`): trial_period_days = días restantes de los 30 desde `listing.created_at`, `payment_method_collection: "always"`
+4. **Suscripción, 2da+**: cobro inmediato, sin trial
 
 ## Convenciones de Código
 
