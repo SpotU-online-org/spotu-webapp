@@ -46,6 +46,8 @@ export function ContactButtons({ listingId, whatsappUrl, callNumber, emailUrl, w
       {emailUrl && (
         <a
           href={emailUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           onClick={track}
           className={cn(linkButtonVariants({ variant: "outline", size: "lg" }), "w-full gap-2.5")}
         >

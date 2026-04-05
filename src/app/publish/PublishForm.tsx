@@ -55,6 +55,8 @@ type FormData = {
   target_audience: string;
   // Publishing
   publish_status: "active" | "paused";
+  // Keywords
+  tags: string[];
 };
 
 const LISTING_TYPE: Record<ProfileType, "want_to_advertise" | "have_space" | "offer_service"> = {
@@ -120,6 +122,58 @@ function MultiChip({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function TagInput({
+  tags,
+  onAdd,
+  onRemove,
+}: {
+  tags: string[];
+  onAdd: (tag: string) => void;
+  onRemove: (tag: string) => void;
+}) {
+  const [input, setInput] = useState("");
+
+  function commit() {
+    const clean = input.trim().toLowerCase().replace(/,/g, "").slice(0, 30);
+    if (clean.length > 1) onAdd(clean);
+    setInput("");
+  }
+
+  return (
+    <div className="space-y-2">
+      {tags.length < 5 && (
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === ",") {
+              e.preventDefault();
+              commit();
+            }
+          }}
+          onBlur={commit}
+          placeholder="Ej: vallas, estadio, Monterrey..."
+          maxLength={32}
+          className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
+        />
+      )}
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {tags.map((tag) => (
+            <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+              {tag}
+              <button type="button" onClick={() => onRemove(tag)} className="hover:text-destructive transition-colors">
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -261,6 +315,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     audience_demographics: "",
     target_audience: "",
     publish_status: "active",
+    tags: [],
   });
 
   const set = (key: keyof FormData, value: FormData[keyof FormData]) =>
@@ -396,6 +451,7 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       audience_demographics: form.audience_demographics.trim() || null,
       target_audience: form.target_audience.trim() || null,
       images: imageUrls.length > 0 ? imageUrls : null,
+      tags: form.tags.length > 0 ? form.tags : null,
       // If user chose paused, save as paused (no billing); if active, billing flow handles it
       status: form.publish_status === "paused" ? "paused" : "active",
       billing_status: form.publish_status === "paused" ? "trial" : "trial",
@@ -830,6 +886,21 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             </Field>
             <Field label="Sitio web / portafolio" hint="Opcional">
               <input type="url" value={form.website_url} onChange={(e) => set("website_url", e.target.value)} placeholder="https://tuempresa.com" maxLength={200} className={inputCls} />
+            </Field>
+
+            <Field
+              label="Palabras clave"
+              hint={`Máximo 5 palabras clave para que te encuentren en el buscador. Escribe y presiona Enter o coma. (${form.tags.length}/5)`}
+            >
+              <TagInput
+                tags={form.tags}
+                onAdd={(tag) => {
+                  if (form.tags.length < 5 && !form.tags.includes(tag)) {
+                    set("tags", [...form.tags, tag]);
+                  }
+                }}
+                onRemove={(tag) => set("tags", form.tags.filter((t) => t !== tag))}
+              />
             </Field>
           </div>
         )}

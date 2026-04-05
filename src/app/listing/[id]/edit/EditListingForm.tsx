@@ -141,6 +141,8 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
   const [whatsapp, setWhatsapp] = useState<string>(listing.whatsapp ?? "");
   const [emailContact, setEmailContact] = useState<string>(listing.email_contact ?? "");
   const [websiteUrl, setWebsiteUrl] = useState<string>(listing.website_url ?? "");
+  const [tags, setTags] = useState<string[]>(listing.tags ?? []);
+  const [tagInput, setTagInput] = useState("");
 
   // Images: keep existing, allow adding new, allow removing
   const [existingImages, setExistingImages] = useState<string[]>(listing.images ?? []);
@@ -221,6 +223,7 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
       email_contact: emailContact.trim() || null,
       website_url: websiteUrl.trim() || null,
       images: allImages.length > 0 ? allImages : null,
+      tags: tags.length > 0 ? tags : null,
       location_city: locationCity.trim() || null,
       location_state: locationState.trim() || null,
       location_country: locationCountries[0] ?? null,
@@ -485,6 +488,45 @@ export function EditListingForm({ listing }: { listing: Record<string, any> }) {
         </Field>
         <Field label="Sitio web" hint="Opcional">
           <input type="url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} maxLength={200} placeholder="https://tuempresa.com" className={inputCls} />
+        </Field>
+        <Field label="Palabras clave" hint={`Máximo 5 palabras clave para el buscador. Escribe y presiona Enter o coma. (${tags.length}/5)`}>
+          <div className="space-y-2">
+            {tags.length < 5 && (
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === ",") {
+                    e.preventDefault();
+                    const clean = tagInput.trim().toLowerCase().replace(/,/g, "").slice(0, 30);
+                    if (clean.length > 1 && !tags.includes(clean)) setTags((prev) => [...prev, clean]);
+                    setTagInput("");
+                  }
+                }}
+                onBlur={() => {
+                  const clean = tagInput.trim().toLowerCase().replace(/,/g, "").slice(0, 30);
+                  if (clean.length > 1 && !tags.includes(clean)) setTags((prev) => [...prev, clean]);
+                  setTagInput("");
+                }}
+                placeholder="Ej: vallas, estadio, Monterrey..."
+                maxLength={32}
+                className={inputCls}
+              />
+            )}
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {tags.map((tag) => (
+                  <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                    {tag}
+                    <button type="button" onClick={() => setTags((prev) => prev.filter((t) => t !== tag))} className="hover:text-destructive transition-colors">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </Field>
       </Section>
 

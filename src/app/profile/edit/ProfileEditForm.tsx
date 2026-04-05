@@ -6,7 +6,7 @@ import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle, Lock, Came
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
-import { MARKETS } from "@/constants";
+import { ALL_COUNTRIES } from "@/constants";
 import { useToast } from "@/components/ui/toast";
 
 type Role = "advertiser" | "space_owner" | "agency";
@@ -289,8 +289,9 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
           </Field>
           <Field label="País">
             <select value={country} onChange={(e) => setCountry(e.target.value)} className={inputCls}>
-              {MARKETS.map((m) => (
-                <option key={m.value} value={m.value}>{m.label}</option>
+              <option value="">Selecciona un país</option>
+              {ALL_COUNTRIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
               ))}
             </select>
           </Field>

@@ -23,9 +23,11 @@ function daysLeft(dateStr: string | null): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
 
-export function BillingActions({ listingId, listingType, billingStatus, trialEndsAt, paidUntil, isBoosted, boostEndsAt }: Props) {
+export function BillingActions({ listingId, listingType, billingStatus: initialBillingStatus, trialEndsAt, paidUntil, isBoosted, boostEndsAt }: Props) {
   const { toast } = useToast();
   const [loading, setLoading] = useState<"sub" | "boost" | null>(null);
+  // Allow local override so pioneer badge shows instantly without page reload
+  const [billingStatus, setBillingStatus] = useState(initialBillingStatus);
 
   const monthlyPrice = getMonthlyPriceDisplay(listingType);
   const boostPrice = getBoostPriceDisplay(listingType);
@@ -40,8 +42,8 @@ export function BillingActions({ listingId, listingType, billingStatus, trialEnd
       });
       const data = await res.json();
       if (data.pioneer) {
+        setBillingStatus("pioneer");
         toast("¡Eres usuario pionero! Tu publicación está activa sin costo.", "success");
-        window.location.reload();
         return;
       }
       if (data.url) {

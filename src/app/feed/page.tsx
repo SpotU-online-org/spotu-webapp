@@ -22,6 +22,7 @@ type PageProps = {
     country?: string;
     city?: string;
     space_type?: string;
+    q?: string;
   }>;
 };
 
@@ -41,6 +42,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
   const countryFilter = params.country ?? "";
   const cityFilter = params.city?.trim() ?? "";
   const spaceTypeFilter = params.space_type ?? "";
+  const searchQuery = params.q?.trim() ?? "";
 
   const supabase = await createClient();
 
@@ -69,7 +71,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
       id, type, title, description,
       location_city, location_state, location_country,
       is_remote, price_min, price_max, price_period, price_text,
-      images, views_count, space_type, industry
+      images, views_count, space_type, industry, tags
     `)
     .eq("status", "active")
     .order("is_featured", { ascending: false })
@@ -78,19 +80,23 @@ export default async function FeedPage({ searchParams }: PageProps) {
 
   if (typeFilter !== "all") query = query.eq("type", typeFilter);
   if (countryFilter) {
-    // Match listings where location_countries array contains the filter value,
-    // OR (for legacy listings) where location_country equals it
     query = query.or(`location_countries.cs.{${countryFilter}},location_country.eq.${countryFilter}`);
   }
   if (cityFilter) query = query.ilike("location_city", `%${cityFilter}%`);
   if (spaceTypeFilter) query = query.eq("space_type", spaceTypeFilter);
+  if (searchQuery) {
+    // Search title, description (full-text) and tags array
+    query = query.or(
+      `title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,tags.cs.{${searchQuery.toLowerCase()}}`
+    );
+  }
 
   const { data: listings, error } = await query;
 
   // Log error server-side but show empty state to users (avoids confusing error messages)
   if (error) console.error("[feed] Supabase error:", error.message);
 
-  const hasFilters = typeFilter !== "all" || countryFilter || cityFilter || spaceTypeFilter;
+  const hasFilters = typeFilter !== "all" || countryFilter || cityFilter || spaceTypeFilter || searchQuery;
 
   return (
     <>
@@ -137,6 +143,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
               currentSpaceType={spaceTypeFilter}
               currentType={typeFilter}
               availableCountries={availableCountries}
+              currentSearch={searchQuery}
             />
           </div>
         </div>

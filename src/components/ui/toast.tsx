@@ -60,7 +60,7 @@ function Toast({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) 
       role="alert"
       className={cn(
         "flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg",
-        "animate-in slide-in-from-bottom-3 fade-in duration-250",
+        "animate-in slide-in-from-top-2 fade-in duration-250",
         cls
       )}
     >
@@ -93,7 +93,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 w-80 max-w-[calc(100vw-2rem)]">
+      <div className="fixed top-20 right-4 z-[100] flex flex-col gap-2 w-80 max-w-[calc(100vw-2rem)]">
         {toasts.map((t) => (
           <Toast key={t.id} item={t} onDismiss={() => dismiss(t.id)} />
         ))}
