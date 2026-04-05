@@ -101,17 +101,104 @@ src/
 - **Eventos escuchados:** `checkout.session.completed`, `invoice.payment_succeeded`, `invoice.payment_failed`, `customer.subscription.deleted`
 - **API version:** `2026-03-25.dahlia`
 
-## Monetización
+## Plan de monetización y suscripciones
 
-| Tipo de usuario | Suscripción | Boost |
+### Tarifas base
+
+| Tipo de usuario | Suscripción mensual | Boost semanal |
 |---|---|---|
-| Espacios / Anunciantes | $4.99 USD/mes | $2.99 USD/sem |
-| Agencias | $9.99 USD/mes | $4.99 USD/sem |
-| Pioneros (primeros 100) | Gratis ilimitado | — |
+| Espacios publicitarios / Anunciantes | $4.99 USD/mes | $2.99 USD/sem |
+| Agencias de marketing | $9.99 USD/mes | $4.99 USD/sem |
 
-- 1ra publicación: 30 días gratis, tarjeta requerida para auto-cobro
-- Publicaciones pausadas: sin cobro hasta activación
-- Renovación automática mensual por suscripción
+El Boost posiciona la publicación en primer lugar en el feed y búsqueda durante 7 días (pago único, no recurrente).
+
+---
+
+### Usuarios pioneros (primeros 100 registrados — `user_number ≤ 100`)
+
+**Durante el primer año** desde su fecha de registro:
+- Todas sus publicaciones activas son **completamente gratuitas**
+- `billing_status = "pioneer"` en cada listing
+- No se solicita método de pago
+- Dashboard muestra badge "Pionero SpotU" con contador regresivo de días restantes
+
+**Cuando vence el año gratuito:**
+- El dashboard muestra aviso: "Tu año pionero ha concluido"
+- Se les solicita agregar un método de pago vía portal Stripe
+- A partir de ese momento se aplican las tarifas normales por cada publicación activa
+- El cobro de cada publicación es mensual, por suscripción independiente
+- Se envía email de aviso 7 días antes del vencimiento del año gratuito *(Fase 2 — Resend)*
+
+**Excepción de prueba:** la cuenta `spotu.online@gmail.com` (administrador) tiene `user_number = 9999` y no recibe trato de pionero, permitiendo pruebas del flujo de pago.
+
+---
+
+### Usuarios normales (registrados en posición > 100)
+
+#### Primera publicación
+1. Usuario crea listing y elige "Publicar activa"
+2. Sistema dirige al checkout de Stripe
+3. Stripe crea una **suscripción con 30 días de trial** (contados desde la fecha de creación del listing)
+4. Se solicita tarjeta en el checkout — **no se cobra nada en este momento**
+5. Al vencer el trial (día 30): Stripe cobra automáticamente y continúa cobrando cada mes
+6. Si el usuario **desactiva el listing antes del día 30**: se cancela la suscripción y **no se realiza ningún cobro**
+7. Si el usuario reactiva el listing pasados los 30 días: entra al flujo de 2ª+ publicación (cobro inmediato)
+
+#### Segunda publicación y siguientes
+1. Usuario crea listing y elige "Publicar activa"
+2. Sistema dirige al checkout de Stripe (se muestra aviso de cargo inmediato)
+3. Stripe crea una **suscripción inmediata** — cobra desde el primer día
+4. El monto del primer cobro es prorrateado al ciclo mensual en curso del cliente en Stripe
+5. Renovación automática mensual
+
+#### Publicación creada como pausada (cualquier usuario no pionero)
+- No se inicia checkout ni suscripción al crear
+- El listing queda con `status: "paused"`, `billing_status: "trial"`
+- Al activar desde el dashboard: entra al flujo correspondiente (ver arriba)
+- **El trial de 30 días se calcula desde la fecha de creación del listing**, no desde la activación
+  - Ejemplo: si creas un listing pausado y lo activas 15 días después, solo tienes 15 días de trial restantes
+  - Si lo activas pasados los 30 días: cobro inmediato (flujo de 2ª+ publicación)
+
+---
+
+### Renovación automática
+
+- Stripe maneja la renovación sin intervención del usuario
+- Webhook `invoice.payment_succeeded` → actualiza `paid_until` en Supabase
+- Webhook `invoice.payment_failed` → `billing_status = "past_due"`, Stripe envía emails de dunning automáticamente
+- Dashboard muestra aviso cuando quedan ≤ 7 días para renovar
+
+---
+
+### Cancelación y reactivación
+
+| Acción | Resultado |
+|---|---|
+| Desactivar listing | Cancela suscripción Stripe al final del período pagado |
+| Reactivar listing pausado (dentro de trial) | Continúa el trial con días restantes |
+| Reactivar listing pausado (fuera de trial) | Cobra inmediatamente |
+| Reactivar listing cancelado | Cobra inmediatamente |
+| Pago fallido | `billing_status = past_due`, Stripe hace dunning automático |
+
+---
+
+### Emails automáticos *(Fase 2 — Resend, pendiente)*
+
+- Bienvenida al registrarse
+- Confirmación de listing activo + fecha de primer cobro
+- 7 días antes de que venza el trial de 30 días
+- 7 días antes de renovación mensual
+- 7 días antes de que venza el año gratuito de pionero
+- Pago fallido (complementario al dunning de Stripe)
+
+---
+
+### Portal de suscripciones (Stripe Customer Portal)
+
+Disponible en el dashboard para usuarios que hayan realizado al menos un pago. Permite:
+- Ver todas las suscripciones activas
+- Actualizar método de pago
+- Cancelar suscripciones individualmente
 
 ## Progreso
 

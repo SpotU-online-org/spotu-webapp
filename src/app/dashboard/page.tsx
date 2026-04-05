@@ -7,7 +7,10 @@ import { Footer } from "@/components/layout/Footer";
 import { linkButtonVariants } from "@/components/ui/link-button";
 import { cn } from "@/lib/utils";
 import { DashboardListings } from "./DashboardListings";
+import { PioneerBanner } from "./PioneerBanner";
+import { PortalButton } from "./PortalButton";
 import { ListingCard } from "@/components/listings/ListingCard";
+import { PIONEER_THRESHOLD } from "@/lib/stripe";
 
 const PROFILE_TYPE_LABELS: Record<string, string> = {
   advertiser: "Anunciante",
@@ -24,7 +27,7 @@ export default async function DashboardPage() {
   const [{ data: profile }, { data: listings }, { data: favRows }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name, type, confirmed_interactions_count")
+      .select("display_name, type, confirmed_interactions_count, user_number, created_at, stripe_customer_id")
       .eq("id", user.id)
       .single(),
     supabase
@@ -64,14 +67,28 @@ export default async function DashboardPage() {
                 </span>
               </p>
             </div>
-            <Link
-              href="/publish"
-              className={cn(linkButtonVariants({ size: "default" }), "gap-2 shrink-0")}
-            >
-              <Plus className="h-4 w-4" />
-              Nueva publicación
-            </Link>
+            <div className="flex items-center gap-2 flex-wrap">
+              {profile.stripe_customer_id && <PortalButton />}
+              <Link
+                href="/publish"
+                className={cn(linkButtonVariants({ size: "default" }), "gap-2 shrink-0")}
+              >
+                <Plus className="h-4 w-4" />
+                Nueva publicación
+              </Link>
+            </div>
           </div>
+
+          {/* Pioneer banner */}
+          {profile.user_number && profile.user_number <= PIONEER_THRESHOLD && profile.created_at && (
+            <div className="mt-6">
+              <PioneerBanner
+                pioneerExpiresAt={
+                  new Date(new Date(profile.created_at).getTime() + 365 * 24 * 60 * 60 * 1000).toISOString()
+                }
+              />
+            </div>
+          )}
 
           {/* Stats */}
           <div className="mt-8 grid gap-4 sm:grid-cols-3">

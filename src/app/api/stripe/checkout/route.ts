@@ -34,15 +34,31 @@ export async function POST(request: NextRequest) {
     .single();
 
   // ── PIONEER CHECK ──────────────────────────────────────────────────────────
-  // First PIONEER_THRESHOLD users get unlimited free listings
+  // First PIONEER_THRESHOLD users get 1 year free from their registration date
   const userNumber = profile?.user_number ?? 9999;
   if (userNumber <= PIONEER_THRESHOLD) {
-    // Mark listing as active/pioneer without Stripe
-    await supabase
-      .from("listings")
-      .update({ billing_status: "pioneer", status: "active" })
-      .eq("id", listingId);
-    return NextResponse.json({ pioneer: true });
+    // Calculate pioneer expiry: 1 year from profile creation
+    const { data: profileFull } = await supabase
+      .from("profiles")
+      .select("created_at")
+      .eq("id", user.id)
+      .single();
+
+    const pioneerExpiresAt = profileFull?.created_at
+      ? new Date(new Date(profileFull.created_at).getTime() + 365 * 24 * 60 * 60 * 1000)
+      : null;
+
+    const pioneerActive = pioneerExpiresAt ? pioneerExpiresAt.getTime() > Date.now() : false;
+
+    if (pioneerActive) {
+      // Pioneer year still active — no payment needed
+      await supabase
+        .from("listings")
+        .update({ billing_status: "pioneer", status: "active" })
+        .eq("id", listingId);
+      return NextResponse.json({ pioneer: true, expiresAt: pioneerExpiresAt?.toISOString() });
+    }
+    // Pioneer year expired — fall through to normal billing below
   }
 
   // ── GET OR CREATE STRIPE CUSTOMER ─────────────────────────────────────────

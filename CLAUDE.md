@@ -13,9 +13,11 @@ Marketplace de 3 lados (intermediario puro) que conecta:
 **Monetización:**
 - Espacios / Anunciantes: $4.99 USD/mes por publicación activa, Boost $2.99 USD/semana
 - Agencias: $9.99 USD/mes por publicación activa, Boost $4.99 USD/semana
-- Pioneros (primeros 100 users por `user_number`): gratis ilimitado
-- 1ra publicación no-pionero: 30 días gratis con tarjeta requerida (trial Stripe), auto-cobro al vencer
-- Publicaciones pausadas: sin cobro hasta activación manual
+- Pioneros (primeros 100 users por `user_number`): **1 año gratis** desde `profiles.created_at`; al vencer el año se cobran tarifas normales por publicaciones activas
+- 1ra publicación no-pionero: 30 días gratis (trial) con tarjeta requerida, auto-cobro al vencer; trial calculado desde `listings.created_at`
+- 2da+ publicación no-pionero: cobro inmediato (prorrateado por Stripe)
+- Publicaciones pausadas: sin cobro hasta activación manual; trial de 30d corre desde creación, no desde activación
+- `spotu.online@gmail.com`: `user_number = 9999` para pruebas (no recibe trato pionero)
 
 Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (USA).
 
@@ -73,9 +75,11 @@ src/
 │   │   ├── callback/         # OAuth + email confirm code exchange
 │   │   └── confirm/          # "Revisa tu correo"
 │   ├── dashboard/            # Panel del usuario (listings, billing, stats)
-│   │   ├── page.tsx          # Server component, fetch listings
+│   │   ├── page.tsx          # Server component, fetch listings + profile
 │   │   ├── DashboardListings.tsx  # Client — tabla con billing
-│   │   └── BillingActions.tsx     # Client — botones por listing
+│   │   ├── BillingActions.tsx     # Client — botones por listing
+│   │   ├── PioneerBanner.tsx      # Client — banner + countdown pioneros
+│   │   └── PortalButton.tsx       # Client — abre Stripe Customer Portal
 │   ├── feed/                 # Feed público (filtros tipo + país dinámico)
 │   ├── listing/[id]/         # Detalle + ViewTracker + botones contacto + FavoriteButton
 │   ├── publish/              # Form multi-paso + toggle activa/pausa
@@ -85,7 +89,8 @@ src/
 │   ├── terms/                # Términos de uso (ES)
 │   └── api/stripe/
 │       ├── checkout/route.ts # POST — crea Checkout Session con lógica completa
-│       └── webhook/route.ts  # Stripe events handler
+│       ├── webhook/route.ts  # Stripe events handler
+│       └── portal/route.ts   # POST — crea sesión Stripe Customer Portal
 ├── components/
 │   ├── ui/                   # button.tsx, link-button.tsx, toast.tsx
 │   ├── layout/               # Header, Footer, SpotULogo, AnimatedGrid,
