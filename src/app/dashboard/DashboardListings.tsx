@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, Filter } from "lucide-react";
+import { Plus, Filter, Zap, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -110,6 +110,28 @@ function NoticeHandler() {
 const selectCls =
   "rounded-lg border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 transition-colors";
 
+function BoostInfoBanner() {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed) return null;
+  return (
+    <div className="mb-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      <Zap className="mt-0.5 h-4 w-4 shrink-0 fill-amber-400 text-amber-500" />
+      <div className="flex-1 min-w-0">
+        <span className="font-semibold">¿Qué es el Boost?</span>
+        <span className="ml-1">Tu publicación aparece primero en el feed y en los resultados de búsqueda durante 7 días.</span>
+        <span className="ml-1 text-amber-700">Espacios y anunciantes: $2.99 USD/semana · Agencias: $4.99 USD/semana.</span>
+      </div>
+      <button
+        onClick={() => setDismissed(true)}
+        className="shrink-0 text-amber-600 hover:text-amber-800 transition-colors"
+        aria-label="Cerrar"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
 export function DashboardListings({ listings }: { listings: DashboardListing[] }) {
   const [modalId, setModalId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -147,6 +169,8 @@ export function DashboardListings({ listings }: { listings: DashboardListing[] }
         </div>
       ) : (
         <>
+          <BoostInfoBanner />
+
           {/* Filters */}
           <div className="mb-4 flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
