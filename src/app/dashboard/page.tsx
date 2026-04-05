@@ -18,7 +18,7 @@ const PROFILE_TYPE_LABELS: Record<string, string> = {
   agency: "Agencia de marketing",
 };
 
-function UserTypeBadges({ types }: { types: string[] | null; primaryType: string | null }) {
+function UserTypeBadges({ types, primaryType }: { types: string[] | null; primaryType: string | null }) {
   const all = types ?? (primaryType ? [primaryType] : []);
   if (all.length === 0) return null;
   return (
