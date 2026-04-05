@@ -18,6 +18,20 @@ const PROFILE_TYPE_LABELS: Record<string, string> = {
   agency: "Agencia de marketing",
 };
 
+function UserTypeBadges({ types }: { types: string[] | null; primaryType: string | null }) {
+  const all = types ?? (primaryType ? [primaryType] : []);
+  if (all.length === 0) return null;
+  return (
+    <span className="flex flex-wrap gap-1.5">
+      {all.map((t) => (
+        <span key={t} className="inline-flex rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+          {PROFILE_TYPE_LABELS[t] ?? t}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -27,7 +41,7 @@ export default async function DashboardPage() {
   const [{ data: profile }, { data: listings }, { data: favRows }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name, type, confirmed_interactions_count, user_number, created_at, stripe_customer_id")
+      .select("display_name, type, types, confirmed_interactions_count, user_number, created_at, stripe_customer_id")
       .eq("id", user.id)
       .single(),
     supabase
@@ -60,12 +74,10 @@ export default async function DashboardPage() {
               <h1 className="text-2xl font-bold tracking-tight text-foreground">
                 Hola, {profile.display_name} 👋
               </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Cuenta:{" "}
-                <span className="font-medium text-foreground">
-                  {PROFILE_TYPE_LABELS[profile.type ?? ""] ?? profile.type}
-                </span>
-              </p>
+              <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-muted-foreground">Cuenta:</span>
+                <UserTypeBadges types={profile.types as string[] | null} primaryType={profile.type} />
+              </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {profile.stripe_customer_id && <PortalButton />}

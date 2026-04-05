@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/Header";
 import { PublishForm } from "./PublishForm";
+import { PublishTypeSelector } from "./PublishTypeSelector";
 
 export const metadata = { title: "Publicar" };
 
@@ -13,11 +14,14 @@ export default async function PublishPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("type, whatsapp, email_contact")
+    .select("type, types, whatsapp, email_contact")
     .eq("id", user.id)
     .single();
 
   if (!profile) redirect("/auth/login");
+
+  const userTypes = (profile.types as string[] | null) ?? [profile.type];
+  const isMultiRole = userTypes.length > 1;
 
   return (
     <>
@@ -33,12 +37,21 @@ export default async function PublishPage() {
             </p>
           </div>
 
-          <PublishForm
-            userId={user.id}
-            profileType={profile.type as "advertiser" | "space_owner" | "agency"}
-            defaultWhatsapp={profile.whatsapp}
-            defaultEmail={profile.email_contact}
-          />
+          {isMultiRole ? (
+            <PublishTypeSelector
+              userId={user.id}
+              userTypes={userTypes as ("advertiser" | "space_owner" | "agency")[]}
+              defaultWhatsapp={profile.whatsapp}
+              defaultEmail={profile.email_contact}
+            />
+          ) : (
+            <PublishForm
+              userId={user.id}
+              profileType={profile.type as "advertiser" | "space_owner" | "agency"}
+              defaultWhatsapp={profile.whatsapp}
+              defaultEmail={profile.email_contact}
+            />
+          )}
         </div>
       </main>
     </>

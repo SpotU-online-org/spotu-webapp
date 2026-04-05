@@ -10,9 +10,10 @@ import { useToast } from "@/components/ui/toast";
 type ListingActionsProps = {
   listingId: string;
   status: string;
+  billingStatus: string;
 };
 
-export function ListingActions({ listingId, status }: ListingActionsProps) {
+export function ListingActions({ listingId, status, billingStatus }: ListingActionsProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -39,20 +40,66 @@ export function ListingActions({ listingId, status }: ListingActionsProps) {
     };
   }, [open]);
 
-  async function setStatus(newStatus: "active" | "paused") {
-    setLoading(newStatus);
+  async function pauseListing() {
+    setLoading("paused");
     setOpen(false);
     const supabase = createClient();
     const { error } = await supabase
       .from("listings")
-      .update({ status: newStatus })
+      .update({ status: "paused" })
       .eq("id", listingId);
     setLoading(null);
     if (error) {
-      toast("No se pudo actualizar el estado. Intenta de nuevo.", "error");
+      toast("No se pudo pausar la publicación. Intenta de nuevo.", "error");
     } else {
-      toast(newStatus === "active" ? "Publicación activada." : "Publicación pausada.", "success");
+      toast("Publicación pausada.", "success");
       router.refresh();
+    }
+  }
+
+  async function activateListing() {
+    setLoading("active");
+    setOpen(false);
+
+    // Pioneer and already-active-billing listings: just update status
+    if (billingStatus === "pioneer" || billingStatus === "active") {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("listings")
+        .update({ status: "active" })
+        .eq("id", listingId);
+      setLoading(null);
+      if (error) {
+        toast("No se pudo activar la publicación. Intenta de nuevo.", "error");
+      } else {
+        toast("Publicación activada.", "success");
+        router.refresh();
+      }
+      return;
+    }
+
+    // All other cases: go through billing API
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId, mode: "subscription" }),
+      });
+      const data = await res.json();
+      if (data.pioneer) {
+        toast("¡Publicación activada! Eres usuario pionero.", "success");
+        router.refresh();
+        return;
+      }
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      toast("No se pudo iniciar el pago. Intenta de nuevo.", "error");
+    } catch {
+      toast("Error de conexión. Intenta de nuevo.", "error");
+    } finally {
+      setLoading(null);
     }
   }
 
@@ -104,14 +151,14 @@ export function ListingActions({ listingId, status }: ListingActionsProps) {
 
               {status === "active" ? (
                 <button
-                  onClick={() => setStatus("paused")}
+                  onClick={pauseListing}
                   className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                 >
                   <Pause className="h-3.5 w-3.5" /> Pausar
                 </button>
               ) : (
                 <button
-                  onClick={() => setStatus("active")}
+                  onClick={activateListing}
                   className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
                 >
                   <Play className="h-3.5 w-3.5" /> Activar

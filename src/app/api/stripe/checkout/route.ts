@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   // Get profile — includes user_number for pioneer check and stripe_customer_id
   const { data: profile } = await supabase
     .from("profiles")
-    .select("stripe_customer_id, display_name, user_number")
+    .select("stripe_customer_id, display_name, user_number, total_listings_created, created_at")
     .eq("id", user.id)
     .single();
 
@@ -37,21 +37,13 @@ export async function POST(request: NextRequest) {
   // First PIONEER_THRESHOLD users get 1 year free from their registration date
   const userNumber = profile?.user_number ?? 9999;
   if (userNumber <= PIONEER_THRESHOLD) {
-    // Calculate pioneer expiry: 1 year from profile creation
-    const { data: profileFull } = await supabase
-      .from("profiles")
-      .select("created_at")
-      .eq("id", user.id)
-      .single();
-
-    const pioneerExpiresAt = profileFull?.created_at
-      ? new Date(new Date(profileFull.created_at).getTime() + 365 * 24 * 60 * 60 * 1000)
+    const pioneerExpiresAt = profile?.created_at
+      ? new Date(new Date(profile.created_at).getTime() + 365 * 24 * 60 * 60 * 1000)
       : null;
 
     const pioneerActive = pioneerExpiresAt ? pioneerExpiresAt.getTime() > Date.now() : false;
 
     if (pioneerActive) {
-      // Pioneer year still active — no payment needed
       await supabase
         .from("listings")
         .update({ billing_status: "pioneer", status: "active" })
@@ -92,14 +84,11 @@ export async function POST(request: NextRequest) {
   }
 
   // ── SUBSCRIPTION ───────────────────────────────────────────────────────────
-  // Count how many subscriptions (active/trial/paid) this user has ever had,
-  // excluding the current listing. If 0, this is their first — grant 30-day trial.
-  const { count: prevSubCount } = await supabase
-    .from("listings")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .neq("id", listingId)
-    .not("billing_status", "in", '("trial","cancelled","pioneer")');
+  // total_listings_created tracks ALL listings ever inserted (even deleted ones).
+  // If this user has only ever created 1 listing (the current one), it's their first.
+  // This prevents re-granting the trial if they deleted their first listing.
+  const totalEver = profile?.total_listings_created ?? 1;
+  const isFirstListing = totalEver <= 1;
 
   // Days since listing was created — used to compute remaining trial days
   const daysSinceCreation = Math.floor(
@@ -107,7 +96,6 @@ export async function POST(request: NextRequest) {
   );
   const trialDaysRemaining = Math.max(0, 30 - daysSinceCreation);
 
-  const isFirstListing = (prevSubCount ?? 0) === 0;
   const hasTrialLeft = isFirstListing && trialDaysRemaining > 0;
 
   const priceId = getMonthlyPriceId(listing.type);
