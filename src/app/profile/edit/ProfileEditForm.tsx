@@ -56,6 +56,35 @@ type Profile = {
   avatar_url: string | null;
 };
 
+const COUNTRY_CODES = [
+  { code: "+57", label: "🇨🇴 +57 Colombia" },
+  { code: "+52", label: "🇲🇽 +52 México" },
+  { code: "+1", label: "🇺🇸 +1 USA / Canadá" },
+  { code: "+54", label: "🇦🇷 +54 Argentina" },
+  { code: "+56", label: "🇨🇱 +56 Chile" },
+  { code: "+51", label: "🇵🇪 +51 Perú" },
+  { code: "+58", label: "🇻🇪 +58 Venezuela" },
+  { code: "+593", label: "🇪🇨 +593 Ecuador" },
+  { code: "+502", label: "🇬🇹 +502 Guatemala" },
+  { code: "+503", label: "🇸🇻 +503 El Salvador" },
+  { code: "+504", label: "🇭🇳 +504 Honduras" },
+  { code: "+505", label: "🇳🇮 +505 Nicaragua" },
+  { code: "+506", label: "🇨🇷 +506 Costa Rica" },
+  { code: "+507", label: "🇵🇦 +507 Panamá" },
+  { code: "+591", label: "🇧🇴 +591 Bolivia" },
+  { code: "+595", label: "🇵🇾 +595 Paraguay" },
+  { code: "+598", label: "🇺🇾 +598 Uruguay" },
+  { code: "+34", label: "🇪🇸 +34 España" },
+  { code: "+55", label: "🇧🇷 +55 Brasil" },
+];
+
+/** Split a full phone string (e.g. "+57 300 123 4567") into [code, number] */
+function splitPhone(full: string): [string, string] {
+  const match = COUNTRY_CODES.find((c) => full.startsWith(c.code));
+  if (match) return [match.code, full.slice(match.code.length).trim()];
+  return ["+57", full];
+}
+
 const inputCls =
   "w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors";
 
@@ -78,8 +107,10 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
   const [companyName, setCompanyName] = useState(profile.company_name ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
   const [website, setWebsite] = useState(profile.website ?? "");
-  const [phone, setPhone] = useState(profile.phone ?? "");
-  const [whatsapp, setWhatsapp] = useState(profile.whatsapp ?? "");
+  const [whatsappCode, setWhatsappCode] = useState(() => splitPhone(profile.whatsapp ?? "")[0]);
+  const [whatsappNumber, setWhatsappNumber] = useState(() => splitPhone(profile.whatsapp ?? "")[1]);
+  const [phoneCode, setPhoneCode] = useState(() => splitPhone(profile.phone ?? "")[0]);
+  const [phoneNumber, setPhoneNumber] = useState(() => splitPhone(profile.phone ?? "")[1]);
   const [emailContact, setEmailContact] = useState(profile.email_contact ?? "");
   const [city, setCity] = useState(profile.city ?? "");
   const [country, setCountry] = useState(profile.country ?? "CO");
@@ -175,8 +206,8 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
         company_name: companyName.trim() || null,
         bio: bio.trim() || null,
         website: website.trim() || null,
-        phone: phone.trim() || null,
-        whatsapp: whatsapp.trim() || null,
+        phone: phoneNumber.trim() ? `${phoneCode} ${phoneNumber.trim()}` : null,
+        whatsapp: whatsappNumber.trim() ? `${whatsappCode} ${whatsappNumber.trim()}` : null,
         email_contact: emailContact.trim() || null,
         city: city.trim() || null,
         country: country || "CO",
@@ -314,24 +345,46 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
           />
         </Field>
 
-        <Field label="WhatsApp" hint="Con código de país. Ej: +57 300 123 4567">
-          <input
-            type="tel"
-            value={whatsapp}
-            onChange={(e) => setWhatsapp(e.target.value)}
-            placeholder="+57 300 123 4567"
-            className={inputCls}
-          />
+        <Field label="WhatsApp">
+          <div className="flex gap-2">
+            <select
+              value={whatsappCode}
+              onChange={(e) => setWhatsappCode(e.target.value)}
+              className="rounded-lg border bg-background px-2 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors shrink-0"
+            >
+              {COUNTRY_CODES.map((c) => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+            <input
+              type="tel"
+              value={whatsappNumber}
+              onChange={(e) => setWhatsappNumber(e.target.value)}
+              placeholder="300 123 4567"
+              className={inputCls}
+            />
+          </div>
         </Field>
 
-        <Field label="Teléfono">
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+57 4 123 4567"
-            className={inputCls}
-          />
+        <Field label="Teléfono" hint="Este número se usa para llamadas">
+          <div className="flex gap-2">
+            <select
+              value={phoneCode}
+              onChange={(e) => setPhoneCode(e.target.value)}
+              className="rounded-lg border bg-background px-2 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors shrink-0"
+            >
+              {COUNTRY_CODES.map((c) => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="4 123 4567"
+              className={inputCls}
+            />
+          </div>
         </Field>
 
         <Field label="Sitio web / Portafolio">

@@ -208,10 +208,12 @@ function CountryMultiSelect({
   selected,
   onToggle,
   max,
+  required,
 }: {
   selected: string[];
   onToggle: (v: string) => void;
   max: number;
+  required?: boolean;
 }) {
   const [search, setSearch] = useState("");
   const filtered = search.trim()
@@ -222,6 +224,7 @@ function CountryMultiSelect({
     <div>
       <label className="block text-sm font-medium text-foreground mb-1.5">
         País / Países
+        {required && <span className="ml-1 text-destructive">*</span>}
         <span className="ml-1.5 text-xs font-normal text-muted-foreground">(máx. {max})</span>
       </label>
       {selected.length > 0 && (
@@ -390,6 +393,15 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
     if (profileType === "space_owner") {
       if (step === 0) return !!form.space_type && !!form.space_medium;
       if (step === 1) return form.title.trim().length >= 3 && form.description.trim().length >= 20;
+      if (step === 2) {
+        // Country always required
+        if (form.location_countries.length === 0) return false;
+        // If physical space: city and state also required
+        if (form.space_medium === "physical" && !form.is_remote) {
+          if (!form.location_city.trim() || !form.location_state.trim()) return false;
+        }
+        return true;
+      }
     }
     if (profileType === "agency") {
       if (step === 0) return form.title.trim().length >= 3 && form.services.length > 0;
@@ -615,21 +627,22 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
                     Espacio digital (sin ubicación física fija)
                   </label>
                 </div>
-                {!form.is_remote && (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Ciudad">
-                      <input type="text" value={form.location_city} onChange={(e) => set("location_city", e.target.value)} placeholder="Monterrey" className={inputCls} />
-                    </Field>
-                    <Field label="Estado / Departamento">
-                      <input type="text" value={form.location_state} onChange={(e) => set("location_state", e.target.value)} placeholder="Nuevo León" className={inputCls} />
-                    </Field>
-                  </div>
-                )}
                 <CountryMultiSelect
                   selected={form.location_countries}
                   onToggle={(v) => toggleArr("location_countries", v)}
                   max={MAX_COUNTRIES}
+                  required
                 />
+                {!form.is_remote && (
+                  <>
+                    <Field label="Estado / Departamento" required={form.space_medium === "physical"}>
+                      <input type="text" value={form.location_state} onChange={(e) => set("location_state", e.target.value)} placeholder="Nuevo León" className={inputCls} />
+                    </Field>
+                    <Field label="Ciudad" required={form.space_medium === "physical"}>
+                      <input type="text" value={form.location_city} onChange={(e) => set("location_city", e.target.value)} placeholder="Monterrey" className={inputCls} />
+                    </Field>
+                  </>
+                )}
                 <Field label="Audiencia estimada" hint="Ej: ~15,000 personas por evento">
                   <input type="text" value={form.audience_size} onChange={(e) => set("audience_size", e.target.value)} placeholder="~5,000 personas diarias" maxLength={150} className={inputCls} />
                 </Field>
@@ -946,8 +959,29 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
           </div>
         )}
 
+        {/* Prominent publish CTA — only on last step, after status selector */}
+        {isLastStep && (
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!canSubmit() || loading}
+            className={cn(
+              "mt-5 w-full rounded-xl px-6 py-4 text-base font-semibold text-white bg-primary hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm",
+              (!canSubmit() || loading) && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            {loading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : form.publish_status === "paused" ? (
+              "Guardar publicación"
+            ) : (
+              "Publicar ahora"
+            )}
+          </button>
+        )}
+
         {/* Navigation */}
-        <div className="mt-6 flex gap-3">
+        <div className="mt-4 flex gap-3">
           {step > 0 && (
             <button
               type="button"
@@ -958,24 +992,20 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
             </button>
           )}
 
-          <button
-            type="button"
-            onClick={isLastStep ? handleSubmit : () => setStep((s) => s + 1)}
-            disabled={isLastStep ? (!canSubmit() || loading) : !canAdvance()}
-            className={cn(
-              linkButtonVariants({ size: "lg" }),
-              "flex-1 gap-2",
-              (isLastStep ? (!canSubmit() || loading) : !canAdvance()) && "opacity-50 cursor-not-allowed"
-            )}
-          >
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : isLastStep ? (
-              form.publish_status === "paused" ? "Guardar publicación" : "Publicar ahora"
-            ) : (
-              <>Siguiente <ArrowRight className="h-4 w-4" /></>
-            )}
-          </button>
+          {!isLastStep && (
+            <button
+              type="button"
+              onClick={() => setStep((s) => s + 1)}
+              disabled={!canAdvance()}
+              className={cn(
+                linkButtonVariants({ size: "lg" }),
+                "flex-1 gap-2",
+                !canAdvance() && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              Siguiente <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>
