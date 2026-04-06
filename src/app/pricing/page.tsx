@@ -21,8 +21,6 @@ function usePlans() {
       price: "4.99",
       boostPrice: "2.99",
       highlight: false,
-      accentClass: "border-[oklch(0.702_0.183_56.823)]",
-      badgeClass: "bg-[oklch(0.702_0.183_56.823)]/10 text-[oklch(0.702_0.183_56.823)]",
       features: [
         t("pricing.feature.listing"),
         t("pricing.feature.contacts"),
@@ -40,9 +38,6 @@ function usePlans() {
       price: "9.99",
       boostPrice: "4.99",
       highlight: true,
-      accentClass: "border-primary",
-      badgeClass: "bg-primary/10 text-primary",
-      badge: t("pricing.plan.agency.popular"),
       features: [
         t("pricing.feature.listing"),
         t("pricing.feature.contacts"),
@@ -116,33 +111,65 @@ export default function PricingPage() {
         {/* ── Plans ── */}
         <section className="pb-20 sm:pb-28">
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-6 sm:grid-cols-2">
+
+            {/* Section label */}
+            <p className="mb-6 text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              {t("pricing.per_listing")}
+            </p>
+
+            <div className="grid gap-6 sm:grid-cols-3">
+
+              {/* ── Free card ── */}
+              <div className="flex flex-col rounded-2xl border-2 border-border bg-card p-7 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  {t("pricing.plan.free.name")}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                  {t("pricing.plan.free.desc")}
+                </p>
+                <div className="mt-6 flex items-end gap-1">
+                  <span className="text-5xl font-bold tracking-tight text-foreground">$0</span>
+                  <span className="mb-1 text-sm text-muted-foreground">/ always</span>
+                </div>
+                <div className="mt-3 h-6" />{/* spacer aligns CTA with paid cards */}
+                <Link
+                  href="/auth/register"
+                  className={cn(linkButtonVariants({ variant: "outline", size: "default" }), "mt-7 w-full justify-center")}
+                >
+                  {t("pricing.plan.free.cta")}
+                </Link>
+                <ul className="mt-8 space-y-3">
+                  {[
+                    t("pricing.feature.free.explore"),
+                    t("pricing.feature.free.profiles"),
+                    t("pricing.feature.free.favorites"),
+                    t("pricing.feature.free.contact"),
+                    t("pricing.feature.free.search"),
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm text-foreground">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* ── Paid plans ── */}
               {plans.map((plan) => (
                 <div
                   key={plan.key}
                   className={cn(
-                    "relative flex flex-col rounded-2xl border-2 bg-card p-8 shadow-sm transition-shadow hover:shadow-md",
+                    "flex flex-col rounded-2xl border-2 bg-card p-7 shadow-sm transition-shadow hover:shadow-md",
                     plan.highlight ? "border-primary" : "border-border"
                   )}
                 >
-                  {/* Badge */}
-                  {plan.badge && (
-                    <span className={cn("absolute -top-3.5 left-6 rounded-full px-3 py-1 text-xs font-semibold", plan.badgeClass)}>
-                      {plan.badge}
-                    </span>
-                  )}
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    {plan.name}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                    {plan.desc}
+                  </p>
 
-                  {/* Name + desc */}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                      {plan.name}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                      {plan.desc}
-                    </p>
-                  </div>
-
-                  {/* Price */}
                   <div className="mt-6 flex items-end gap-1">
                     <span className="text-sm font-medium text-muted-foreground">USD</span>
                     <span className="text-5xl font-bold tracking-tight text-foreground">
@@ -151,8 +178,7 @@ export default function PricingPage() {
                     <span className="mb-1 text-sm text-muted-foreground">/{t("pricing.monthly")}</span>
                   </div>
 
-                  {/* Trial note */}
-                  <div className="mt-3 flex flex-wrap gap-3">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">
                       <Check className="h-3 w-3" />
                       {t("pricing.free_trial")}
@@ -162,19 +188,18 @@ export default function PricingPage() {
                     </span>
                   </div>
 
-                  {/* CTA */}
                   <Link
                     href="/auth/register"
                     className={cn(
-                      linkButtonVariants({ size: "default" }),
-                      "mt-7 w-full justify-center",
-                      !plan.highlight && linkButtonVariants({ variant: "outline", size: "default" })
+                      plan.highlight
+                        ? linkButtonVariants({ size: "default" })
+                        : linkButtonVariants({ variant: "outline", size: "default" }),
+                      "mt-7 w-full justify-center"
                     )}
                   >
                     {t("pricing.cta")}
                   </Link>
 
-                  {/* Features */}
                   <ul className="mt-8 space-y-3">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-3 text-sm text-foreground">
@@ -267,7 +292,7 @@ export default function PricingPage() {
 
         {/* ── FAQ ── */}
         <section className="bg-card/60 py-16 sm:py-20">
-          <div className="mx-auto max-w-2xl px-4 sm:px-6">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <h2 className="text-2xl font-bold text-foreground text-center">{t("pricing.faq_title")}</h2>
             <div className="mt-8 rounded-2xl border bg-card px-6">
               {faqs.map((faq) => (
