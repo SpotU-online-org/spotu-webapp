@@ -96,7 +96,11 @@ export default function RegisterPage() {
   }
 
   async function handleGoogleSignUp() {
-    if (!primaryRole || !termsAccepted) return;
+    if (!primaryRole) return;
+    if (!termsAccepted) {
+      setError("Debes aceptar los Términos de uso y la Política de privacidad para continuar.");
+      return;
+    }
     setLoading(true);
     setError(null);
 

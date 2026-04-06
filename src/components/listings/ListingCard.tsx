@@ -19,6 +19,7 @@ type ListingCardProps = {
   images: string[];
   viewsCount: number;
   authorName?: string;
+  authorAvatar?: string | null;
   isBoosted?: boolean;
 };
 
@@ -75,6 +76,7 @@ export function ListingCard({
   priceText,
   images,
   authorName,
+  authorAvatar,
   isBoosted,
 }: ListingCardProps) {
   const config = TYPE_CONFIG[type];
@@ -130,17 +132,22 @@ export function ListingCard({
           )}
         </div>
 
-        {authorName && (
-          <div className="mt-3 border-t pt-3 flex items-center justify-between">
-            <span className="text-xs text-muted-foreground truncate">{authorName}</span>
-            <span className="text-xs font-medium text-primary shrink-0">Ver más →</span>
-          </div>
-        )}
-        {!authorName && (
-          <div className="mt-3 border-t pt-3 flex justify-end">
-            <span className="text-xs font-medium text-primary">Ver más →</span>
-          </div>
-        )}
+        <div className="mt-3 border-t pt-3 flex items-center justify-between gap-2">
+          {authorName && (
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="shrink-0 h-5 w-5 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary uppercase">
+                {authorAvatar ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={authorAvatar} alt={authorName} className="h-full w-full object-cover" />
+                ) : (
+                  authorName[0]
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground truncate">{authorName}</span>
+            </div>
+          )}
+          <span className="text-xs font-medium text-primary shrink-0 ml-auto">Ver más →</span>
+        </div>
       </div>
     </Link>
   );

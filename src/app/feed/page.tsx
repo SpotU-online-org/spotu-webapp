@@ -72,7 +72,8 @@ export default async function FeedPage({ searchParams }: PageProps) {
       location_city, location_state, location_country,
       is_remote, price_min, price_max, price_period, price_text,
       images, views_count, space_type, industry, tags,
-      is_boosted, boost_ends_at
+      is_boosted, boost_ends_at, user_id,
+      profiles!inner(display_name, avatar_url)
     `)
     .eq("status", "active")
     .order("is_featured", { ascending: false })
@@ -216,6 +217,8 @@ export default async function FeedPage({ searchParams }: PageProps) {
                     images={listing.images ?? []}
                     viewsCount={listing.views_count ?? 0}
                     isBoosted={isBoosted}
+                    authorName={(listing.profiles as unknown as { display_name: string | null } | null)?.display_name ?? undefined}
+                    authorAvatar={(listing.profiles as unknown as { avatar_url: string | null } | null)?.avatar_url ?? null}
                   />
                 );
               })}

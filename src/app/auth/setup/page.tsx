@@ -71,6 +71,9 @@ export default function SetupPage() {
       return;
     }
 
+    // Fire-and-forget welcome email for new Google users
+    fetch("/api/email/welcome", { method: "POST" }).catch(() => {});
+
     router.push("/dashboard");
     router.refresh();
   }

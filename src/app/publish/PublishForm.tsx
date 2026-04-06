@@ -92,6 +92,90 @@ const INDUSTRIES = [
   "Educación", "Inmobiliario", "Entretenimiento", "Servicios", "Otro",
 ];
 
+// Country code → phone dial code mapping (common countries for SpotU markets)
+const PHONE_CODES: Record<string, string> = {
+  AR: "+54", AU: "+61", AT: "+43", BE: "+32", BO: "+591", BR: "+55",
+  CA: "+1",  CL: "+56", CN: "+86", CO: "+57", CR: "+506", CU: "+53",
+  DK: "+45", EC: "+593", SV: "+503", ES: "+34", US: "+1",  FI: "+358",
+  FR: "+33", DE: "+49", GT: "+502", HN: "+504", HK: "+852", IN: "+91",
+  ID: "+62", IE: "+353", IT: "+39", JP: "+81", MX: "+52", NL: "+31",
+  NZ: "+64", NI: "+505", NO: "+47", PA: "+507", PY: "+595", PE: "+51",
+  PT: "+351", DO: "+1",  GB: "+44", SE: "+46", CH: "+41", TH: "+66",
+  UY: "+598", VE: "+58",
+};
+
+const COMMON_CODES = [
+  { code: "+57",  label: "🇨🇴 +57  Colombia" },
+  { code: "+52",  label: "🇲🇽 +52  México" },
+  { code: "+1",   label: "🇺🇸 +1   EE.UU. / Canadá" },
+  { code: "+54",  label: "🇦🇷 +54  Argentina" },
+  { code: "+55",  label: "🇧🇷 +55  Brasil" },
+  { code: "+56",  label: "🇨🇱 +56  Chile" },
+  { code: "+51",  label: "🇵🇪 +51  Perú" },
+  { code: "+58",  label: "🇻🇪 +58  Venezuela" },
+  { code: "+593", label: "🇪🇨 +593 Ecuador" },
+  { code: "+34",  label: "🇪🇸 +34  España" },
+  { code: "+44",  label: "🇬🇧 +44  Reino Unido" },
+];
+
+function PhoneInput({
+  value,
+  onChange,
+  suggestedCountries,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  suggestedCountries: string[];
+}) {
+  // Detect existing code prefix from value, or auto-suggest from countries
+  function detectCode(v: string): string {
+    for (const { code } of COMMON_CODES) {
+      if (v.startsWith(code)) return code;
+    }
+    // Suggest from selected countries
+    for (const c of suggestedCountries) {
+      const dial = PHONE_CODES[c];
+      if (dial) return dial;
+    }
+    return "+57";
+  }
+
+  const [code, setCode] = useState(() => detectCode(value));
+  // The number without the code prefix
+  const numberPart = value.startsWith(code) ? value.slice(code.length).trimStart() : value.replace(/^\+\d{1,4}\s?/, "");
+
+  function handleCodeChange(newCode: string) {
+    setCode(newCode);
+    onChange(`${newCode} ${numberPart}`);
+  }
+
+  function handleNumberChange(num: string) {
+    onChange(`${code} ${num}`);
+  }
+
+  return (
+    <div className="flex gap-2">
+      <select
+        value={code}
+        onChange={(e) => handleCodeChange(e.target.value)}
+        className="rounded-lg border bg-background px-2 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors shrink-0 w-36"
+      >
+        {COMMON_CODES.map((c) => (
+          <option key={c.code} value={c.code}>{c.label}</option>
+        ))}
+      </select>
+      <input
+        type="tel"
+        value={numberPart}
+        onChange={(e) => handleNumberChange(e.target.value)}
+        placeholder="300 123 4567"
+        maxLength={15}
+        className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-colors"
+      />
+    </div>
+  );
+}
+
 function MultiChip({
   options,
   selected,
@@ -893,8 +977,12 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
               <p className="mb-4 text-xs text-muted-foreground">Necesitas al menos uno para que te puedan contactar.</p>
             </div>
 
-            <Field label="WhatsApp" hint="Incluye código de país. Ej: +57 300 123 4567">
-              <input type="tel" value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+57 300 123 4567" maxLength={20} className={inputCls} />
+            <Field label="WhatsApp" hint="Selecciona tu país y escribe el número sin el código.">
+              <PhoneInput
+                value={form.whatsapp}
+                onChange={(v) => set("whatsapp", v)}
+                suggestedCountries={form.location_countries}
+              />
             </Field>
             <Field label="Correo electrónico">
               <input type="email" value={form.email_contact} onChange={(e) => set("email_contact", e.target.value)} placeholder="contacto@tuempresa.com" maxLength={100} className={inputCls} />
