@@ -49,6 +49,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   function toggleRole(role: Role) {
     setRoles((prev) =>
@@ -59,7 +60,7 @@ export default function RegisterPage() {
   const primaryRole = roles[0] ?? null;
 
   async function handleEmailSignUp() {
-    if (!primaryRole || !name.trim() || !email.trim() || !password) return;
+    if (!primaryRole || !name.trim() || !email.trim() || !password || !termsAccepted) return;
     setLoading(true);
     setError(null);
 
@@ -95,7 +96,7 @@ export default function RegisterPage() {
   }
 
   async function handleGoogleSignUp() {
-    if (!primaryRole) return;
+    if (!primaryRole || !termsAccepted) return;
     setLoading(true);
     setError(null);
 
@@ -336,6 +337,30 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Terms checkbox */}
+            <label className="mt-5 flex items-start gap-3 cursor-pointer">
+              <div
+                onClick={() => setTermsAccepted((v) => !v)}
+                className={cn(
+                  "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors",
+                  termsAccepted ? "border-transparent bg-primary" : "border-border"
+                )}
+              >
+                {termsAccepted && <Check className="h-3 w-3 text-white" />}
+              </div>
+              <span className="text-sm text-muted-foreground leading-relaxed">
+                {t("auth.register.terms_pre")}{" "}
+                <Link href="/terms" target="_blank" className="font-medium text-primary hover:underline">
+                  {t("auth.register.terms_link")}
+                </Link>{" "}
+                {t("auth.register.and")}{" "}
+                <Link href="/privacy" target="_blank" className="font-medium text-primary hover:underline">
+                  {t("auth.register.privacy_link")}
+                </Link>
+                .
+              </span>
+            </label>
+
             {error && (
               <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">
                 {error}
@@ -345,27 +370,15 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={handleEmailSignUp}
-              disabled={loading || !name.trim() || !email.trim() || password.length < 6}
+              disabled={loading || !name.trim() || !email.trim() || password.length < 6 || !termsAccepted}
               className={cn(
                 linkButtonVariants({ size: "lg" }),
                 "mt-5 w-full h-11",
-                (loading || !name.trim() || !email.trim() || password.length < 6) && "opacity-50 cursor-not-allowed"
+                (loading || !name.trim() || !email.trim() || password.length < 6 || !termsAccepted) && "opacity-50 cursor-not-allowed"
               )}
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("auth.register.submit")}
             </button>
-
-            <p className="mt-4 text-center text-xs text-muted-foreground">
-              {t("auth.register.terms_pre")}{" "}
-              <Link href="/terms" className="underline hover:text-foreground transition-colors">
-                {t("auth.register.terms_link")}
-              </Link>{" "}
-              {t("auth.register.and")}{" "}
-              <Link href="/privacy" className="underline hover:text-foreground transition-colors">
-                {t("auth.register.privacy_link")}
-              </Link>
-              .
-            </p>
 
             <p className="mt-4 text-center text-sm text-muted-foreground">
               {t("auth.register.already")}{" "}

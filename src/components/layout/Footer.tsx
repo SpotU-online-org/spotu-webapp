@@ -13,7 +13,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/60 bg-card/60">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1 space-y-4">
             <SpotULogo variant="horizontal" width={130} height={40} />
             <p className="text-sm text-muted-foreground">
@@ -27,27 +27,23 @@ export function Footer() {
             </h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="/feed"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/feed" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("footer.explore_spaces")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/publish"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/publish" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("footer.publish")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/feed?type=agency"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/feed?type=offer_service" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("footer.find_agencies")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("footer.pricing")}
                 </Link>
               </li>
             </ul>
@@ -83,54 +79,16 @@ export function Footer() {
 
           <div>
             <h3 className="mb-3 text-sm font-semibold text-foreground">
-              {t("footer.resources")}
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/pricing"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {t("footer.pricing")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/feed"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {t("footer.explore_spaces")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/publish"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {t("footer.publish")}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-3 text-sm font-semibold text-foreground">
               {t("footer.legal")}
             </h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="/terms"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("footer.terms")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/privacy"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("footer.privacy")}
                 </Link>
               </li>

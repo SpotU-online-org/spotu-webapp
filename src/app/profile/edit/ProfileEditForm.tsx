@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle, Lock, Camera } from "lucide-react";
+import { Megaphone, MapPin, Briefcase, Check, Loader2, AlertTriangle, Lock, Camera, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -428,6 +428,95 @@ export function ProfileEditForm({ userId, profile }: { userId: string; profile: 
       >
         {(loading || avatarUploading) ? <Loader2 className="h-4 w-4 animate-spin" /> : "Guardar cambios"}
       </button>
+
+      {/* Danger zone */}
+      <DeleteAccountSection userId={userId} />
+    </div>
+  );
+}
+
+function DeleteAccountSection({ userId }: { userId: string }) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const CONFIRMATION_WORD = "ELIMINAR";
+
+  async function handleDelete() {
+    if (confirm !== CONFIRMATION_WORD) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/account/delete", { method: "DELETE" });
+      if (!res.ok) throw new Error("server error");
+      // Sign out locally and redirect to home
+      const { createClient } = await import("@/lib/supabase/client");
+      await createClient().auth.signOut();
+      router.push("/");
+    } catch {
+      toast("No se pudo eliminar la cuenta. Contacta a admin@spotu.online.", "error");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 space-y-4">
+      <div className="flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
+        <div>
+          <h2 className="text-sm font-semibold text-destructive">Eliminar cuenta</h2>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+            Esta acción eliminará permanentemente tu cuenta, todas tus publicaciones, favoritos e interacciones.
+            No se puede deshacer. Las suscripciones activas en Stripe deberán cancelarse desde el portal de suscripciones.
+          </p>
+        </div>
+      </div>
+
+      {!open ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-2 rounded-lg border border-destructive/40 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+        >
+          <Trash2 className="h-4 w-4" />
+          Eliminar mi cuenta
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-xs text-foreground font-medium">
+            Escribe <span className="font-mono font-bold">{CONFIRMATION_WORD}</span> para confirmar:
+          </p>
+          <input
+            type="text"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            placeholder={CONFIRMATION_WORD}
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/40 transition-colors"
+          />
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setOpen(false); setConfirm(""); }}
+              className="flex-1 rounded-lg border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={confirm !== CONFIRMATION_WORD || loading}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white bg-destructive hover:bg-destructive/90 transition-colors",
+                (confirm !== CONFIRMATION_WORD || loading) && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              Eliminar definitivamente
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
