@@ -464,9 +464,11 @@ export function PublishForm({ userId, profileType, defaultWhatsapp, defaultEmail
       target_audience: form.target_audience.trim() || null,
       images: imageUrls.length > 0 ? imageUrls : null,
       tags: form.tags.length > 0 ? form.tags : null,
-      // If user chose paused, save as paused (no billing); if active, billing flow handles it
-      status: form.publish_status === "paused" ? "paused" : "active",
-      billing_status: form.publish_status === "paused" ? "trial" : "trial",
+      // Always start as paused + pending_payment — listing activates after Stripe confirms
+      // (webhook sets status: "active" on checkout.session.completed)
+      // For paused listings, user activates manually later from dashboard
+      status: "paused",
+      billing_status: "pending_payment",
     };
 
     const { data: inserted, error: insertError } = await supabase

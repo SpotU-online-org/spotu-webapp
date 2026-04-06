@@ -26,17 +26,42 @@ export async function POST(request: NextRequest) {
       if (!listingId) break;
 
       if (type === "subscription") {
-        // Subscription started — mark listing active, set paid_until +1 month
-        const paidUntil = new Date();
-        paidUntil.setMonth(paidUntil.getMonth() + 1);
-        await supabase
-          .from("listings")
-          .update({
-            billing_status: "active",
-            paid_until: paidUntil.toISOString(),
-            status: "active",
-          })
-          .eq("id", listingId);
+        // Retrieve the subscription to check if it has a trial period
+        const subId = session.subscription as string | null;
+        let trialEndsAt: string | null = null;
+        let isInTrial = false;
+
+        if (subId) {
+          const sub = await getStripe().subscriptions.retrieve(subId);
+          if (sub.trial_end && sub.trial_end * 1000 > Date.now()) {
+            isInTrial = true;
+            trialEndsAt = new Date(sub.trial_end * 1000).toISOString();
+          }
+        }
+
+        if (isInTrial) {
+          // Card saved, trial running — not yet charged
+          await supabase
+            .from("listings")
+            .update({
+              billing_status: "trial",
+              trial_ends_at: trialEndsAt,
+              status: "active",
+            })
+            .eq("id", listingId);
+        } else {
+          // Immediate subscription — mark active with paid_until
+          const paidUntil = new Date();
+          paidUntil.setMonth(paidUntil.getMonth() + 1);
+          await supabase
+            .from("listings")
+            .update({
+              billing_status: "active",
+              paid_until: paidUntil.toISOString(),
+              status: "active",
+            })
+            .eq("id", listingId);
+        }
       } else if (type === "boost") {
         // Boost paid — set is_boosted, expires in 7 days
         const boostEnds = new Date();

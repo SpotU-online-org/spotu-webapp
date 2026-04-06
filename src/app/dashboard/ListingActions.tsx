@@ -61,8 +61,8 @@ export function ListingActions({ listingId, status, billingStatus }: ListingActi
     setLoading("active");
     setOpen(false);
 
-    // Pioneer and already-active-billing listings: just update status
-    if (billingStatus === "pioneer" || billingStatus === "active") {
+    // Pioneer, active, or trial — subscription already set up, just toggle status
+    if (billingStatus === "pioneer" || billingStatus === "active" || billingStatus === "trial") {
       const supabase = createClient();
       const { error } = await supabase
         .from("listings")

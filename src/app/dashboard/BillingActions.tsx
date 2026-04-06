@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Zap, CreditCard, AlertTriangle, Info } from "lucide-react";
+import { Loader2, Zap, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { linkButtonVariants } from "@/components/ui/link-button";
 import { useToast } from "@/components/ui/toast";
-import { getMonthlyPriceDisplay, getBoostPriceDisplay } from "@/lib/stripe";
+import { getBoostPriceDisplay } from "@/lib/stripe";
 
 type Props = {
   listingId: string;
@@ -23,29 +23,20 @@ function daysLeft(dateStr: string | null): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
 
-export function BillingActions({ listingId, listingType, billingStatus: initialBillingStatus, trialEndsAt, paidUntil, isBoosted, boostEndsAt }: Props) {
+export function BillingActions({ listingId, listingType, billingStatus, trialEndsAt, paidUntil, boostEndsAt }: Props) {
   const { toast } = useToast();
-  const [loading, setLoading] = useState<"sub" | "boost" | null>(null);
-  // Allow local override so pioneer badge shows instantly without page reload
-  const [billingStatus, setBillingStatus] = useState(initialBillingStatus);
-
-  const monthlyPrice = getMonthlyPriceDisplay(listingType);
+  const [loading, setLoading] = useState(false);
   const boostPrice = getBoostPriceDisplay(listingType);
 
-  async function startCheckout(mode: "subscription" | "boost") {
-    setLoading(mode === "subscription" ? "sub" : "boost");
+  async function startBoost() {
+    setLoading(true);
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId, mode }),
+        body: JSON.stringify({ listingId, mode: "boost" }),
       });
       const data = await res.json();
-      if (data.pioneer) {
-        setBillingStatus("pioneer");
-        toast("¡Eres usuario pionero! Tu publicación está activa sin costo.", "success");
-        return;
-      }
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -54,7 +45,7 @@ export function BillingActions({ listingId, listingType, billingStatus: initialB
     } catch {
       toast("Error de conexión. Intenta de nuevo.", "error");
     } finally {
-      setLoading(null);
+      setLoading(false);
     }
   }
 
@@ -62,59 +53,52 @@ export function BillingActions({ listingId, listingType, billingStatus: initialB
   const paidDays = daysLeft(paidUntil);
   const boostDays = daysLeft(boostEndsAt);
 
-  // Pioneer users — no billing needed
+  // Pioneer — free forever (within year)
   if (billingStatus === "pioneer") {
+    return <span className="text-xs text-emerald-600 font-medium">Pionero ✓ Gratis</span>;
+  }
+
+  // Pending payment — listing was just created, user needs to activate via "Activar" in menu
+  if (billingStatus === "pending_payment") {
     return (
-      <span className="text-xs text-emerald-600 font-medium">Pionero ✓ Gratis</span>
+      <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
+        <Clock className="h-3.5 w-3.5" />
+        Activa para publicar
+      </span>
     );
   }
 
+  // Trial — card saved, not yet charged
   if (billingStatus === "trial") {
     return (
-      <div className="flex items-center gap-2 flex-wrap">
-        {trialDays <= 7 && trialDays > 0 && (
-          <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
-            <AlertTriangle className="h-3.5 w-3.5" />
-            Trial vence en {trialDays}d
-          </span>
-        )}
-        {trialDays === 0 && (
-          <span className="flex items-center gap-1 text-xs text-destructive font-medium">
-            <AlertTriangle className="h-3.5 w-3.5" />
-            Trial vencido
-          </span>
-        )}
-        <button
-          onClick={() => startCheckout("subscription")}
-          disabled={loading !== null}
-          className={cn(linkButtonVariants({ size: "sm" }), "gap-1.5 text-xs h-7")}
-        >
-          {loading === "sub" ? <Loader2 className="h-3 w-3 animate-spin" /> : <CreditCard className="h-3 w-3" />}
-          Activar — {monthlyPrice}
-        </button>
-      </div>
+      <span className={cn(
+        "flex items-center gap-1 text-xs font-medium",
+        trialDays <= 5 ? "text-destructive" : trialDays <= 10 ? "text-amber-600" : "text-muted-foreground"
+      )}>
+        {trialDays <= 5 && <AlertTriangle className="h-3.5 w-3.5" />}
+        {trialDays > 0 ? `Trial · ${trialDays}d restantes` : "Trial vencido"}
+      </span>
     );
   }
 
+  // Active subscription — show boost options
   if (billingStatus === "active") {
     return (
       <div className="flex items-center gap-2 flex-wrap">
-        {paidDays <= 7 && paidDays > 0 && (
+        {paidDays > 0 && paidDays <= 7 && (
           <span className="text-xs text-amber-600 font-medium">Renueva en {paidDays}d</span>
         )}
-        {/* Show Boost button when not actively boosted (handles expired boost too) */}
-        {boostDays === 0 && (
+        {boostDays === 0 ? (
           <button
-            onClick={() => startCheckout("boost")}
-            disabled={loading !== null}
-            title="Aparece primero en el feed y búsqueda durante 7 días"
+            onClick={startBoost}
+            disabled={loading}
+            title="Aparece primero en el feed durante 7 días"
             className={cn(linkButtonVariants({ variant: "outline", size: "sm" }), "gap-1.5 text-xs h-7 border-amber-300 text-amber-700 hover:bg-amber-50")}
           >
-            {loading === "boost" ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
+            {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
             Boost — {boostPrice}
           </button>
-        )}
-        {boostDays > 0 && (
+        ) : (
           <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
             <Zap className="h-3 w-3 fill-current" />
             Boost activo {boostDays}d más
@@ -124,47 +108,22 @@ export function BillingActions({ listingId, listingType, billingStatus: initialB
     );
   }
 
+  // Past due — payment failed
   if (billingStatus === "past_due") {
     return (
-      <button
-        onClick={() => startCheckout("subscription")}
-        disabled={loading !== null}
-        className={cn(linkButtonVariants({ size: "sm" }), "gap-1.5 text-xs h-7 bg-destructive hover:bg-destructive/90")}
-      >
-        {loading === "sub" ? <Loader2 className="h-3 w-3 animate-spin" /> : <AlertTriangle className="h-3 w-3" />}
-        Pago pendiente
-      </button>
+      <span className="flex items-center gap-1 text-xs text-destructive font-medium">
+        <AlertTriangle className="h-3.5 w-3.5" />
+        Pago fallido
+      </span>
     );
   }
 
+  // Cancelled / paused (Stripe subscription ended) — user reactivates via kebab menu
   if (billingStatus === "cancelled" || billingStatus === "paused") {
     return (
-      <button
-        onClick={() => startCheckout("subscription")}
-        disabled={loading !== null}
-        className={cn(linkButtonVariants({ size: "sm" }), "gap-1.5 text-xs h-7")}
-      >
-        {loading === "sub" ? <Loader2 className="h-3 w-3 animate-spin" /> : <CreditCard className="h-3 w-3" />}
-        Reactivar — {monthlyPrice}
-      </button>
-    );
-  }
-
-  // pending_payment — listing saved but awaiting checkout completion
-  if (billingStatus === "pending_payment") {
-    return (
-      <div className="flex items-center gap-1.5">
-        <Info className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">Pago pendiente</span>
-        <button
-          onClick={() => startCheckout("subscription")}
-          disabled={loading !== null}
-          className={cn(linkButtonVariants({ size: "sm" }), "gap-1.5 text-xs h-7 ml-1")}
-        >
-          {loading === "sub" ? <Loader2 className="h-3 w-3 animate-spin" /> : <CreditCard className="h-3 w-3" />}
-          Pagar
-        </button>
-      </div>
+      <span className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
+        Cancelada — activa desde ⋯
+      </span>
     );
   }
 
