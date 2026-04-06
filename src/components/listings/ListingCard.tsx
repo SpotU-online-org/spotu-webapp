@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Briefcase, Megaphone, Globe } from "lucide-react";
+import { MapPin, Briefcase, Megaphone, Globe, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ListingImageCarousel } from "./ListingImageCarousel";
 
@@ -19,6 +19,7 @@ type ListingCardProps = {
   images: string[];
   viewsCount: number;
   authorName?: string;
+  isBoosted?: boolean;
 };
 
 const TYPE_CONFIG = {
@@ -71,6 +72,7 @@ export function ListingCard({
   priceText,
   images,
   authorName,
+  isBoosted,
 }: ListingCardProps) {
   const config = TYPE_CONFIG[type];
   const price = formatPrice(priceMin, priceMax, pricePeriod, priceText);
@@ -95,6 +97,12 @@ export function ListingCard({
         <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold z-10", config.color)}>
           {config.label}
         </span>
+        {isBoosted && (
+          <span className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-amber-400/90 px-2 py-1 text-xs font-semibold text-white z-10">
+            <Zap className="h-3 w-3 fill-white" />
+            Boost
+          </span>
+        )}
       </div>
 
       {/* Content */}

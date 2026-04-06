@@ -102,7 +102,8 @@ export function BillingActions({ listingId, listingType, billingStatus: initialB
         {paidDays <= 7 && paidDays > 0 && (
           <span className="text-xs text-amber-600 font-medium">Renueva en {paidDays}d</span>
         )}
-        {!isBoosted && (
+        {/* Show Boost button when not actively boosted (handles expired boost too) */}
+        {boostDays === 0 && (
           <button
             onClick={() => startCheckout("boost")}
             disabled={loading !== null}
@@ -113,10 +114,10 @@ export function BillingActions({ listingId, listingType, billingStatus: initialB
             Boost — {boostPrice}
           </button>
         )}
-        {isBoosted && boostDays > 0 && (
+        {boostDays > 0 && (
           <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
             <Zap className="h-3 w-3 fill-current" />
-            Destacada {boostDays}d más
+            Boost activo {boostDays}d más
           </span>
         )}
       </div>

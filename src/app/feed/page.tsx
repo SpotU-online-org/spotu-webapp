@@ -71,7 +71,8 @@ export default async function FeedPage({ searchParams }: PageProps) {
       id, type, title, description,
       location_city, location_state, location_country,
       is_remote, price_min, price_max, price_period, price_text,
-      images, views_count, space_type, industry, tags
+      images, views_count, space_type, industry, tags,
+      is_boosted, boost_ends_at
     `)
     .eq("status", "active")
     .order("is_featured", { ascending: false })
@@ -91,10 +92,21 @@ export default async function FeedPage({ searchParams }: PageProps) {
     );
   }
 
-  const { data: listings, error } = await query;
+  const { data: rawListings, error } = await query;
 
   // Log error server-side but show empty state to users (avoids confusing error messages)
   if (error) console.error("[feed] Supabase error:", error.message);
+
+  // Sort: active boosts (is_boosted AND boost_ends_at in the future) first
+  const now = Date.now();
+  const listings = rawListings
+    ? [...rawListings].sort((a, b) => {
+        const aActive = !!(a.is_boosted && a.boost_ends_at && new Date(a.boost_ends_at).getTime() > now);
+        const bActive = !!(b.is_boosted && b.boost_ends_at && new Date(b.boost_ends_at).getTime() > now);
+        if (aActive === bActive) return 0;
+        return aActive ? -1 : 1;
+      })
+    : null;
 
   const hasFilters = typeFilter !== "all" || countryFilter || cityFilter || spaceTypeFilter || searchQuery;
 
@@ -184,25 +196,29 @@ export default async function FeedPage({ searchParams }: PageProps) {
 
           {listings && listings.length > 0 && (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {listings.map((listing) => (
-                <ListingCard
-                  key={listing.id}
-                  id={listing.id}
-                  type={listing.type as "want_to_advertise" | "have_space" | "offer_service"}
-                  title={listing.title}
-                  description={listing.description}
-                  locationCity={listing.location_city}
-                  locationState={listing.location_state}
-                  locationCountry={listing.location_country ?? ""}
-                  isRemote={listing.is_remote ?? false}
-                  priceMin={listing.price_min}
-                  priceMax={listing.price_max}
-                  pricePeriod={listing.price_period}
-                  priceText={listing.price_text}
-                  images={listing.images ?? []}
-                  viewsCount={listing.views_count ?? 0}
-                />
-              ))}
+              {listings.map((listing) => {
+                const isBoosted = !!(listing.is_boosted && listing.boost_ends_at && new Date(listing.boost_ends_at).getTime() > now);
+                return (
+                  <ListingCard
+                    key={listing.id}
+                    id={listing.id}
+                    type={listing.type as "want_to_advertise" | "have_space" | "offer_service"}
+                    title={listing.title}
+                    description={listing.description}
+                    locationCity={listing.location_city}
+                    locationState={listing.location_state}
+                    locationCountry={listing.location_country ?? ""}
+                    isRemote={listing.is_remote ?? false}
+                    priceMin={listing.price_min}
+                    priceMax={listing.price_max}
+                    pricePeriod={listing.price_period}
+                    priceText={listing.price_text}
+                    images={listing.images ?? []}
+                    viewsCount={listing.views_count ?? 0}
+                    isBoosted={isBoosted}
+                  />
+                );
+              })}
             </div>
           )}
         </div>
