@@ -57,6 +57,12 @@ export function Header() {
           >
             {t("nav.explore")}
           </Link>
+          <Link
+            href="/pricing"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {t("nav.pricing")}
+          </Link>
           {user && (
             <Link
               href="/publish"
@@ -157,6 +163,13 @@ export function Header() {
                 className="rounded-lg px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
               >
                 {t("nav.explore")}
+              </Link>
+              <Link
+                href="/pricing"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+              >
+                {t("nav.pricing")}
               </Link>
 
               {user ? (
