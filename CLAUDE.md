@@ -118,7 +118,8 @@ supabase/migrations/
 ├── 007_billing.sql                     # ✅ ejecutada
 ├── 008_user_number.sql                 # ✅ ejecutada
 ├── 009_listing_tags.sql                # ✅ ejecutada — tags TEXT[] + GIN index
-└── 010_total_listings_created.sql      # ✅ ejecutada — total_listings_created + AFTER INSERT trigger
+├── 010_total_listings_created.sql      # ✅ ejecutada — total_listings_created + AFTER INSERT trigger
+└── 011_fix_user_numbers.sql            # ✅ ejecutada — renumera user_number eliminando gaps
 ```
 
 ## Auth
@@ -151,11 +152,27 @@ total_listings_created   INTEGER  -- contador incremental (nunca decrece), evita
 - El checkout API usa `total_listings_created ≤ 1` para determinar si aplica el trial de 30 días
 - Esto evita que el usuario borre su 1ra publicación y vuelva a recibir 30 días gratis
 
+### Flujo de publicación con Stripe
+- Todo listing se crea con `status: "paused"` y `billing_status: "pending_payment"`
+- Si el usuario elige "Publicar activa" → form redirige inmediatamente a Stripe checkout
+- Webhook `checkout.session.completed` activa el listing (`status: "active"`) y setea el billing_status correcto
+- Si el usuario elige "Guardar en pausa" → va al dashboard; activa luego desde el menú ⋯
+
 ### Flujo billing checkout (`/api/stripe/checkout`)
-1. **Pioneer** (`user_number ≤ 100` AND `created_at + 365 días > now()`): retorna `{ pioneer: true }`, marca listing con `billing_status: "pioneer"`, sin Stripe
+1. **Pioneer** (`user_number ≤ 100` AND `created_at + 365 días > now()`): retorna `{ pioneer: true }`, marca listing con `billing_status: "pioneer"` y `status: "active"`, sin Stripe
 2. **Boost** (`mode: "boost"`): one-time payment con `getBoostPriceId(listingType)`
-3. **Suscripción, primera vez** (`total_listings_created ≤ 1`): trial_period_days = días restantes de los 30 desde `listing.created_at`, `payment_method_collection: "always"`
-4. **Suscripción, 2da+**: cobro inmediato, sin trial
+3. **Suscripción, primera vez** (`total_listings_created ≤ 1`): trial_period_days = días restantes de los 30 desde `listing.created_at`, `payment_method_collection: "always"`; webhook detecta trial y setea `billing_status: "trial"` + `trial_ends_at`
+4. **Suscripción, 2da+**: cobro inmediato, sin trial; webhook setea `billing_status: "active"` + `paid_until`
+
+### UX de activación en el dashboard
+- **Columna Facturación**: solo informativa — muestra estado del billing y botón Boost si aplica. NO tiene botón "Activar"
+- **Menú ⋯ (kebab)**: único punto para pausar/activar la visibilidad de la publicación
+  - `pioneer`, `active`, `trial` → togglear status directamente (sin Stripe)
+  - `pending_payment`, `cancelled`, `paused` (billing) → redirige a Stripe checkout
+- Pausar/activar en medio de un mes no afecta la suscripción de Stripe (sigue corriendo)
+
+### Pendiente (Fase 2)
+- Cron job para auto-pausar listings con `billing_status = "trial"` y `trial_ends_at` vencido
 
 ## Convenciones de Código
 

@@ -56,6 +56,7 @@ Ejecutar en orden en **Supabase Dashboard → SQL Editor**:
 | `008_user_number.sql` | ✅ ejecutada |
 | `009_listing_tags.sql` | ✅ ejecutada |
 | `010_total_listings_created.sql` | ✅ ejecutada |
+| `011_fix_user_numbers.sql` | ✅ ejecutada |
 
 ## Estructura del proyecto
 
@@ -65,7 +66,8 @@ src/
 │   ├── page.tsx                  # Landing (HomeClient.tsx)
 │   ├── layout.tsx                # Root layout (Providers)
 │   ├── auth/                     # login, register, callback, confirm
-│   ├── dashboard/                # Panel usuario (listings, billing, stats, favoritos)
+│   ├── dashboard/                # Panel usuario (listings, billing, stats)
+│   ├── favorites/                # Publicaciones guardadas (auth-guarded)
 │   ├── feed/                     # Feed público con filtros + búsqueda keyword
 │   ├── listing/[id]/             # Detalle + ViewTracker + contacto + favorito
 │   ├── publish/                  # Selector de tipo (multi-rol) + form multi-paso
