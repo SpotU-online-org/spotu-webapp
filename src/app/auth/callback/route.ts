@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
+import { welcomeEmailHtml } from "@/lib/emails/welcome";
 import { NextRequest, NextResponse } from "next/server";
 
 const VALID_ROLES = ["advertiser", "space_owner", "agency"] as const;
@@ -51,9 +53,11 @@ export async function GET(request: NextRequest) {
   // Check if this is a new user who needs to select their role
   const { data: profile } = await supabase
     .from("profiles")
-    .select("setup_completed, type")
+    .select("setup_completed, type, display_name")
     .eq("id", data.user.id)
     .single();
+
+  const isNewUser = !profile?.setup_completed;
 
   const response = NextResponse.redirect(new URL(next, origin));
   if (cookieRole) response.cookies.delete("spotu_pending_role");
@@ -64,6 +68,18 @@ export async function GET(request: NextRequest) {
       .from("profiles")
       .update({ type: primaryRole, types, setup_completed: true })
       .eq("id", data.user.id);
+
+    // Send welcome email to new users
+    if (isNewUser && data.user.email) {
+      const name = (profile?.display_name as string | null) ?? data.user.user_metadata?.full_name ?? data.user.user_metadata?.name ?? "";
+      getResend().emails.send({
+        from: FROM_EMAIL,
+        to: data.user.email,
+        subject: "¡Bienvenido a SpotU!",
+        html: welcomeEmailHtml(name as string),
+      }).catch(() => { /* fire-and-forget, don't block redirect */ });
+    }
+
     return response;
   }
 

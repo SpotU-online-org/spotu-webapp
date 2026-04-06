@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, User, Menu, X, Star } from "lucide-react";
+import { LogOut, User, Menu, X } from "lucide-react";
 import { SpotULogo } from "./SpotULogo";
 import { LanguageToggle, useI18n } from "./LanguageToggle";
 import { linkButtonVariants } from "@/components/ui/link-button";
@@ -105,7 +105,6 @@ export function Header() {
                         {t("nav.publish")}
                       </Link>
                       <Link href="/favorites" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
-                        <Star className="h-3.5 w-3.5 text-amber-500" />
                         Mis favoritos
                       </Link>
                       <Link href="/profile/edit" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors">
@@ -184,8 +183,7 @@ export function Header() {
                   <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="rounded-lg px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                     Dashboard
                   </Link>
-                  <Link href="/favorites" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-                    <Star className="h-3.5 w-3.5 text-amber-500" />
+                  <Link href="/favorites" onClick={() => setMobileOpen(false)} className="rounded-lg px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                     Mis favoritos
                   </Link>
                   <Link href="/profile/edit" onClick={() => setMobileOpen(false)} className="rounded-lg px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors">

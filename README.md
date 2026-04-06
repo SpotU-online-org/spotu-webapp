@@ -38,6 +38,8 @@ STRIPE_PRICE_LISTING_MONTHLY=
 STRIPE_PRICE_LISTING_BOOST=
 STRIPE_PRICE_AGENCY_MONTHLY=
 STRIPE_PRICE_AGENCY_BOOST=
+RESEND_API_KEY=
+CRON_SECRET=          # secreto arbitrario para proteger el endpoint del cron
 ```
 
 ## Migraciones Supabase
@@ -128,11 +130,11 @@ El Boost posiciona la publicación en primer lugar en el feed y búsqueda durant
 - Dashboard muestra badge "Pionero SpotU" con contador regresivo de días restantes
 
 **Cuando vence el año gratuito:**
-- El dashboard muestra aviso: "Tu año pionero ha concluido"
-- Se les solicita agregar un método de pago vía portal Stripe
-- A partir de ese momento se aplican las tarifas normales por cada publicación activa
-- El cobro de cada publicación es mensual, por suscripción independiente
-- Se envía email de aviso 7 días antes del vencimiento del año gratuito *(Fase 2 — Resend)*
+- Un cron job diario (`/api/cron/expire-pioneers`, 6:00 AM UTC) detecta pioneros expirados
+- Pausa automáticamente **todas sus publicaciones activas** (`billing_status: "cancelled"`, `status: "paused"`)
+- Envía email informando que el año gratuito concluyó y que deben reactivar sus publicaciones
+- Al reactivar desde el dashboard, entran al flujo normal (checkout Stripe, cobro inmediato)
+- Se envía email de aviso 7 días antes del vencimiento *(pendiente — Resend)*
 
 **Excepción de prueba:** la cuenta `spotu.online@gmail.com` (administrador) tiene `user_number = 9999` y no recibe trato de pionero, permitiendo pruebas del flujo de pago.
 
@@ -158,7 +160,7 @@ El Boost posiciona la publicación en primer lugar en el feed y búsqueda durant
 
 #### Publicación creada como pausada (cualquier usuario no pionero)
 - No se inicia checkout ni suscripción al crear
-- El listing queda con `status: "paused"`, `billing_status: "trial"`
+- El listing queda con `status: "paused"`, `billing_status: "pending_payment"`
 - Al activar desde el dashboard: entra al flujo correspondiente (ver arriba)
 - **El trial de 30 días se calcula desde la fecha de creación del listing**, no desde la activación
   - Ejemplo: si creas un listing pausado y lo activas 15 días después, solo tienes 15 días de trial restantes
@@ -187,14 +189,17 @@ El Boost posiciona la publicación en primer lugar en el feed y búsqueda durant
 
 ---
 
-### Emails automáticos *(Fase 2 — Resend, pendiente)*
+### Emails automáticos (Resend)
 
-- Bienvenida al registrarse
-- Confirmación de listing activo + fecha de primer cobro
-- 7 días antes de que venza el trial de 30 días
-- 7 días antes de renovación mensual
-- 7 días antes de que venza el año gratuito de pionero
-- Pago fallido (complementario al dunning de Stripe)
+| Email | Estado |
+|---|---|
+| Bienvenida al registrarse | ✅ implementado |
+| Aviso de expiración año pionero (al vencer) | ✅ implementado (cron diario) |
+| Confirmación de listing activo + fecha de primer cobro | pendiente |
+| 7 días antes de que venza el trial de 30 días | pendiente |
+| 7 días antes de renovación mensual | pendiente |
+| 7 días antes de que venza el año gratuito de pionero | pendiente |
+| Pago fallido (complementario al dunning de Stripe) | pendiente |
 
 ---
 
@@ -228,13 +233,15 @@ Disponible en el dashboard para usuarios que hayan realizado al menos un pago. P
 - Billing bypass fix: "Activar" en menú de listing pasa por checkout API (no Supabase directo)
 - Portal de suscripciones Stripe (PortalButton en dashboard para usuarios con stripe_customer_id)
 - PioneerBanner con countdown regresivo de días restantes del año gratuito
+- Emails Resend: bienvenida al registrarse + aviso de expiración de año pionero
+- Cron job diario (Vercel Cron): auto-pausa listings de pioneros expirados y envía email
 - Páginas legales: `/privacy` y `/terms` en español
 - Deploy en Vercel + dominio `spotu.online`
 
 ### 🚧 Pendiente (Fase 2)
 
 - [ ] Búsqueda semántica con IA (Claude API)
-- [ ] Notificaciones por email (Resend) — bienvenida, trial por vencer, renovación, pionero expirando
+- [ ] Notificaciones por email restantes — trial por vencer, renovación, pionero expirando 7d antes
 - [ ] Contratos digitales con firma simple
 - [ ] Analytics básico (gráficas de vistas/contactos en el tiempo)
 - [ ] Interacciones cerradas (migración 002 lista, UI pendiente)

@@ -32,7 +32,7 @@ Mercados objetivo: Colombia, norte de México (Monterrey, Chihuahua) y Florida (
 - **Backend:** Supabase (PostgreSQL, Auth, Storage)
 - **IA:** Claude API (búsqueda semántica, matching) — Fase 2
 - **Pagos:** Stripe live (USD), API version `2026-03-25.dahlia`
-- **Email:** Resend — pendiente de implementar
+- **Email:** Resend (`resend` package instalado). Emails implementados: bienvenida (auth callback) + expiración año pionero (cron). Pendiente: trial por vencer, renovación, pionero expirando 7d antes.
 - **Deploy:** Vercel (producción activa en spotu.online)
 - **Package manager:** pnpm
 
@@ -171,8 +171,10 @@ total_listings_created   INTEGER  -- contador incremental (nunca decrece), evita
   - `pending_payment`, `cancelled`, `paused` (billing) → redirige a Stripe checkout
 - Pausar/activar en medio de un mes no afecta la suscripción de Stripe (sigue corriendo)
 
-### Pendiente (Fase 2)
-- Cron job para auto-pausar listings con `billing_status = "trial"` y `trial_ends_at` vencido
+### Cron jobs (Vercel Cron — `vercel.json`)
+- `/api/cron/expire-pioneers` — corre diario a las 6:00 AM UTC. Pausa listings de pioneros con año vencido y envía email.
+- Endpoint protegido con `Authorization: Bearer CRON_SECRET` (env var requerida en Vercel y local).
+- Pendiente: cron para auto-pausar listings con `billing_status = "trial"` y `trial_ends_at` vencido.
 
 ## Convenciones de Código
 
