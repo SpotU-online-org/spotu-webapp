@@ -26,16 +26,19 @@ const TYPE_CONFIG = {
   have_space: {
     label: "Espacio",
     color: "bg-[oklch(0.702_0.183_56.823)]/10 text-[oklch(0.702_0.183_56.823)]",
+    badgeClass: "bg-[oklch(0.702_0.183_56.823)] text-white",
     Icon: MapPin,
   },
   want_to_advertise: {
     label: "Solicitud",
     color: "bg-primary/10 text-primary",
+    badgeClass: "bg-primary text-primary-foreground",
     Icon: Megaphone,
   },
   offer_service: {
     label: "Agencia",
     color: "bg-[oklch(0.696_0.17_162.48)]/10 text-[oklch(0.696_0.17_162.48)]",
+    badgeClass: "bg-[oklch(0.696_0.17_162.48)] text-white",
     Icon: Briefcase,
   },
 } as const;
@@ -94,7 +97,7 @@ export function ListingCard({
             <config.Icon className="h-10 w-10 text-muted-foreground/30" />
           </div>
         )}
-        <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold z-10", config.color)}>
+        <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold z-10", config.badgeClass)}>
           {config.label}
         </span>
         {isBoosted && (

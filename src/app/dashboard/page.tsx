@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { DashboardListings } from "./DashboardListings";
 import { PioneerBanner } from "./PioneerBanner";
 import { PortalButton } from "./PortalButton";
-import { ListingCard } from "@/components/listings/ListingCard";
 import { PIONEER_THRESHOLD } from "@/lib/stripe";
 
 const PROFILE_TYPE_LABELS: Record<string, string> = {
@@ -38,10 +37,10 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/auth/login");
 
-  const [{ data: profile }, { data: listings }, { data: favRows }] = await Promise.all([
+  const [{ data: profile }, { data: listings }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name, type, types, confirmed_interactions_count, user_number, created_at, stripe_customer_id")
+      .select("display_name, type, types, confirmed_interactions_count, user_number, created_at, stripe_customer_id, whatsapp, email_contact")
       .eq("id", user.id)
       .single(),
     supabase
@@ -49,12 +48,6 @@ export default async function DashboardPage() {
       .select("id, type, title, status, views_count, contacts_count, created_at, is_featured, billing_status, trial_ends_at, paid_until, is_boosted, boost_ends_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
-    supabase
-      .from("favorites")
-      .select("listing_id, listings(id, type, title, description, location_city, location_state, location_country, is_remote, price_min, price_max, price_period, price_text, images)")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(12),
   ]);
 
   if (!profile) redirect("/auth/login");
@@ -82,6 +75,13 @@ export default async function DashboardPage() {
             <div className="flex items-center gap-2 flex-wrap">
               {profile.stripe_customer_id && <PortalButton />}
               <Link
+                href="/favorites"
+                className={cn(linkButtonVariants({ variant: "outline", size: "default" }), "gap-2 shrink-0")}
+              >
+                <Star className="h-4 w-4" />
+                Mis favoritos
+              </Link>
+              <Link
                 href="/publish"
                 className={cn(linkButtonVariants({ size: "default" }), "gap-2 shrink-0")}
               >
@@ -90,6 +90,20 @@ export default async function DashboardPage() {
               </Link>
             </div>
           </div>
+
+          {/* Contact info alert */}
+          {!profile.whatsapp && !profile.email_contact && (
+            <div className="mt-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <span className="mt-0.5 shrink-0 text-base">💬</span>
+              <div className="flex-1 min-w-0">
+                <span className="font-semibold">Completa tu información de contacto.</span>
+                {" "}Los usuarios que te contacten necesitan una forma de comunicarse contigo.{" "}
+                <a href="/profile/edit" className="underline font-medium hover:text-amber-900 transition-colors">
+                  Ir a mi perfil →
+                </a>
+              </div>
+            </div>
+          )}
 
           {/* Pioneer banner */}
           {profile.user_number && profile.user_number <= PIONEER_THRESHOLD && profile.created_at && (
@@ -124,47 +138,6 @@ export default async function DashboardPage() {
             <DashboardListings listings={listings ?? []} />
           </div>
 
-          {/* Favorites */}
-          {favRows && favRows.length > 0 && (
-            <div className="mt-10">
-              <div className="flex items-center gap-2 mb-4">
-                <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                <h2 className="text-lg font-semibold text-foreground">Mis favoritos</h2>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {favRows.map((row) => {
-                  const l = row.listings as unknown as {
-                    id: string; type: string; title: string; description: string;
-                    location_city: string | null; location_state: string | null;
-                    location_country: string | null; is_remote: boolean | null;
-                    price_min: number | null; price_max: number | null;
-                    price_period: string | null; price_text: string | null;
-                    images: string[] | null;
-                  } | null;
-                  if (!l) return null;
-                  return (
-                    <ListingCard
-                      key={l.id}
-                      id={l.id}
-                      type={l.type as "want_to_advertise" | "have_space" | "offer_service"}
-                      title={l.title}
-                      description={l.description}
-                      locationCity={l.location_city}
-                      locationState={l.location_state}
-                      locationCountry={l.location_country}
-                      isRemote={l.is_remote}
-                      priceMin={l.price_min}
-                      priceMax={l.price_max}
-                      pricePeriod={l.price_period}
-                      priceText={l.price_text}
-                      images={Array.isArray(l.images) ? l.images : []}
-                      viewsCount={0}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </main>
       <Footer />

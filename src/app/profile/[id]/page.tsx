@@ -38,7 +38,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
     supabase
       .from("profiles")
       .select(
-        "display_name, company_name, bio, website, whatsapp, email_contact, city, country, type, types, is_verified, confirmed_interactions_count"
+        "display_name, company_name, bio, website, whatsapp, email_contact, city, country, type, types, is_verified, confirmed_interactions_count, avatar_url"
       )
       .eq("id", id)
       .single(),
@@ -72,8 +72,13 @@ export default async function PublicProfilePage({ params }: PageProps) {
           <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
               {/* Avatar */}
-              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-3xl font-bold text-primary uppercase shadow-sm">
-                {profile.display_name?.[0] ?? "?"}
+              <div className="shrink-0 h-20 w-20 rounded-2xl overflow-hidden bg-primary/10 flex items-center justify-center text-3xl font-bold text-primary uppercase shadow-sm">
+                {profile.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profile.avatar_url} alt={profile.display_name ?? ""} className="h-full w-full object-cover" />
+                ) : (
+                  profile.display_name?.[0] ?? "?"
+                )}
               </div>
 
               {/* Info */}
