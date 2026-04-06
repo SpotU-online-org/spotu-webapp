@@ -88,18 +88,18 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/pricing"
+                  href="/feed"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {t("footer.pricing")}
+                  {t("footer.explore_spaces")}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/publish"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {t("footer.about")}
+                  {t("footer.publish")}
                 </Link>
               </li>
             </ul>
