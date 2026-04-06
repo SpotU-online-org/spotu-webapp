@@ -53,9 +53,29 @@ export function BillingActions({ listingId, listingType, billingStatus, trialEnd
   const paidDays = daysLeft(paidUntil);
   const boostDays = daysLeft(boostEndsAt);
 
-  // Pioneer — free forever (within year)
+  // Pioneer — free subscription, but boost is still purchasable
   if (billingStatus === "pioneer") {
-    return <span className="text-xs text-emerald-600 font-medium">Pionero ✓ Gratis</span>;
+    return (
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs text-emerald-600 font-medium">Pionero ✓ Gratis</span>
+        {boostDays === 0 ? (
+          <button
+            onClick={startBoost}
+            disabled={loading}
+            title="Aparece primero en el feed durante 7 días"
+            className={cn(linkButtonVariants({ variant: "outline", size: "sm" }), "gap-1.5 text-xs h-7 border-amber-300 text-amber-700 hover:bg-amber-50")}
+          >
+            {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
+            Boost — {boostPrice}
+          </button>
+        ) : (
+          <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
+            <Zap className="h-3 w-3 fill-current" />
+            Boost activo {boostDays}d más
+          </span>
+        )}
+      </div>
+    );
   }
 
   // Pending payment — listing was just created, user needs to activate via "Activar" in menu
