@@ -53,32 +53,38 @@ export function BillingActions({ listingId, listingType, billingStatus, trialEnd
   const paidDays = daysLeft(paidUntil);
   const boostDays = daysLeft(boostEndsAt);
 
-  // Pioneer — free subscription, but boost is still purchasable
+  // Boost section — reused for pioneer and active
+  const boostSection = boostDays > 0 ? (
+    <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
+      <Zap className="h-3 w-3 fill-current" />
+      Boost activo · {boostDays}d restantes
+    </span>
+  ) : (
+    <button
+      onClick={startBoost}
+      disabled={loading}
+      title="Aparece primero en el feed durante 7 días"
+      className={cn(
+        linkButtonVariants({ variant: "outline", size: "sm" }),
+        "gap-1.5 text-xs h-7 border-amber-300 text-amber-700 hover:bg-amber-50"
+      )}
+    >
+      {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
+      Boost — {boostPrice}
+    </button>
+  );
+
+  // Pioneer — free subscription, boost is paid
   if (billingStatus === "pioneer") {
     return (
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-col gap-1.5">
         <span className="text-xs text-emerald-600 font-medium">Pionero ✓ Gratis</span>
-        {boostDays === 0 ? (
-          <button
-            onClick={startBoost}
-            disabled={loading}
-            title="Aparece primero en el feed durante 7 días"
-            className={cn(linkButtonVariants({ variant: "outline", size: "sm" }), "gap-1.5 text-xs h-7 border-amber-300 text-amber-700 hover:bg-amber-50")}
-          >
-            {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
-            Boost — {boostPrice}
-          </button>
-        ) : (
-          <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
-            <Zap className="h-3 w-3 fill-current" />
-            Boost activo {boostDays}d más
-          </span>
-        )}
+        {boostSection}
       </div>
     );
   }
 
-  // Pending payment — listing was just created, user needs to activate via "Activar" in menu
+  // Pending payment — needs activation from ··· menu
   if (billingStatus === "pending_payment") {
     return (
       <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
@@ -101,29 +107,14 @@ export function BillingActions({ listingId, listingType, billingStatus, trialEnd
     );
   }
 
-  // Active subscription — show boost options
+  // Active subscription
   if (billingStatus === "active") {
     return (
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-col gap-1.5">
         {paidDays > 0 && paidDays <= 7 && (
           <span className="text-xs text-amber-600 font-medium">Renueva en {paidDays}d</span>
         )}
-        {boostDays === 0 ? (
-          <button
-            onClick={startBoost}
-            disabled={loading}
-            title="Aparece primero en el feed durante 7 días"
-            className={cn(linkButtonVariants({ variant: "outline", size: "sm" }), "gap-1.5 text-xs h-7 border-amber-300 text-amber-700 hover:bg-amber-50")}
-          >
-            {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
-            Boost — {boostPrice}
-          </button>
-        ) : (
-          <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
-            <Zap className="h-3 w-3 fill-current" />
-            Boost activo {boostDays}d más
-          </span>
-        )}
+        {boostSection}
       </div>
     );
   }
@@ -138,10 +129,10 @@ export function BillingActions({ listingId, listingType, billingStatus, trialEnd
     );
   }
 
-  // Cancelled / paused (Stripe subscription ended) — user reactivates via kebab menu
+  // Cancelled / paused
   if (billingStatus === "cancelled" || billingStatus === "paused") {
     return (
-      <span className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
+      <span className="text-xs text-muted-foreground font-medium">
         Cancelada — activa desde ⋯
       </span>
     );

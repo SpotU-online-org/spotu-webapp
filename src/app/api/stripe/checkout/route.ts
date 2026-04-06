@@ -34,9 +34,9 @@ export async function POST(request: NextRequest) {
     .single();
 
   // ── PIONEER CHECK ──────────────────────────────────────────────────────────
-  // First PIONEER_THRESHOLD users get 1 year free from their registration date
+  // First PIONEER_THRESHOLD users get 1 free subscription year — boosts are still paid.
   const userNumber = profile?.user_number ?? 9999;
-  if (userNumber <= PIONEER_THRESHOLD) {
+  if (mode !== "boost" && userNumber <= PIONEER_THRESHOLD) {
     const pioneerExpiresAt = profile?.created_at
       ? new Date(new Date(profile.created_at).getTime() + 365 * 24 * 60 * 60 * 1000)
       : null;
