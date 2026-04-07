@@ -115,7 +115,7 @@ export function ListingCard({
         <h3 className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2 flex-1">
+        <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">
           {description}
         </p>
 
