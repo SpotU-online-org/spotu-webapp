@@ -73,7 +73,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
       is_remote, price_min, price_max, price_period, price_text,
       images, views_count, space_type, industry, tags,
       is_boosted, boost_ends_at, user_id,
-      profiles(display_name, avatar_url)
+      profiles!listings_user_id_fkey(display_name, avatar_url)
     `)
     .eq("status", "active")
     .order("is_featured", { ascending: false })
@@ -96,7 +96,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
   const { data: rawListings, error } = await query;
 
   // Log error server-side but show empty state to users (avoids confusing error messages)
-  console.log("[feed] rawListings count:", rawListings?.length, "error:", error?.message);
+  if (error) console.error("[feed] Supabase error:", error.message);
 
   // Sort: active boosts (is_boosted AND boost_ends_at in the future) first
   const now = Date.now();
@@ -218,7 +218,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
                     viewsCount={listing.views_count ?? 0}
                     isBoosted={isBoosted}
                     authorName={(listing.profiles as unknown as { display_name: string | null } | null)?.display_name ?? undefined}
-                    authorAvatar={(listing.profiles as unknown as { avatar_url: string | null } | null)?.avatar_url ?? null}
+                    authorAvatar={(listing.profiles as unknown as { avatar_url: string | null } | null)?.avatar_url ?? undefined}
                   />
                 );
               })}
