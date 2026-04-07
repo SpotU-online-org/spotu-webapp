@@ -233,8 +233,13 @@ Disponible en el dashboard para usuarios que hayan realizado al menos un pago. P
 - Billing bypass fix: "Activar" en menú de listing pasa por checkout API (no Supabase directo)
 - Portal de suscripciones Stripe (PortalButton en dashboard para usuarios con stripe_customer_id)
 - PioneerBanner con countdown regresivo de días restantes del año gratuito
-- Emails Resend: bienvenida al registrarse + aviso de expiración de año pionero
+- Emails Resend: bienvenida al registrarse (email/password y Google OAuth) + aviso de expiración de año pionero
 - Cron job diario (Vercel Cron): auto-pausa listings de pioneros expirados y envía email
+- Boost habilitado para usuarios pioneros (suscripción gratis, boost de pago)
+- Fix constraint `billing_status`: agrega `pending_payment` y `pioneer` (migración 012)
+- Selector de código de país para WhatsApp en formulario de publicación
+- Avatar del autor en cards del feed (join con `profiles`)
+- Página 404 personalizada (`/not-found.tsx`)
 - Páginas legales: `/privacy` y `/terms` en español
 - Deploy en Vercel + dominio `spotu.online`
 
@@ -246,6 +251,8 @@ Disponible en el dashboard para usuarios que hayan realizado al menos un pago. P
 - [ ] Analytics básico (gráficas de vistas/contactos en el tiempo)
 - [ ] Interacciones cerradas (migración 002 lista, UI pendiente)
 - [ ] Número de WhatsApp real para SpotU (actualmente placeholder)
+- [ ] Cron para auto-pausar listings con `billing_status = "trial"` y `trial_ends_at` vencido
+- [ ] Cron para resetear `is_boosted` cuando `boost_ends_at` vence
 
 ## Autor
 

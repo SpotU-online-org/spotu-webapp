@@ -92,18 +92,26 @@ src/
 │   ├── profile/edit/         # Editar perfil propio (avatar, datos, país — lista completa ~100)
 │   ├── privacy/              # Política de privacidad (ES)
 │   ├── terms/                # Términos de uso (ES)
-│   └── api/stripe/
-│       ├── checkout/route.ts # POST — lógica: pioneer→skip / boost→one-time / trial / inmediato
-│       ├── webhook/route.ts  # 4 eventos: completed, payment_succeeded, payment_failed, sub.deleted
-│       └── portal/route.ts   # POST — crea sesión Stripe Customer Portal
+│   ├── not-found.tsx         # Página 404 personalizada
+│   └── api/
+│       ├── stripe/
+│       │   ├── checkout/route.ts # POST — pioneer→skip / boost→one-time / trial / inmediato
+│       │   ├── webhook/route.ts  # 4 eventos Stripe
+│       │   └── portal/route.ts   # POST — Stripe Customer Portal
+│       ├── email/welcome/route.ts # POST — envía correo de bienvenida (usado por /auth/setup)
+│       └── cron/expire-pioneers/route.ts # GET — cron diario, pausa pioneros expirados
 ├── components/
 │   ├── ui/                   # button.tsx, link-button.tsx, toast.tsx
 │   ├── layout/               # Header, Footer, SpotULogo, AnimatedGrid,
 │   │                         #   LanguageToggle, Providers, RevealOnScroll
-│   └── listings/             # ListingCard, FavoriteButton
+│   └── listings/             # ListingCard (con avatar autor), FavoriteButton
 ├── lib/
 │   ├── supabase/             # client.ts, server.ts, middleware.ts
 │   ├── stripe.ts             # getStripe(), STRIPE_PRICES, helpers precio
+│   ├── resend.ts             # getResend() singleton, FROM_EMAIL
+│   ├── emails/
+│   │   ├── welcome.ts        # HTML correo de bienvenida
+│   │   └── pioneer-expired.ts # HTML correo expiración año pionero
 │   └── utils.ts              # cn()
 ├── types/                    # Profile, Listing, ClosedInteraction
 └── constants/                # USER_ROLES, SPACE_CATEGORIES, AGENCY_SERVICES,
@@ -119,19 +127,22 @@ supabase/migrations/
 ├── 008_user_number.sql                 # ✅ ejecutada
 ├── 009_listing_tags.sql                # ✅ ejecutada — tags TEXT[] + GIN index
 ├── 010_total_listings_created.sql      # ✅ ejecutada — total_listings_created + AFTER INSERT trigger
-└── 011_fix_user_numbers.sql            # ✅ ejecutada — renumera user_number eliminando gaps
+├── 011_fix_user_numbers.sql            # ✅ ejecutada — renumera user_number eliminando gaps
+└── 012_fix_billing_status_constraint.sql # ✅ ejecutada — agrega 'pending_payment' y 'pioneer' al CHECK constraint
 ```
 
 ## Auth
 - Registro: multi-rol con checkboxes, `primaryRole = roles[0]`, se guarda en `options.data.role` / cookie `spotu_pending_role`
 - `types[]` cookie `spotu_pending_types` para múltiples roles
-- Callback `/auth/callback`: exchange code → UPDATE profiles SET type, types, setup_completed
+- Callback `/auth/callback`: exchange code → UPDATE profiles SET type, types, setup_completed → envía welcome email si es usuario nuevo
+- Google OAuth nuevo usuario sin role en cookie → redirige a `/auth/setup` → al completar setup envía welcome email vía `/api/email/welcome`
 - Protección en proxy.ts: `/dashboard`, `/publish`, `/settings`, `/profile/edit` requieren sesión
-- Google OAuth: configurado en Supabase Dashboard
+- Google OAuth: configurado en Supabase Dashboard + Google Cloud Console (OAuth consent screen verificado en spotu.online)
+- Correos transaccionales (confirm, reset password): vía SMTP de Resend configurado en Supabase → Authentication → SMTP Settings
 
 ## Billing — Columnas en listings
 ```sql
-billing_status  TEXT  -- 'trial'|'active'|'past_due'|'paused'|'cancelled'|'pioneer'
+billing_status  TEXT  -- 'pending_payment'|'trial'|'active'|'past_due'|'paused'|'cancelled'|'pioneer'
 trial_ends_at   TIMESTAMPTZ
 paid_until      TIMESTAMPTZ
 stripe_checkout_session_id TEXT
