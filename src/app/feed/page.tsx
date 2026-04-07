@@ -96,7 +96,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
   const { data: rawListings, error } = await query;
 
   // Log error server-side but show empty state to users (avoids confusing error messages)
-  if (error) console.error("[feed] Supabase error:", error.message);
+  console.log("[feed] rawListings count:", rawListings?.length, "error:", error?.message);
 
   // Sort: active boosts (is_boosted AND boost_ends_at in the future) first
   const now = Date.now();
