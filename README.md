@@ -59,6 +59,7 @@ Ejecutar en orden en **Supabase Dashboard → SQL Editor**:
 | `009_listing_tags.sql` | ✅ ejecutada |
 | `010_total_listings_created.sql` | ✅ ejecutada |
 | `011_fix_user_numbers.sql` | ✅ ejecutada |
+| `012_fix_billing_status_constraint.sql` | ✅ ejecutada |
 
 ## Estructura del proyecto
 
@@ -67,30 +68,44 @@ src/
 ├── app/
 │   ├── page.tsx                  # Landing (HomeClient.tsx)
 │   ├── layout.tsx                # Root layout (Providers)
-│   ├── auth/                     # login, register, callback, confirm
+│   ├── not-found.tsx             # Página 404 personalizada
+│   ├── auth/                     # login, register, callback, confirm, setup
 │   ├── dashboard/                # Panel usuario (listings, billing, stats)
+│   │   ├── page.tsx              # Server component: profile + listings
+│   │   ├── DashboardListings.tsx # Client — tabla con filtros
+│   │   ├── BillingActions.tsx    # Client — estado billing + botones
+│   │   ├── ListingActions.tsx    # Client — menú kebab (editar/pausar/activar/borrar)
+│   │   ├── ListingModal.tsx      # Client — modal detalle
+│   │   ├── PioneerBanner.tsx     # Client — banner pioneros con countdown
+│   │   └── PortalButton.tsx      # Client — Stripe Customer Portal
 │   ├── favorites/                # Publicaciones guardadas (auth-guarded)
 │   ├── feed/                     # Feed público con filtros + búsqueda keyword
 │   ├── listing/[id]/             # Detalle + ViewTracker + contacto + favorito
 │   ├── publish/                  # Selector de tipo (multi-rol) + form multi-paso
 │   ├── profile/[id]/             # Perfil público
-│   ├── profile/edit/             # Editar perfil propio (lista completa de países)
+│   ├── profile/edit/             # Editar perfil propio
 │   ├── privacy/                  # Política de privacidad (ES)
 │   ├── terms/                    # Términos de uso (ES)
-│   └── api/stripe/
-│       ├── checkout/             # POST → pioneer / boost / trial / inmediato
-│       ├── webhook/              # 4 eventos Stripe
-│       └── portal/               # POST → Stripe Customer Portal
+│   └── api/
+│       ├── stripe/
+│       │   ├── checkout/         # POST → pioneer / boost / trial / inmediato
+│       │   ├── webhook/          # 4 eventos Stripe
+│       │   └── portal/           # POST → Stripe Customer Portal
+│       ├── email/welcome/        # POST → correo de bienvenida
+│       └── cron/expire-pioneers/ # GET → cron diario, pausa pioneros expirados
 ├── components/
 │   ├── ui/                       # button, link-button, toast
 │   ├── layout/                   # Header, Footer, SpotULogo, AnimatedGrid,
 │   │                             #   LanguageToggle, Providers, RevealOnScroll
-│   └── listings/                 # ListingCard, FavoriteButton
+│   └── listings/                 # ListingCard (con avatar), FavoriteButton
 ├── lib/
 │   ├── supabase/                 # client.ts, server.ts, middleware.ts
 │   ├── stripe.ts                 # getStripe(), STRIPE_PRICES, helpers de precio
+│   ├── resend.ts                 # getResend() singleton, FROM_EMAIL
+│   ├── emails/                   # welcome.ts, pioneer-expired.ts
 │   └── utils.ts                  # cn()
 ├── types/                        # Profile, Listing, ClosedInteraction
+├── hooks/                        # custom hooks
 └── constants/                    # USER_ROLES, SPACE_CATEGORIES, ALL_COUNTRIES…
 ```
 
@@ -253,6 +268,10 @@ Disponible en el dashboard para usuarios que hayan realizado al menos un pago. P
 - [ ] Número de WhatsApp real para SpotU (actualmente placeholder)
 - [ ] Cron para auto-pausar listings con `billing_status = "trial"` y `trial_ends_at` vencido
 - [ ] Cron para resetear `is_boosted` cuando `boost_ends_at` vence
+
+## Documentos del negocio
+
+Los documentos de negocio (pitch, estudio de mercado, modelo de negocio, guía del sitio, branding) están en la carpeta [`docs/`](docs/README.md).
 
 ## Autor
 
