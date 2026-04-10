@@ -73,7 +73,8 @@ src/
 │   │   ├── register/         # Registro multi-rol con checkboxes
 │   │   ├── login/            # Login email + Google
 │   │   ├── callback/         # OAuth + email confirm code exchange
-│   │   └── confirm/          # "Revisa tu correo"
+│   │   ├── confirm/          # "Revisa tu correo"
+│   │   └── setup/            # Selección de rol post-Google OAuth (usuario nuevo sin role en cookie)
 │   ├── dashboard/            # Panel del usuario (listings, billing, stats)
 │   │   ├── page.tsx               # Server component: profile (types[], user_number, stripe_customer_id)
 │   │   ├── DashboardListings.tsx  # Client — tabla con filtros (título, estado, tipo), boost banner
@@ -82,6 +83,7 @@ src/
 │   │   ├── ListingModal.tsx       # Client — modal detalle de publicación
 │   │   ├── PioneerBanner.tsx      # Client — banner + countdown pioneros
 │   │   └── PortalButton.tsx       # Client — abre Stripe Customer Portal
+│   ├── favorites/            # Publicaciones guardadas (auth-guarded)
 │   ├── feed/                 # Feed público (búsqueda keyword + filtros tipo + país)
 │   ├── listing/[id]/         # Detalle + ViewTracker + botones contacto + FavoriteButton
 │   ├── publish/
@@ -114,6 +116,7 @@ src/
 │   │   └── pioneer-expired.ts # HTML correo expiración año pionero
 │   └── utils.ts              # cn()
 ├── types/                    # Profile, Listing, ClosedInteraction
+├── hooks/                    # Custom React hooks
 └── constants/                # USER_ROLES, SPACE_CATEGORIES, AGENCY_SERVICES,
                               #   ALL_COUNTRIES (~100), MARKETS, PRICE_PERIODS
 supabase/migrations/
