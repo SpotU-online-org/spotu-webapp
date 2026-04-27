@@ -430,7 +430,7 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     fontSize: 13, color: C.white, align: 'center', fontFace: F,
   });
 
-  s.addText('1ra publicacion: 30 dias gratis  ·  Pioneros (primeros 100 usuarios): 1 ano completamente gratis', {
+  s.addText('1ra publicacion: 30 dias gratis  ·  Pioneros (primeros 250 usuarios): 1 ano completamente gratis', {
     x: 0.5, y: 4.98, w: 9, h: 0.42,
     fontSize: 12, bold: true, color: C.indigo, align: 'center', fontFace: F,
   });

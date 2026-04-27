@@ -51,10 +51,10 @@ const TRANSLATIONS: Record<string, Record<Locale, string>> = {
   "pricing.boost_agencies": { es: "Agencias", en: "Agencies" },
   "pricing.pioneer_title": { es: "Usuario pionero", en: "Pioneer user" },
   "pricing.pioneer_desc": {
-    es: "Los primeros 100 usuarios registrados en SpotU obtienen todas sus publicaciones gratis durante 1 año completo. Sin tarjeta, sin condiciones.",
-    en: "The first 100 users registered on SpotU get all their listings free for a full year. No card, no conditions.",
+    es: "Los primeros 250 usuarios registrados en SpotU obtienen todas sus publicaciones gratis durante 1 año completo. Sin tarjeta, sin condiciones.",
+    en: "The first 250 users registered on SpotU get all their listings free for a full year. No card, no conditions.",
   },
-  "pricing.pioneer_spots": { es: "Solo 100 lugares disponibles", en: "Only 100 spots available" },
+  "pricing.pioneer_spots": { es: "Solo 250 lugares disponibles", en: "Only 250 spots available" },
   "pricing.faq_title": { es: "Preguntas frecuentes", en: "Frequently asked questions" },
   "pricing.per_listing": { es: "por publicación activa · no por usuario", en: "per active listing · not per user" },
   "pricing.plan.free.name": { es: "Explorador", en: "Explorer" },

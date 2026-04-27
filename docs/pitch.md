@@ -42,7 +42,7 @@ SpotU no es una idea — es un producto funcionando.
 - Dashboard con estadísticas (vistas y contactos por publicación)
 - Favoritos
 - Pagos con Stripe (suscripciones, trial 30 días, boost)
-- Programa de pioneros (primeros 100 usuarios, 1 año gratis)
+- Programa de pioneros (primeros 250 usuarios, 1 año gratis)
 - Emails transaccionales (bienvenida, expiración pionero)
 - Políticas legales (privacidad y términos)
 - Dominio propio: `spotu.online`
@@ -106,7 +106,7 @@ Cada dueño de publicación ve cuántas personas vieron su publicación y cuánt
 | Agencias | $9.99 USD/mes por publicación | $4.99 USD/sem |
 
 - **Primera publicación:** 30 días gratis (con tarjeta), después cobro automático
-- **Pioneros (primeros 100 usuarios):** 1 año completamente gratis
+- **Pioneros (primeros 250 usuarios):** 1 año completamente gratis
 
 ### Evolución de revenue (Fase 2)
 - Plan Pro: $14.99/mes (publicaciones ilimitadas, contratos digitales, badge verificado)

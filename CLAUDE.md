@@ -13,7 +13,7 @@ Marketplace de 3 lados (intermediario puro) que conecta:
 **Monetización:**
 - Espacios / Anunciantes: $4.99 USD/mes por publicación activa, Boost $2.99 USD/semana
 - Agencias: $9.99 USD/mes por publicación activa, Boost $4.99 USD/semana
-- Pioneros (primeros 100 users por `user_number`): **1 año gratis** desde `profiles.created_at`; al vencer el año se cobran tarifas normales por publicaciones activas
+- Pioneros (primeros 250 users por `user_number`, definido en `PIONEER_THRESHOLD` en `src/lib/stripe.ts`): **1 año gratis** desde `profiles.created_at`; al vencer el año se cobran tarifas normales por publicaciones activas
 - 1ra publicación no-pionero: 30 días gratis (trial) con tarjeta requerida, auto-cobro al vencer; trial calculado desde `listings.created_at`
 - 2da+ publicación no-pionero: cobro inmediato (prorrateado por Stripe)
 - Publicaciones pausadas: sin cobro hasta activación manual; trial de 30d corre desde creación, no desde activación
@@ -156,7 +156,7 @@ tags            TEXT[]  -- max 5, GIN index para búsqueda por keyword
 ```sql
 -- En profiles:
 stripe_customer_id       TEXT
-user_number              INTEGER  -- ≤ 100 = usuario pionero (gratis 1 año desde created_at)
+user_number              INTEGER  -- ≤ PIONEER_THRESHOLD (250) = usuario pionero (gratis 1 año desde created_at)
 total_listings_created   INTEGER  -- contador incremental (nunca decrece), evita re-grant del trial
 ```
 
@@ -173,7 +173,7 @@ total_listings_created   INTEGER  -- contador incremental (nunca decrece), evita
 - Si el usuario elige "Guardar en pausa" → va al dashboard; activa luego desde el menú ⋯
 
 ### Flujo billing checkout (`/api/stripe/checkout`)
-1. **Pioneer** (`user_number ≤ 100` AND `created_at + 365 días > now()`): retorna `{ pioneer: true }`, marca listing con `billing_status: "pioneer"` y `status: "active"`, sin Stripe
+1. **Pioneer** (`user_number ≤ PIONEER_THRESHOLD` AND `created_at + 365 días > now()`): retorna `{ pioneer: true }`, marca listing con `billing_status: "pioneer"` y `status: "active"`, sin Stripe
 2. **Boost** (`mode: "boost"`): one-time payment con `getBoostPriceId(listingType)`
 3. **Suscripción, primera vez** (`total_listings_created ≤ 1`): trial_period_days = días restantes de los 30 desde `listing.created_at`, `payment_method_collection: "always"`; webhook detecta trial y setea `billing_status: "trial"` + `trial_ends_at`
 4. **Suscripción, 2da+**: cobro inmediato, sin trial; webhook setea `billing_status: "active"` + `paid_until`

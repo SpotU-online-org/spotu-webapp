@@ -36,8 +36,8 @@ SpotU no vende publicidad. SpotU **conecta** a quienes tienen espacios publicita
 - Se requiere tarjeta de crédito, pero no se cobra hasta el día 30.
 - Si el usuario desactiva antes del día 30, no se cobra nada.
 
-**Programa de pioneros (primeros 100 usuarios):**
-- Los primeros 100 usuarios registrados tienen **1 año de publicaciones completamente gratuitas**.
+**Programa de pioneros (primeros 250 usuarios):**
+- Los primeros 250 usuarios registrados tienen **1 año de publicaciones completamente gratuitas**.
 - Sin tarjeta requerida, sin cobro.
 - Al vencer el año, se cobran las tarifas normales.
 - Objetivo: generar tracción inicial y embajadores de la plataforma.

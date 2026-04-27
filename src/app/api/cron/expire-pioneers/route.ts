@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { pioneerExpiredEmailHtml } from "@/lib/emails/pioneer-expired";
+import { PIONEER_THRESHOLD } from "@/lib/stripe";
 
 // Called daily by Vercel Cron (see vercel.json)
 // Finds pioneer users whose free year has expired, pauses their listings, and emails them.
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
   const { data: expiredPioneers, error: profilesError } = await supabase
     .from("profiles")
     .select("id, display_name")
-    .lte("user_number", 100)
+    .lte("user_number", PIONEER_THRESHOLD)
     .neq("user_number", 9999)
     .lte("created_at", oneYearAgo.toISOString());
 

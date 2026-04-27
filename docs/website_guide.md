@@ -119,7 +119,7 @@ Si es tu primera publicación, tienes **30 días completamente gratis**. Se te p
 
 ### Programa pioneros
 
-Los **primeros 100 usuarios** en registrarse en SpotU tienen **1 año de publicaciones gratis**. Es una forma de agradecer a quienes apoyan el proyecto desde el inicio.
+Los **primeros 250 usuarios** en registrarse en SpotU tienen **1 año de publicaciones gratis**. Es una forma de agradecer a quienes apoyan el proyecto desde el inicio.
 
 ### ¿Cómo pago?
 

@@ -33,7 +33,24 @@
       "Bash(curl -s -X POST \"https://drgbdmvhojfciusvodvh.supabase.co/rest/v1/rpc\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Content-Type: application/json\" -d '{}')",
       "Bash(curl -s -X POST \"https://drgbdmvhojfciusvodvh.supabase.co/rest/v1/rpc/exec_sql\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2JkbXZob2pmY2l1c3ZvZHZoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyNzc5NywiZXhwIjoyMDkwODAzNzk3fQ.HvH2WcDV0s78C_kWO_-EXOA1yKSUB2H00ymT2xF3tM8\" -H \"Content-Type: application/json\" -d '{\"\"query\"\": \"\"SELECT 1\"\"}')",
       "Bash(gh auth:*)",
-      "Read(//c/Users/cesar/OneDrive/Escritorio/FREELANCE/**)"
+      "Read(//c/Users/cesar/OneDrive/Escritorio/FREELANCE/**)",
+      "Bash(cp pitch_cofounders.md docs/pitch_legacy.md)",
+      "Bash(cp plan_SpotU.md docs/product_plan.md)",
+      "Bash(rm pitch_cofounders.md plan_SpotU.md branding_SpotU.txt)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/NousResearch/hermes-agent/13d7ff3420adcda4784f03a0fa0f69713cfaec13/skills/productivity/powerpoint/scripts/__init__.py\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/NousResearch/hermes-agent/13d7ff3420adcda4784f03a0fa0f69713cfaec13/skills/productivity/powerpoint/scripts/office/helpers/__init__.py\")",
+      "Read(//c/Users/cesar/.claude/**)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d, indent=2\\)\\)\")",
+      "Bash(mkdir -p ~/.claude/skills/powerpoint)",
+      "Bash(node -e \"require\\('pptxgenjs'\\)\")",
+      "Edit(~/.claude/skills/powerpoint/**)",
+      "Bash(node -e \"const p = require\\(require\\('child_process'\\).execSync\\('npm root -g'\\).toString\\(\\).trim\\(\\) + '/pptxgenjs'\\); console.log\\('ok', typeof p\\)\")",
+      "Bash(node docs/build_presentation.js)",
+      "Bash(pnpm lint *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\cesar\\.claude\\projects\\c--Users-cesar-OneDrive-Escritorio-FREELANCE-SpotU\\memory"

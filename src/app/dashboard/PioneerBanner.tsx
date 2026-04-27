@@ -47,7 +47,7 @@ export function PioneerBanner({ pioneerExpiresAt }: Props) {
           <div>
             <p className="text-sm font-semibold text-amber-900">Tu año como usuario pionero ha concluido</p>
             <p className="text-xs text-amber-700 mt-0.5">
-              Gracias por ser parte de los primeros 100 en SpotU. Agrega un método de pago para mantener tus publicaciones activas.
+              Gracias por ser parte de los primeros 250 en SpotU. Agrega un método de pago para mantener tus publicaciones activas.
             </p>
           </div>
         </div>
@@ -86,7 +86,7 @@ export function PioneerBanner({ pioneerExpiresAt }: Props) {
           <p className={cn("text-xs mt-0.5", urgency ? "text-amber-700" : "text-primary/70")}>
             {urgency
               ? "Tu período gratuito está por vencer. Pronto se solicitará un método de pago."
-              : "Como uno de los primeros 100 usuarios, todas tus publicaciones activas son gratuitas durante 1 año."}
+              : "Como uno de los primeros 250 usuarios, todas tus publicaciones activas son gratuitas durante 1 año."}
           </p>
         </div>
       </div>

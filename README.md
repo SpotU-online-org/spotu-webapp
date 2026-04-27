@@ -136,7 +136,7 @@ El Boost posiciona la publicación en primer lugar en el feed y búsqueda durant
 
 ---
 
-### Usuarios pioneros (primeros 100 registrados — `user_number ≤ 100`)
+### Usuarios pioneros (primeros 250 registrados — `user_number ≤ PIONEER_THRESHOLD`)
 
 **Durante el primer año** desde su fecha de registro:
 - Todas sus publicaciones activas son **completamente gratuitas**

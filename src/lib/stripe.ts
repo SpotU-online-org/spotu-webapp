@@ -29,7 +29,7 @@ export const BOOST_PRICE_USD = 2.99;
 export const AGENCY_PRICE_USD = 9.99;
 export const AGENCY_BOOST_PRICE_USD = 4.99;
 
-export const PIONEER_THRESHOLD = 100;
+export const PIONEER_THRESHOLD = 250;
 
 /** Returns the correct monthly price ID based on listing type */
 export function getMonthlyPriceId(listingType: string): string {

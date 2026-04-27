@@ -137,7 +137,7 @@ export function HomeClient({ stats }: { stats: Stats }) {
               {/* Single early-access badge */}
               <div className="animate-fade-in-up mb-8 inline-flex items-center gap-2 rounded-full border border-amber-300/50 bg-amber-50 px-4 py-1.5 text-sm text-amber-700">
                 <Gift className="h-3.5 w-3.5 shrink-0" />
-                Los primeros 100 usuarios obtienen 1 año gratis de acceso completo
+                Los primeros 250 usuarios obtienen 1 año gratis de acceso completo
               </div>
 
               {/* Title */}
