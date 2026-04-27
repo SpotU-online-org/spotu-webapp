@@ -11,6 +11,7 @@ Recursos para entender, presentar e invertir en SpotU.
 | [business_model.md](business_model.md) | Cómo gana dinero SpotU — precios, unit economics, proyecciones | Inversores, socios de negocio |
 | [website_guide.md](website_guide.md) | Cómo funciona spotu.online — guía sin tecnicismos | Amigos, familia, cualquier persona |
 | [branding.md](branding.md) | Identidad visual, paleta de colores, tipografía y voz de marca | Diseñadores, colaboradores de marketing |
+| [glossary.md](glossary.md) | Glosario de términos: SMB, OOH, DOOH, MRR, ARPU, etc. | Cualquier persona que lea otro doc y necesite contexto |
 | [product_plan.md](product_plan.md) | Plan técnico y roadmap completo del producto | Cofounders técnicos, CTOs |
 | [SpotU_Presentacion.pptx](SpotU_Presentacion.pptx) | Presentación visual de 13 slides (PowerPoint) | Reuniones con socios e inversores |
 
