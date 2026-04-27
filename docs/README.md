@@ -12,6 +12,16 @@ Recursos para entender, presentar e invertir en SpotU.
 | [website_guide.md](website_guide.md) | Cómo funciona spotu.online — guía sin tecnicismos | Amigos, familia, cualquier persona |
 | [branding.md](branding.md) | Identidad visual, paleta de colores, tipografía y voz de marca | Diseñadores, colaboradores de marketing |
 | [product_plan.md](product_plan.md) | Plan técnico y roadmap completo del producto | Cofounders técnicos, CTOs |
+| [SpotU_Presentacion.pptx](SpotU_Presentacion.pptx) | Presentación visual de 13 slides (PowerPoint) | Reuniones con socios e inversores |
+
+## Cómo regenerar la presentación
+
+```bash
+node docs/capture_screenshots.js   # captura nuevos screenshots de spotu.online
+node docs/build_presentation.js    # genera SpotU_Presentacion.pptx
+```
+
+Los logos en PNG están en `docs/assets/`. Los screenshots del sitio (`site_*.png`) se regeneran y no se trackean en git.
 
 ---
 

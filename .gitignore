@@ -50,3 +50,6 @@ next-env.d.ts
 
 # other content
 others/
+
+# generated presentation assets (regenerable)
+docs/assets/site_*.png

@@ -12,7 +12,7 @@ SpotU es un **sitio web donde se conectan tres tipos de personas**:
 2. **Dueños de espacios publicitarios** — personas que tienen un lugar donde se puede publicitar: una valla en la carretera, una pantalla LED en un estadio, un podcast con miles de oyentes, una cuenta de Instagram con mucho seguimiento, un sitio web con tráfico, etc.
 3. **Agencias de marketing** — profesionales o empresas que ayudan a los anunciantes a diseñar y gestionar sus campañas publicitarias.
 
-**El problema que resuelve:** antes de SpotU, si querías poner un anuncio en la pantalla de un estadio en Monterrey, tenías que llamar, preguntar quién administra eso, negociar, y así con cada espacio. Del otro lado, el dueño de esa pantalla tenía tiempo vacío que no sabía cómo llenar. SpotU pone a todos en el mismo lugar para que se encuentren fácilmente.
+**El problema que resuelve:** si quieres poner un anuncio en la pantalla de un estadio en Monterrey, normalmente tienes que llamar, preguntar quién administra eso, negociar, y así con cada espacio. Del otro lado, el dueño de esa pantalla suele tener tiempo vacío que le cuesta llenar sin un canal claro. Existen plataformas que atienden el segmento corporativo y enterprise, pero para negocios pequeños y medianos la experiencia sigue siendo manual. SpotU busca poner a anunciantes, espacios y agencias en un mismo lugar para que se encuentren fácilmente, con precios accesibles para SMBs.
 
 ---
 

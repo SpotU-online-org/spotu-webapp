@@ -6,7 +6,7 @@
 
 ## La propuesta de valor
 
-SpotU no vende publicidad. SpotU **conecta** a quienes tienen espacios publicitarios con quienes los necesitan, y a ambos con las agencias que los pueden ayudar.
+SpotU no vende publicidad. SpotU **conecta** a quienes tienen espacios publicitarios con quienes los necesitan, y a ambos con las agencias que los pueden ayudar. A diferencia de plataformas programáticas (PRODOOH, Hivestack) o publishers tradicionales (Publimovil) que están orientadas al segmento enterprise, el foco de SpotU es el SMB.
 
 - **Para dueños de espacios:** visibilidad ante cientos de anunciantes potenciales sin tener que buscarlos uno por uno.
 - **Para anunciantes:** acceso a espacios que de otra forma tomaría semanas encontrar, comparar y negociar.

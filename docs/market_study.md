@@ -113,36 +113,79 @@ La mayoría son agencias pequeñas y medianas (1-20 empleados) que operan de for
 
 ---
 
-## 5. Competencia
+## 5. Panorama competitivo
 
-### Competidores directos
+El mercado publicitario en LATAM tiene un ecosistema activo de plataformas, especialmente en el segmento programático y enterprise. SpotU no llega a un mercado vacío — llega a un mercado donde existen jugadores fuertes en categorías adyacentes, pero que no atienden de forma directa el nicho específico al que apuntamos.
 
-| Plataforma | Mercado | Modelo | Limitaciones vs SpotU |
-|------------|---------|--------|----------------------|
-| **Billups** | USA (enterprise) | Marketplace OOH | Solo enterprise, no LATAM, sin agencias |
-| **AdQuick** | USA | Marketplace OOH digital | Solo OOH, no LATAM, sin agencias |
-| **Vistar Media** | USA/global | Programmatic DOOH | Programmatic (no para SMBs), sin agencias |
-| **Localist** | LATAM (limitado) | Directorio de espacios | Sin transacciones, sin agencias |
-| **Workana/Fiverr** | LATAM | Freelancers | No específico de publicidad/espacios |
+A continuación, una mirada honesta a los actores con los que coexistiremos.
 
-### Competidores indirectos
+### 5.1 Plataformas programáticas DOOH (LATAM)
 
-| Canal | Cómo compite | Por qué SpotU es mejor |
-|-------|-------------|----------------------|
-| Google Ads | Publicidad digital directa | SpotU conecta con espacios FÍSICOS y digitales no-Google |
-| LinkedIn/Instagram | Contacto con agencias | No tiene espacios publicitarios |
-| Facebook Groups | Networking informal | Sin estructura, sin contratos, sin stats |
-| Búsqueda manual (Google) | Encontrar espacios uno por uno | SpotU centraliza y tiene IA para matching |
+Estas son las plataformas más grandes y consolidadas del mercado de publicidad exterior digital en la región. Son **complementarias más que directamente competitivas** con SpotU, porque operan en el segmento enterprise/programático.
 
-### Análisis de la competencia
+| Plataforma | Cobertura | Modelo | Relación con SpotU |
+|------------|-----------|--------|--------------------|
+| **PRODOOH** (alianza con Vistar Media) | México, Brasil, expandiendo a Argentina, Chile, Colombia, Perú | DSP + SSP programático | Enterprise/programmatic; mínimo de inversión alto, no diseñado para SMBs |
+| **Hivestack** | México, Centroamérica, Perú, Panamá | Programmatic DOOH global | Enterprise; foco en publishers grandes con CPM bidding |
+| **MiQ + Adsmovil** (fusión 2026) | 12 mercados incluyendo México y Colombia | Plataforma programática integral (retail media + mobile + DOOH) | Enterprise; el mayor jugador independiente programático en LATAM |
+| **Place Exchange** | Expansión global incluyendo LATAM | OOH SSP independiente | Solo lado de oferta (publishers OOH); no marketplace |
 
-**Gap principal:** no existe ninguna plataforma que combine los tres lados (anunciantes + espacios + agencias) en LATAM con foco en el segmento SMB.
+**Por qué SpotU coexiste sin chocar:** estas plataformas tienen mínimos de inversión en miles o decenas de miles de USD por campaña, requieren contratos enterprise y están pensadas para anunciantes con departamentos de medios. SpotU atiende al SMB que necesita pautar $200-$2,000 USD en una valla local o un podcast regional.
 
-Las plataformas existentes son:
-1. **Enterprise-only** (Billups, AdQuick) — demasiado complejas y costosas para SMBs
-2. **Solo 2 lados** — no incluyen agencias
-3. **Solo digitales o solo físicas** — SpotU conecta ambos mundos
-4. **Sin foco en LATAM** — mercado desatendido
+### 5.2 Empresas tradicionales OOH en LATAM
+
+| Empresa | Cobertura | Modelo |
+|---------|-----------|--------|
+| **Publimovil LATAM** | Centroamérica + parte de LATAM (10,000+ espacios) | Operador OOH directo + plataforma propia (Y.O.D.A.) |
+| **Latam Outdoor Holding** | Argentina, Perú, Chile, Colombia, México, Uruguay | Holding de espacios OOH (vende su propio inventario) |
+| **Samba Digital** | Argentina, Chile, Perú, Honduras, Colombia, México | Agencia de servicios OOH |
+| **Worldcom OOH** | Multinacional | Agencia de medios OOH |
+
+**Relación con SpotU:** son **owners/operadores de inventario**, no marketplaces neutrales. Venden sus propios espacios o gestionan campañas como agencia. SpotU es marketplace de terceros — los espacios que listamos no son nuestros, son de cualquier persona o empresa que tenga uno disponible.
+
+### 5.3 Directorios de agencias de marketing
+
+| Plataforma | Cobertura | Modelo | Diferencia con SpotU |
+|------------|-----------|--------|---------------------|
+| **Sortlist** | Global, fuerte en LATAM | Directorio de agencias + RFP | Solo agencias; el cliente pide cotización, las agencias responden |
+| **Clutch.co** | Global | Rankings y reviews de agencias | Solo agencias; basado en reviews verificadas |
+| **Semrush Agency Directory** | Global | Directorio asociado a Semrush | Solo agencias digitales |
+
+**Relación con SpotU:** son referencia directa para nuestro lado de "encontrar agencia", pero no incluyen espacios publicitarios físicos ni digitales. Y su modelo está enfocado en proyectos de marketing digital (SEO, ads digitales), no en pautas en espacios específicos.
+
+### 5.4 Marketplaces de e-commerce con publicidad integrada
+
+| Plataforma | Modelo |
+|------------|--------|
+| **Mercado Ads** (Mercado Libre) | Publicidad dentro del propio marketplace; retail media |
+| **Amazon Advertising** | Publicidad dentro de Amazon |
+
+**Relación con SpotU:** son plataformas de retail media — el anunciante paga por aparecer dentro de un marketplace de productos. No es publicidad "fuera de la plataforma", no es OOH, no incluye agencias ni espacios independientes. Son una categoría completamente distinta, aunque a veces se mencionan en la misma conversación.
+
+### 5.5 Marketplaces OOH/SMB en USA (referencia)
+
+| Plataforma | Cobertura | Modelo |
+|------------|-----------|--------|
+| **AdQuick** | USA principalmente | Marketplace OOH self-service, más accesible que enterprise |
+| **Billups** | USA, multinacional | Servicios + tecnología OOH (más enterprise) |
+
+**Relación con SpotU:** AdQuick valida que un marketplace SMB-friendly de OOH puede funcionar. SpotU adapta esa lógica a LATAM, le suma espacios digitales (podcasts, redes, sitios web independientes) y le suma el lado de agencias.
+
+### 5.6 Análisis del posicionamiento de SpotU
+
+El mercado publicitario en LATAM está bien atendido en los extremos:
+
+- **Arriba (enterprise):** PRODOOH, Hivestack, MiQ+Adsmovil, Place Exchange dominan el segmento programático y de campañas grandes.
+- **Abajo (autoservicio digital):** Google Ads, Meta Ads, TikTok Ads cubren el SMB que quiere pautar en plataformas digitales globales.
+- **Lateral (publishers tradicionales):** Publimovil, Latam Outdoor venden su propio inventario.
+
+**Donde hay menor cobertura — y donde SpotU se posiciona:**
+- El **SMB que quiere pautar en espacios fuera de los gigantes digitales** (vallas locales, podcasts, sitios independientes, influencers regionales, eventos)
+- En un formato **transaccional simple** (suscripción mensual, contacto directo) en vez de RFP enterprise
+- **Combinando los tres actores** (anunciantes + espacios + agencias) en una sola plataforma — algo que ninguno de los jugadores anteriores hace de forma integrada
+- **Con foco específico en el corredor LATAM-hispano USA** (Colombia + N. México + Florida)
+
+Esto no significa que el mercado esté vacío. Significa que hay una franja de demanda subatendida donde SpotU puede establecerse con una propuesta diferenciada, y eventualmente puede coexistir o integrarse con los jugadores grandes (por ejemplo, una agencia que use SpotU para gestionar pautas SMB y PRODOOH para campañas enterprise).
 
 ---
 
@@ -186,9 +229,11 @@ Objetivo realista para los primeros 24 meses:
 
 ## 8. Conclusión
 
-El mercado de publicidad fragmentada en LATAM y el mercado hispano de USA representa una oportunidad real y desatendida. Los jugadores existentes no atienden adecuadamente el segmento SMB, no cubren los tres lados del marketplace, y no tienen presencia en LATAM.
+El mercado publicitario en LATAM tiene un ecosistema activo con jugadores fuertes en programmatic DOOH (PRODOOH, Hivestack, MiQ+Adsmovil), publishers tradicionales (Publimovil, Latam Outdoor) y directorios de agencias (Sortlist, Clutch). SpotU no llega a un mercado vacío.
 
-SpotU tiene una ventana de oportunidad para establecerse como **el Airbnb de los espacios publicitarios en LATAM y el mercado hispano** — un marketplace de referencia que digitaliza un mercado que aún opera en gran parte de forma manual.
+Sin embargo, hay una franja específica donde la cobertura es menor: el **SMB que quiere pautar en espacios fuera de los gigantes digitales con un formato transaccional simple, integrando anunciantes, espacios y agencias en un solo lugar**, con foco en el corredor LATAM-hispano USA. Esa es la oportunidad de SpotU.
+
+El objetivo no es competir frontalmente con los jugadores enterprise — es atender a la audiencia que ellos no atienden bien, construir una base de usuarios SMB y, eventualmente, coexistir o integrarse con el ecosistema más amplio.
 
 ---
 

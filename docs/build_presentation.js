@@ -1,6 +1,10 @@
+const path = require('path');
 const PptxGenJS = require(
   require('child_process').execSync('npm root -g').toString().trim() + '/pptxgenjs'
 );
+
+const ASSETS = path.resolve(__dirname, 'assets');
+const A = (f) => path.join(ASSETS, f);
 
 const prs = new PptxGenJS();
 prs.layout = 'LAYOUT_16x9';
@@ -27,6 +31,7 @@ const C = {
   white:      'FFFFFF',
   emerald:    '10B981',
   red:        'EF4444',
+  amber:      'D97706',
 };
 
 const F = 'Calibri';
@@ -47,7 +52,7 @@ function accentBar(slide, label) {
 function slideTitle(slide, text) {
   slide.addText(text, {
     x: 0.5, y: 0.78, w: 9, h: 0.72,
-    fontSize: 33, bold: true, color: C.slate, fontFace: F,
+    fontSize: 30, bold: true, color: C.slate, fontFace: F,
   });
 }
 
@@ -64,6 +69,15 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     rectRadius: 0.12,
     fill: { color: fillColor },
     line: { color: lineColor, width: 1 },
+  });
+}
+
+// Smaller accent bar for top-right page indicator (logo space)
+function topRightLogo(slide) {
+  slide.addImage({
+    path: A('logo-horizontal.png'),
+    x: 8.0, y: 0.32, w: 1.5, h: 0.42,
+    sizing: { type: 'contain', w: 1.5, h: 0.42 },
   });
 }
 
@@ -91,27 +105,28 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     line: { color: C.indigoMid, width: 0 },
   });
 
-  s.addText('SpotU', {
-    x: 0.5, y: 1.0, w: 9, h: 1.3,
-    fontSize: 80, bold: true, color: C.white,
-    align: 'center', fontFace: F,
+  // Logo for dark background
+  s.addImage({
+    path: A('logo-dark-bg.png'),
+    x: 3.0, y: 1.05, w: 4, h: 1.3,
+    sizing: { type: 'contain', w: 4, h: 1.3 },
   });
 
   s.addText('Tu spot publicitario ideal', {
-    x: 0.5, y: 2.35, w: 9, h: 0.55,
+    x: 0.5, y: 2.55, w: 9, h: 0.55,
     fontSize: 24, color: C.indigoPale,
     align: 'center', fontFace: F,
   });
 
   // Coral divider
   s.addShape(prs.ShapeType.rect, {
-    x: 4.15, y: 3.05, w: 1.7, h: 0.06,
+    x: 4.15, y: 3.25, w: 1.7, h: 0.06,
     fill: { color: C.coral },
     line: { color: C.coral, width: 0 },
   });
 
-  s.addText('El marketplace que conecta anunciantes, espacios publicitarios y agencias de marketing', {
-    x: 1.0, y: 3.25, w: 8, h: 0.75,
+  s.addText('Marketplace SMB que conecta anunciantes, espacios publicitarios y agencias de marketing', {
+    x: 1.0, y: 3.45, w: 8, h: 0.75,
     fontSize: 15, color: C.indigoMuted,
     align: 'center', fontFace: F,
   });
@@ -130,29 +145,29 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
   const s = prs.addSlide();
   s.background = { color: C.white };
   accentBar(s, 'El Problema');
-  slideTitle(s, 'La publicidad fragmentada es un mercado roto');
+  topRightLogo(s);
+  slideTitle(s, 'Para el SMB, la publicidad fuera de Google y Meta sigue siendo manual');
   hRule(s);
 
   const cards = [
     {
-      title: 'Imposible de encontrar',
-      body: 'Un restaurante en Monterrey tarda semanas buscando una pantalla LED. Llama, pregunta, negocia uno por uno.',
+      title: 'Difícil de encontrar',
+      body: 'Un restaurante en Monterrey termina llamando, preguntando y negociando uno por uno cada espacio que considera.',
     },
     {
       title: 'Capacidad ociosa',
-      body: 'El dueño del espacio tiene tiempo vacío que no sabe cómo llenar. Sin visibilidad, sin herramientas.',
+      body: 'El dueño del espacio suele tener tiempo vacío que le cuesta llenar sin un canal de distribución claro.',
     },
     {
-      title: 'Sin lugar central',
-      body: 'Las agencias de marketing tampoco tienen dónde ofrecer sus servicios ni encontrar espacios para sus clientes.',
+      title: 'Agencias dispersas',
+      body: 'Existen directorios de agencias y plataformas OOH por separado, pero pocos puntos de encuentro de los tres lados.',
     },
   ];
 
   cards.forEach((c, i) => {
     const x = 0.5 + i * 3.05;
-    roundCard(s, x, 1.72, 2.85, 3.05, C.slate100, C.slate200);
+    roundCard(s, x, 1.72, 2.85, 2.95, C.slate100, C.slate200);
 
-    // Number badge
     s.addShape(prs.ShapeType.ellipse, {
       x: x + 0.18, y: 1.9, w: 0.45, h: 0.45,
       fill: { color: C.coral },
@@ -168,12 +183,12 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
       fontSize: 14, bold: true, color: C.slate, fontFace: F,
     });
     s.addText(c.body, {
-      x: x + 0.18, y: 2.96, w: 2.5, h: 1.6,
+      x: x + 0.18, y: 2.96, w: 2.5, h: 1.55,
       fontSize: 12, color: C.slate500, fontFace: F,
     });
   });
 
-  s.addText('No existe un marketplace que conecte oferta y demanda de publicidad de forma simple.', {
+  s.addText('Existen plataformas enterprise y publishers OOH consolidados, pero la franja SMB sigue subatendida.', {
     x: 0.5, y: 4.95, w: 9, h: 0.42,
     fontSize: 13, bold: true, color: C.indigo, align: 'center', fontFace: F,
   });
@@ -190,15 +205,15 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     x: 0.5, y: 0.42, w: 9, h: 0.38,
     fontSize: 13, bold: true, color: C.indigoMuted, fontFace: F, charSpacing: 1,
   });
-  s.addText('SpotU es el marketplace de publicidad de 3 lados', {
+  s.addText('SpotU es un marketplace de publicidad de 3 lados con foco SMB', {
     x: 0.5, y: 0.85, w: 9, h: 1.0,
-    fontSize: 36, bold: true, color: C.white, fontFace: F,
+    fontSize: 30, bold: true, color: C.white, fontFace: F,
   });
 
   const actors = [
-    { icon: 'ANUNCIANTES', emoji: 'Marcas y empresas que buscan donde pautar', label: '📢', accent: C.indigoSoft },
-    { icon: 'ESPACIOS',    emoji: 'Vallas, pantallas LED, podcasts, redes sociales', label: '📍', accent: C.coral },
-    { icon: 'AGENCIAS',    emoji: 'Expertos que conectan marcas con los mejores espacios', label: '💼', accent: C.emerald },
+    { icon: 'ANUNCIANTES', emoji: 'Marcas y empresas que buscan donde pautar', label: 'A', accent: C.indigoSoft },
+    { icon: 'ESPACIOS',    emoji: 'Vallas, pantallas LED, podcasts, redes sociales y webs independientes', label: 'E', accent: C.coral },
+    { icon: 'AGENCIAS',    emoji: 'Expertos que conectan marcas con los espacios correctos', label: 'M', accent: C.emerald },
   ];
 
   actors.forEach((a, i) => {
@@ -209,16 +224,21 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
       fill: { color: C.indigo900 },
       line: { color: C.indigoMid, width: 1 },
     });
+    s.addShape(prs.ShapeType.ellipse, {
+      x: x + 1.05, y: 2.35, w: 0.75, h: 0.75,
+      fill: { color: a.accent },
+      line: { color: a.accent, width: 0 },
+    });
     s.addText(a.label, {
-      x, y: 2.3, w: 2.85, h: 0.6,
-      fontSize: 30, align: 'center', fontFace: F,
+      x: x + 1.05, y: 2.35, w: 0.75, h: 0.75,
+      fontSize: 30, bold: true, color: C.white, align: 'center', fontFace: F,
     });
     s.addText(a.icon, {
-      x: x + 0.1, y: 2.98, w: 2.65, h: 0.4,
+      x: x + 0.1, y: 3.2, w: 2.65, h: 0.4,
       fontSize: 12, bold: true, color: a.accent, align: 'center', fontFace: F, charSpacing: 1,
     });
     s.addText(a.emoji, {
-      x: x + 0.15, y: 3.45, w: 2.55, h: 1.55,
+      x: x + 0.15, y: 3.65, w: 2.55, h: 1.45,
       fontSize: 13, color: C.indigoPale, align: 'center', fontFace: F,
     });
   });
@@ -239,14 +259,15 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
   const s = prs.addSlide();
   s.background = { color: C.white };
   accentBar(s, 'Cómo Funciona');
+  topRightLogo(s);
   slideTitle(s, '4 pasos, sin complicaciones');
   hRule(s);
 
   const steps = [
-    { num: '01', title: 'Regístrate y elige tu rol', body: 'Anunciante, espacio publicitario o agencia de marketing.', fill: C.indigoLight, line: C.indigoPale, numColor: C.indigo },
-    { num: '02', title: 'Publica o busca', body: 'Espacios y agencias publican. Anunciantes navegan el feed o publican una solicitud.', fill: C.coralLight, line: C.coralPale, numColor: C.coral },
-    { num: '03', title: 'Contacto directo por WhatsApp', body: 'Un clic abre WhatsApp o correo. Sin intermediarios ni tiempos de espera.', fill: C.indigoLight, line: C.indigoPale, numColor: C.indigo },
-    { num: '04', title: 'Mide tus resultados', body: 'Ve cuántas personas vieron tu publicacion y cuántas te contactaron.', fill: C.coralLight, line: C.coralPale, numColor: C.coral },
+    { num: '01', title: 'Regístrate y elige tu rol',  body: 'Anunciante, espacio publicitario o agencia. También puedes tener varios roles.', fill: C.indigoLight, line: C.indigoPale, numColor: C.indigo },
+    { num: '02', title: 'Publica o busca',            body: 'Espacios y agencias publican su oferta. Anunciantes navegan el feed o publican una solicitud.', fill: C.coralLight, line: C.coralPale, numColor: C.coral },
+    { num: '03', title: 'Contacto directo',           body: 'Un clic abre WhatsApp o correo. Sin intermediarios ni tiempos de espera.', fill: C.indigoLight, line: C.indigoPale, numColor: C.indigo },
+    { num: '04', title: 'Mide tus resultados',        body: 'Vistas y contactos por publicación. Aprendes qué funciona y qué no.', fill: C.coralLight, line: C.coralPale, numColor: C.coral },
   ];
 
   steps.forEach((st, i) => {
@@ -269,7 +290,7 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 5 — MVP EN PRODUCCIÓN
+// SLIDE 5 — MVP EN PRODUCCIÓN (con screenshot del landing)
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
@@ -281,41 +302,65 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
   });
   s.addText('spotu.online ya está funcionando', {
     x: 0.5, y: 0.75, w: 9, h: 0.7,
-    fontSize: 30, bold: true, color: C.white, fontFace: F,
+    fontSize: 28, bold: true, color: C.white, fontFace: F,
   });
 
+  // Browser-frame screenshot
+  s.addShape(prs.ShapeType.roundRect, {
+    x: 0.5, y: 1.65, w: 5.5, h: 3.7,
+    rectRadius: 0.08,
+    fill: { color: C.white },
+    line: { color: C.indigoMid, width: 1 },
+  });
+  // Window dots
+  ['EF4444', 'F59E0B', '10B981'].forEach((dot, i) => {
+    s.addShape(prs.ShapeType.ellipse, {
+      x: 0.65 + i * 0.18, y: 1.78, w: 0.13, h: 0.13,
+      fill: { color: dot },
+      line: { color: dot, width: 0 },
+    });
+  });
+  s.addText('spotu.online', {
+    x: 1.4, y: 1.77, w: 4.4, h: 0.16,
+    fontSize: 9, color: C.slate500, fontFace: F,
+  });
+
+  // Screenshot
+  s.addImage({
+    path: A('site_landing.png'),
+    x: 0.6, y: 2.0, w: 5.3, h: 3.3,
+    sizing: { type: 'cover', w: 5.3, h: 3.3 },
+  });
+
+  // Right column features
   const features = [
-    'Registro y autenticación (email + Google)',
-    'Feed público con búsqueda y filtros',
-    'Pagos con Stripe (trial, suscripciones, boost)',
-    'Dashboard con estadísticas por publicación',
+    'Auth (email + Google OAuth)',
+    'Feed con búsqueda y filtros',
+    'Pagos Stripe (trial, suscripción, boost)',
+    'Dashboard con stats por publicación',
     'Favoritos y perfiles públicos',
-    'Publicaciones multi-paso con imágenes y tags',
-    'Programa de pioneros (1er año gratis)',
+    'Programa pioneros (250 — 1 año gratis)',
     'Emails transaccionales con Resend',
-    'Dominio propio: spotu.online en Vercel',
-    'Cron jobs automáticos (expiración pioneros)',
+    'Cron jobs (expiración pioneros)',
   ];
 
   features.forEach((f, i) => {
-    const col = i < 5 ? 0 : 1;
-    const row = i < 5 ? i : i - 5;
-    const x = 0.5 + col * 4.75;
-    const y = 1.62 + row * 0.71;
+    const x = 6.3;
+    const y = 1.65 + i * 0.45;
 
     s.addShape(prs.ShapeType.roundRect, {
-      x: x, y: y + 0.06, w: 0.3, h: 0.3,
+      x: x, y: y + 0.05, w: 0.28, h: 0.28,
       rectRadius: 0.05,
       fill: { color: C.emerald },
       line: { color: C.emerald, width: 0 },
     });
-    s.addText('✓', {
-      x: x, y: y + 0.03, w: 0.3, h: 0.35,
-      fontSize: 12, bold: true, color: C.white, align: 'center', fontFace: F,
+    s.addText('OK', {
+      x: x, y: y + 0.05, w: 0.28, h: 0.28,
+      fontSize: 8, bold: true, color: C.white, align: 'center', fontFace: F,
     });
     s.addText(f, {
-      x: x + 0.4, y: y, w: 4.15, h: 0.42,
-      fontSize: 13, color: 'CBD5E1', fontFace: F,
+      x: x + 0.38, y, w: 3.4, h: 0.4,
+      fontSize: 12, color: 'CBD5E1', fontFace: F,
     });
   });
 }
@@ -327,13 +372,14 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
   const s = prs.addSlide();
   s.background = { color: C.white };
   accentBar(s, 'Mercado');
-  slideTitle(s, 'Una oportunidad real y desatendida');
+  topRightLogo(s);
+  slideTitle(s, 'Una franja SMB con cobertura limitada');
   hRule(s);
 
   const stats = [
-    { value: '$40B', label: 'Mercado OOH global', sub: 'creciendo 5% anual' },
-    { value: '$12B', label: 'Publicidad digital LATAM', sub: 'creciendo 15% anual' },
-    { value: '3', label: 'Mercados objetivo', sub: 'Colombia · N. México · Florida' },
+    { value: '$5.2B', label: 'OOH México (mercado)', sub: 'fuente: Mordor Intelligence' },
+    { value: '$1.59B', label: 'Spend OOH LATAM 2024', sub: 'creciendo ~5% anual' },
+    { value: '8.3%', label: 'CAGR pDOOH LATAM', sub: 'hasta 2027 (estimado)' },
   ];
 
   stats.forEach((st, i) => {
@@ -341,7 +387,7 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     roundCard(s, x, 1.72, 2.85, 1.75, C.indigo, C.indigo);
     s.addText(st.value, {
       x, y: 1.92, w: 2.85, h: 0.78,
-      fontSize: 42, bold: true, color: C.white, align: 'center', fontFace: F,
+      fontSize: 38, bold: true, color: C.white, align: 'center', fontFace: F,
     });
     s.addText(st.label, {
       x: x + 0.1, y: 2.74, w: 2.65, h: 0.35,
@@ -349,14 +395,14 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     });
     s.addText(st.sub, {
       x: x + 0.1, y: 3.1, w: 2.65, h: 0.28,
-      fontSize: 10, color: C.indigoSoft, align: 'center', fontFace: F,
+      fontSize: 9, color: C.indigoSoft, align: 'center', fontFace: F,
     });
   });
 
   const markets = [
-    { name: 'Colombia', desc: 'Hub digital en crecimiento, ecosistema de agencias activo' },
-    { name: 'Norte de Mexico', desc: 'Hub empresarial, nearshoring, alta inversion publicitaria' },
-    { name: 'Florida, USA', desc: 'Mercado hispano 5.7M+, puente LATAM-USA' },
+    { name: 'Colombia',         desc: 'Hub digital en crecimiento, $350M en OOH, 75% digital' },
+    { name: 'Norte de México',  desc: 'Hub empresarial, nearshoring, 65% digital en OOH urbano' },
+    { name: 'Florida, USA',     desc: 'Mercado hispano 5.7M+, puente LATAM-USA' },
   ];
 
   markets.forEach((m, i) => {
@@ -370,6 +416,11 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
       fontSize: 11, color: C.slate500, align: 'center', fontFace: F,
     });
   });
+
+  s.addText('Apuntamos al SMB que invierte $200–$2,000 USD por campaña — el segmento menos atendido por las plataformas enterprise.', {
+    x: 0.5, y: 4.95, w: 9, h: 0.42,
+    fontSize: 11, italic: true, color: C.slate500, align: 'center', fontFace: F,
+  });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -379,7 +430,8 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
   const s = prs.addSlide();
   s.background = { color: C.white };
   accentBar(s, 'Modelo de Negocio');
-  slideTitle(s, 'Suscripcion mensual por publicacion activa');
+  topRightLogo(s);
+  slideTitle(s, 'Suscripción mensual por publicación activa');
   hRule(s);
 
   // Card 1 — Indigo
@@ -397,7 +449,7 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     x: 0.7, y: 2.5, w: 3.9, h: 0.9,
     fontSize: 58, bold: true, color: C.white, align: 'center', fontFace: F,
   });
-  s.addText('USD / mes por publicacion', {
+  s.addText('USD / mes por publicación', {
     x: 0.9, y: 3.42, w: 3.5, h: 0.38,
     fontSize: 13, color: C.indigoPale, align: 'center', fontFace: F,
   });
@@ -421,7 +473,7 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     x: 5.4, y: 2.5, w: 3.9, h: 0.9,
     fontSize: 58, bold: true, color: C.white, align: 'center', fontFace: F,
   });
-  s.addText('USD / mes por publicacion', {
+  s.addText('USD / mes por publicación', {
     x: 5.6, y: 3.42, w: 3.5, h: 0.38,
     fontSize: 13, color: C.coralPale, align: 'center', fontFace: F,
   });
@@ -430,61 +482,156 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     fontSize: 13, color: C.white, align: 'center', fontFace: F,
   });
 
-  s.addText('1ra publicacion: 30 dias gratis  ·  Pioneros (primeros 250 usuarios): 1 ano completamente gratis', {
+  s.addText('1ra publicación: 30 días gratis  ·  Pioneros (primeros 250 usuarios): 1 año completamente gratis', {
     x: 0.5, y: 4.98, w: 9, h: 0.42,
     fontSize: 12, bold: true, color: C.indigo, align: 'center', fontFace: F,
   });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 8 — DIFERENCIADORES
+// SLIDE 8 — PANORAMA COMPETITIVO (NEW)
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
   s.background = { color: C.white };
-  accentBar(s, 'Diferenciadores');
-  slideTitle(s, 'Por que SpotU y no la competencia?');
+  accentBar(s, 'Panorama Competitivo');
+  topRightLogo(s);
+  slideTitle(s, 'El mercado tiene jugadores fuertes. SpotU coexiste con ellos.');
   hRule(s);
 
-  // Header
-  s.addText('Caracteristica', { x: 0.6, y: 1.66, w: 5.5, h: 0.38, fontSize: 11, bold: true, color: C.slate500, fontFace: F });
-  s.addText('SpotU',          { x: 6.1, y: 1.66, w: 1.6, h: 0.38, fontSize: 11, bold: true, color: C.indigo,   fontFace: F, align: 'center' });
-  s.addText('Competencia',    { x: 7.8, y: 1.66, w: 1.6, h: 0.38, fontSize: 11, bold: true, color: C.slate500, fontFace: F, align: 'center' });
-
-  const rows = [
-    'Marketplace de 3 lados (anunciantes + espacios + agencias)',
-    'Espacios fisicos Y digitales en un solo lugar',
-    'Enfoque en LATAM y mercado hispano USA',
-    'Contacto directo por WhatsApp sin intermediarios',
-    'Busqueda semantica con IA (Fase 2)',
-    'Precio accesible para pequenas y medianas empresas',
-    'Contratos digitales integrados (Fase 2)',
+  const segments = [
+    {
+      title: 'Programmatic enterprise (LATAM)',
+      players: 'PRODOOH · Hivestack · MiQ + Adsmovil · Place Exchange',
+      foco: 'Anunciantes enterprise, mínimos altos, contratos RFP',
+      color: C.indigo,
+      bg: C.indigoLight,
+      line: C.indigoPale,
+    },
+    {
+      title: 'Publishers OOH tradicionales (LATAM)',
+      players: 'Publimovil · Latam Outdoor Holding · Samba Digital',
+      foco: 'Operan su propio inventario OOH, no son marketplaces neutrales',
+      color: C.coral,
+      bg: C.coralLight,
+      line: C.coralPale,
+    },
+    {
+      title: 'Directorios de agencias',
+      players: 'Sortlist · Clutch · Semrush Agencies',
+      foco: 'Solo lado de agencias, sin espacios publicitarios',
+      color: C.emerald,
+      bg: 'ECFDF5',
+      line: 'A7F3D0',
+    },
+    {
+      title: 'Marketplace SMB OOH (referencia USA)',
+      players: 'AdQuick · Billups',
+      foco: 'Modelo SMB/self-service en USA — valida la tesis para LATAM',
+      color: C.amber,
+      bg: 'FEF3C7',
+      line: 'FCD34D',
+    },
   ];
 
-  rows.forEach((row, i) => {
-    const y = 2.1 + i * 0.47;
-    const bg = i % 2 === 0 ? C.slate100 : C.white;
+  segments.forEach((seg, i) => {
+    const x = 0.5 + (i % 2) * 4.65;
+    const y = 1.7 + Math.floor(i / 2) * 1.65;
+    roundCard(s, x, y, 4.35, 1.45, seg.bg, seg.line);
+
     s.addShape(prs.ShapeType.rect, {
-      x: 0.5, y, w: 9, h: 0.45,
-      fill: { color: bg }, line: { color: bg, width: 0 },
+      x: x, y: y, w: 0.07, h: 1.45,
+      fill: { color: seg.color }, line: { color: seg.color, width: 0 },
     });
-    s.addText(row, {
-      x: 0.65, y: y + 0.07, w: 5.3, h: 0.32,
-      fontSize: 13, color: C.slate, fontFace: F,
+
+    s.addText(seg.title, {
+      x: x + 0.22, y: y + 0.12, w: 4.0, h: 0.32,
+      fontSize: 12, bold: true, color: seg.color, fontFace: F,
     });
-    s.addText('✔', {
-      x: 6.1, y: y + 0.07, w: 1.6, h: 0.32,
-      fontSize: 15, bold: true, color: C.emerald, align: 'center', fontFace: F,
+    s.addText(seg.players, {
+      x: x + 0.22, y: y + 0.46, w: 4.0, h: 0.34,
+      fontSize: 11, bold: true, color: C.slate, fontFace: F,
     });
-    s.addText('✗', {
-      x: 7.8, y: y + 0.07, w: 1.6, h: 0.32,
-      fontSize: 15, bold: true, color: C.red, align: 'center', fontFace: F,
+    s.addText(seg.foco, {
+      x: x + 0.22, y: y + 0.83, w: 4.0, h: 0.55,
+      fontSize: 10, italic: true, color: C.slate500, fontFace: F,
     });
+  });
+
+  s.addText('Ninguno de estos jugadores integra los 3 lados (anunciantes + espacios + agencias) en el segmento SMB con foco LATAM-hispano.', {
+    x: 0.5, y: 5.05, w: 9, h: 0.4,
+    fontSize: 11, italic: true, color: C.slate500, align: 'center', fontFace: F,
   });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 9 — AGENCIAS = MULTIPLICADOR
+// SLIDE 9 — POSICIONAMIENTO (replaces "Diferenciadores")
+// ════════════════════════════════════════════════════════════════════════════
+{
+  const s = prs.addSlide();
+  s.background = { color: C.white };
+  accentBar(s, 'Posicionamiento');
+  topRightLogo(s);
+  slideTitle(s, 'Donde encaja SpotU en el ecosistema');
+  hRule(s);
+
+  // Header row
+  s.addShape(prs.ShapeType.rect, {
+    x: 0.5, y: 1.72, w: 9, h: 0.42,
+    fill: { color: C.indigo900 }, line: { color: C.indigo900, width: 0 },
+  });
+  ['Característica', 'SpotU', 'Programmatic\nenterprise', 'Publishers\ntradicionales', 'Directorios\nde agencias'].forEach((h, i) => {
+    const widths = [2.85, 1.4, 1.55, 1.55, 1.55];
+    let xs = 0.6;
+    for (let k = 0; k < i; k++) xs += widths[k] + 0.05;
+    s.addText(h, {
+      x: xs, y: 1.74, w: widths[i] - 0.1, h: 0.38,
+      fontSize: 9, bold: true, color: i === 1 ? C.indigoPale : C.white, align: i === 0 ? 'left' : 'center', fontFace: F, charSpacing: 1,
+    });
+  });
+
+  const rows = [
+    ['Marketplace 3 lados',           '✓', '~', '✗', '~'],
+    ['Espacios físicos + digitales',  '✓', '~', '~', '✗'],
+    ['Accesible para SMBs ($4-$10/mes)', '✓', '✗', '~', '✓'],
+    ['Contacto directo (WhatsApp/email)', '✓', '✗', '~', '~'],
+    ['Foco LATAM-hispano',            '✓', '✓', '✓', '~'],
+    ['Búsqueda con IA (Fase 2)',      '✓', '~', '✗', '~'],
+  ];
+
+  rows.forEach((row, i) => {
+    const y = 2.18 + i * 0.43;
+    const bg = i % 2 === 0 ? C.slate100 : C.white;
+    s.addShape(prs.ShapeType.rect, {
+      x: 0.5, y, w: 9, h: 0.41,
+      fill: { color: bg }, line: { color: bg, width: 0 },
+    });
+    const widths = [2.85, 1.4, 1.55, 1.55, 1.55];
+    let xs = 0.6;
+    row.forEach((cell, j) => {
+      let color = C.slate, weight = false;
+      if (j > 0) {
+        if (cell === '✓') { color = C.emerald; weight = true; }
+        else if (cell === '✗') { color = C.red; weight = true; }
+        else if (cell === '~') { color = C.amber; weight = true; }
+      }
+      s.addText(cell, {
+        x: xs, y: y + 0.07, w: widths[j] - 0.1, h: 0.28,
+        fontSize: j === 0 ? 11 : 14, bold: weight || j === 0, color,
+        align: j === 0 ? 'left' : 'center', fontFace: F,
+      });
+      xs += widths[j] + 0.05;
+    });
+  });
+
+  s.addText('✓ cubierto    ~ parcial    ✗ no cubierto', {
+    x: 0.5, y: 4.85, w: 9, h: 0.32,
+    fontSize: 10, italic: true, color: C.slate500, align: 'center', fontFace: F,
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SLIDE 10 — AGENCIAS = MULTIPLICADOR
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
@@ -500,10 +647,10 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
   });
 
   const points = [
-    { icon: 'x10', text: '1 agencia con 10 clientes = 10 anunciantes con un solo onboarding' },
-    { icon: '🔒',  text: 'Alta retencion: una agencia que opera en SpotU no migra facilmente' },
-    { icon: '📈',  text: 'Profesionalizan la demanda: campanas mejor estructuradas, mas valor para todos' },
-    { icon: '$$$', text: 'Plan Agency ($9.99/mes) — ARPU 2x vs usuario basico, LTV objetivo >$500 USD' },
+    { tag: 'x10',  text: '1 agencia con 10 clientes = 10 anunciantes con un solo onboarding' },
+    { tag: 'LTV',  text: 'Alta retención: una agencia que opera en SpotU no migra fácilmente' },
+    { tag: 'PRO',  text: 'Profesionalizan la demanda: campañas mejor estructuradas, más valor para todos' },
+    { tag: '2x',   text: 'Plan Agency ($9.99/mes) — ARPU 2x vs usuario básico, LTV objetivo >$500 USD' },
   ];
 
   points.forEach((p, i) => {
@@ -520,9 +667,9 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
       fill: { color: C.coral },
       line: { color: C.coral, width: 0 },
     });
-    s.addText(p.icon, {
+    s.addText(p.tag, {
       x: 0.65, y: y + 0.14, w: 0.62, h: 0.44,
-      fontSize: i === 0 || i === 3 ? 11 : 18, bold: true, color: C.white, align: 'center', fontFace: F,
+      fontSize: 11, bold: true, color: C.white, align: 'center', fontFace: F,
     });
     s.addText(p.text, {
       x: 1.42, y: y + 0.17, w: 7.9, h: 0.38,
@@ -532,23 +679,23 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 10 — TRACCIÓN & ROADMAP
+// SLIDE 11 — TRACCIÓN & ROADMAP
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
   s.background = { color: C.white };
-  accentBar(s, 'Traccion & Roadmap');
+  accentBar(s, 'Tracción & Roadmap');
+  topRightLogo(s);
   slideTitle(s, 'El MVP funciona. Ahora a crecer.');
   hRule(s);
 
   const milestones = [
-    { phase: 'HOY',    label: 'MVP en produccion', desc: 'spotu.online activo con pagos, auth, feed y dashboard', color: C.emerald, done: true },
-    { phase: 'MES 1-2', label: 'Primeros 100 usuarios', desc: 'Onboarding en Colombia, Mexico y Florida', color: C.indigo, done: false },
-    { phase: 'MES 2-3', label: 'IA + contratos', desc: 'Busqueda semantica con Claude API y contratos digitales', color: C.indigo, done: false },
-    { phase: 'MES 5-6', label: '$2,000 MRR', desc: '400+ usuarios de pago activos en 3 mercados', color: C.coral, done: false },
+    { phase: 'HOY',     label: 'MVP en producción',    desc: 'spotu.online activo con pagos, auth, feed y dashboard',  color: C.emerald, done: true },
+    { phase: 'MES 1-2', label: 'Primeros 250 pioneros',desc: 'Onboarding en Colombia, México y Florida',                color: C.indigo,  done: false },
+    { phase: 'MES 2-3', label: 'IA + contratos',       desc: 'Búsqueda semántica con Claude API y contratos digitales', color: C.indigo,  done: false },
+    { phase: 'MES 5-6', label: '$2,000 MRR',           desc: '400+ usuarios de pago activos en 3 mercados',             color: C.coral,   done: false },
   ];
 
-  // Timeline line
   s.addShape(prs.ShapeType.line, {
     x: 1.12, y: 2.58, w: 7.75, h: 0,
     line: { color: C.slate200, width: 2 },
@@ -556,20 +703,17 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
 
   milestones.forEach((m, i) => {
     const cx = 1.12 + i * 2.58;
-
-    // Circle
     s.addShape(prs.ShapeType.ellipse, {
       x: cx - 0.3, y: 2.28, w: 0.6, h: 0.6,
       fill: { color: m.done ? C.emerald : m.color },
       line: { color: m.done ? C.emerald : m.color, width: 0 },
     });
     if (m.done) {
-      s.addText('✓', {
-        x: cx - 0.3, y: 2.3, w: 0.6, h: 0.55,
-        fontSize: 14, bold: true, color: C.white, align: 'center', fontFace: F,
+      s.addText('OK', {
+        x: cx - 0.3, y: 2.32, w: 0.6, h: 0.5,
+        fontSize: 11, bold: true, color: C.white, align: 'center', fontFace: F,
       });
     }
-
     s.addText(m.phase, {
       x: cx - 1.1, y: 3.02, w: 2.2, h: 0.3,
       fontSize: 10, bold: true, color: m.color, align: 'center', fontFace: F, charSpacing: 1,
@@ -584,27 +728,28 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     });
   });
 
-  s.addText('Costos operativos < $70 USD/mes  ·  Break-even con solo 15 usuarios de pago  ·  Margen bruto >85%', {
+  s.addText('Costos operativos < $70 USD/mes  ·  Break-even con 15 usuarios de pago  ·  Margen bruto >85%', {
     x: 0.5, y: 5.0, w: 9, h: 0.38,
     fontSize: 11, color: C.slate500, align: 'center', fontFace: F,
   });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 11 — POR QUÉ AHORA
+// SLIDE 12 — POR QUÉ AHORA
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
   s.background = { color: C.white };
-  accentBar(s, 'Por Que Ahora');
-  slideTitle(s, 'El timing es perfecto');
+  accentBar(s, 'Por Qué Ahora');
+  topRightLogo(s);
+  slideTitle(s, 'El timing es favorable');
   hRule(s);
 
   const reasons = [
-    { title: 'Digitalizacion acelerada',    body: 'Los negocios LATAM migran su presupuesto publicitario a digital. SpotU captura ese movimiento.',         fill: C.indigoLight, line: C.indigoPale },
-    { title: 'Boom del nearshoring',         body: 'Mexico atrae empresas que necesitan publicidad local. Nuevo presupuesto, sin plataforma donde gastarlo.', fill: C.indigoLight, line: C.indigoPale },
-    { title: 'Economia de creadores',        body: 'Podcasters, influencers y webs quieren monetizar su audiencia. Son los espacios digitales de SpotU.',     fill: C.coralLight,  line: C.coralPale  },
-    { title: 'IA hace el matching posible',  body: 'Hoy es viable conectar oferta y demanda con busqueda semantica a bajo costo en toda LATAM.',              fill: C.coralLight,  line: C.coralPale  },
+    { title: 'Digitalización SMB',         body: 'Los negocios pequeños y medianos LATAM están migrando presupuesto publicitario a canales medibles y locales.', fill: C.indigoLight, line: C.indigoPale },
+    { title: 'Boom del nearshoring',       body: 'México atrae empresas que necesitan publicidad local. Nuevo presupuesto en busca de canales de distribución.', fill: C.indigoLight, line: C.indigoPale },
+    { title: 'Economía de creadores',      body: 'Podcasters, influencers y webs quieren monetizar su audiencia. Son los espacios digitales independientes de SpotU.', fill: C.coralLight,  line: C.coralPale  },
+    { title: 'IA accesible para matching', body: 'Hoy es viable conectar oferta y demanda con búsqueda semántica a bajo costo en toda LATAM.', fill: C.coralLight, line: C.coralPale },
   ];
 
   reasons.forEach((r, i) => {
@@ -626,20 +771,19 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
       fontSize: 14, bold: true, color: C.slate, fontFace: F,
     });
     s.addText(r.body, {
-      x: x + 0.2, y: y + 0.68, w: 3.97, h: 0.8,
+      x: x + 0.2, y: y + 0.68, w: 3.97, h: 0.85,
       fontSize: 12, color: C.slate500, fontFace: F,
     });
   });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 12 — CIERRE / CTA
+// SLIDE 13 — CIERRE / CTA
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
   s.background = { color: C.indigoDark };
 
-  // Decorative circles
   s.addShape(prs.ShapeType.ellipse, {
     x: 8.3, y: -0.8, w: 2.5, h: 2.5,
     fill: { color: C.indigoMid },
@@ -651,33 +795,39 @@ function roundCard(slide, x, y, w, h, fillColor, lineColor) {
     line: { color: C.coral, width: 0 },
   });
 
-  s.addText('La oportunidad es real.', {
-    x: 0.5, y: 0.8, w: 9, h: 0.75,
-    fontSize: 42, bold: true, color: C.white, align: 'center', fontFace: F,
-  });
-  s.addText('El timing es ahora.', {
-    x: 0.5, y: 1.6, w: 9, h: 0.75,
-    fontSize: 42, bold: true, color: C.coral, align: 'center', fontFace: F,
-  });
-  s.addText('La ejecucion lo decide todo.', {
-    x: 0.5, y: 2.4, w: 9, h: 0.75,
-    fontSize: 42, bold: true, color: C.indigoPale, align: 'center', fontFace: F,
+  // Logo top center
+  s.addImage({
+    path: A('logo-dark-bg.png'),
+    x: 4.0, y: 0.4, w: 2, h: 0.6,
+    sizing: { type: 'contain', w: 2, h: 0.6 },
   });
 
-  // Coral divider
+  s.addText('Hay una franja del mercado', {
+    x: 0.5, y: 1.4, w: 9, h: 0.7,
+    fontSize: 30, bold: true, color: C.white, align: 'center', fontFace: F,
+  });
+  s.addText('que aún no encuentra su lugar.', {
+    x: 0.5, y: 1.95, w: 9, h: 0.7,
+    fontSize: 30, bold: true, color: C.coral, align: 'center', fontFace: F,
+  });
+  s.addText('Construyamos ese lugar juntos.', {
+    x: 0.5, y: 2.6, w: 9, h: 0.7,
+    fontSize: 30, bold: true, color: C.indigoPale, align: 'center', fontFace: F,
+  });
+
   s.addShape(prs.ShapeType.rect, {
-    x: 3.6, y: 3.35, w: 2.8, h: 0.06,
+    x: 3.6, y: 3.55, w: 2.8, h: 0.06,
     fill: { color: C.coral },
     line: { color: C.coral, width: 0 },
   });
 
   s.addText('spotu.online   ·   admin@spotu.online', {
-    x: 0.5, y: 3.62, w: 9, h: 0.45,
+    x: 0.5, y: 3.78, w: 9, h: 0.45,
     fontSize: 16, color: C.indigoPale, align: 'center', fontFace: F,
   });
 
-  s.addText('Cesar Emilio Castano Marin  ·  Fundador de SpotU', {
-    x: 0.5, y: 4.25, w: 9, h: 0.38,
+  s.addText('Cesar Emilio Castaño Marin  ·  Fundador de SpotU', {
+    x: 0.5, y: 4.4, w: 9, h: 0.38,
     fontSize: 13, color: C.indigoSoft, align: 'center', fontFace: F,
   });
 }

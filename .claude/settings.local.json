@@ -50,7 +50,12 @@
       "Bash(node docs/build_presentation.js)",
       "Bash(pnpm lint *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "WebSearch",
+      "Bash(node -e \"try { require\\('sharp'\\); console.log\\('sharp ok'\\); } catch\\(e\\) { console.log\\('no sharp'\\); }\")",
+      "Bash(node -e ' *)",
+      "Bash(npx -y playwright install chromium)",
+      "Bash(node docs/capture_screenshots.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\cesar\\.claude\\projects\\c--Users-cesar-OneDrive-Escritorio-FREELANCE-SpotU\\memory"

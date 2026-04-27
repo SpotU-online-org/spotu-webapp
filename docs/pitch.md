@@ -7,13 +7,13 @@
 
 ## El problema
 
-La publicidad fuera de los gigantes digitales (Google, Meta) es un mercado fragmentado y opaco.
+La publicidad fuera de los gigantes digitales (Google, Meta) es un mercado fragmentado para el segmento SMB.
 
-Un restaurante en Monterrey que quiere poner su anuncio en la pantalla LED de una cancha de fútbol no tiene forma eficiente de encontrar ese espacio. Tiene que llamar, preguntar, negociar uno por uno. Del otro lado, el dueño de esa pantalla tiene capacidad ociosa que no sabe cómo llenar.
+Un restaurante en Monterrey que quiere poner su anuncio en la pantalla LED de una cancha de fútbol normalmente termina llamando, preguntando y negociando uno por uno. Del otro lado, el dueño de esa pantalla suele tener capacidad ociosa que le cuesta llenar sin un canal de distribución claro.
 
-Y las agencias de marketing que gestionan campañas para múltiples clientes tienen el mismo problema: no hay un lugar centralizado donde encontrar espacios, ni donde sus clientes potenciales las encuentren a ellas.
+Y las agencias de marketing que gestionan campañas para múltiples clientes enfrentan algo similar: aunque existen directorios para encontrarlas (Sortlist, Clutch), no hay una plataforma que las conecte simultáneamente con anunciantes y con espacios publicitarios independientes.
 
-**No existe un marketplace que conecte oferta y demanda de publicidad de forma simple.**
+**El ecosistema LATAM tiene plataformas programáticas (PRODOOH, Hivestack, MiQ+Adsmovil) y publishers tradicionales (Publimovil, Latam Outdoor), pero están orientadas al segmento enterprise. Para el SMB que quiere pautar $200-$2,000 USD en un espacio local o regional, la experiencia sigue siendo manual.**
 
 ---
 
@@ -118,18 +118,19 @@ Cada dueño de publicación ve cuántas personas vieron su publicación y cuánt
 
 ---
 
-## Diferenciadores
+## Posicionamiento vs el ecosistema
 
-| SpotU | Competencia |
-|-------|-------------|
-| Marketplace 3 lados (anunciantes + espacios + agencias) | Solo 2 lados |
-| Búsqueda con IA — describe en lenguaje natural *(Fase 2)* | Solo filtros manuales |
-| Contacto directo (WhatsApp/correo) | Mensajería interna lenta |
-| Espacios físicos + digitales | Solo uno de los dos |
-| LATAM + hispano USA | Solo USA o solo Europa |
-| Simple, mobile-first | Plataformas enterprise complejas |
-| Contratos integrados *(Fase 2)* | Negociación fuera de plataforma |
-| Precio accesible para SMBs | Pricing enterprise |
+SpotU coexiste con un ecosistema activo. Nuestra propuesta no es reemplazar a los jugadores existentes — es atender un segmento subatendido con un enfoque diferente.
+
+| Característica | SpotU | Programmatic enterprise (PRODOOH, Hivestack, MiQ) | Publishers tradicionales (Publimovil, Latam Outdoor) | Directorios de agencias (Sortlist, Clutch) |
+|---|---|---|---|---|
+| Marketplace de 3 lados (anunciantes + espacios + agencias) | ✓ | Anunciantes + espacios | Vende su propio inventario | Solo agencias |
+| Espacios físicos + digitales independientes | ✓ | Principalmente DOOH | Solo OOH propio | No incluye espacios |
+| Accesible para SMBs ($4.99–$9.99/mes) | ✓ | Mínimos enterprise | Tarifas por campaña | Suscripción para agencias |
+| Contacto directo (WhatsApp/correo) | ✓ | RFP / contratos | Comercial directo | RFP |
+| Foco en LATAM + hispano USA | ✓ | LATAM amplio | LATAM regional | Global |
+
+Ver [market_study.md](market_study.md) para un análisis competitivo completo.
 
 ---
 
