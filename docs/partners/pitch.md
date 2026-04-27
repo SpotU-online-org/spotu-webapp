@@ -148,7 +148,7 @@ Las agencias y agentes de marketing son un **multiplicador natural** del marketp
 
 | Hito | Timeline |
 |------|----------|
-| Primeros 100 usuarios activos (3 mercados) | Mes 1-2 |
+| Primeros 250 usuarios activos (3 mercados) | Mes 1-2 |
 | Búsqueda semántica con IA (Claude API) | Mes 2-3 |
 | Contratos digitales | Mes 3-4 |
 | $500 MRR | Mes 3-4 |
@@ -162,21 +162,28 @@ Las agencias y agentes de marketing son un **multiplicador natural** del marketp
 |--------|-----------|
 | Cold start (sin oferta ni demanda) | Llenar oferta manualmente, lanzar por ciudad. Onboardear agencias que traen múltiples clientes |
 | Desintermediación | Contratos digitales, stats y boost crean valor dentro de la plataforma |
-| Competencia de gigantes | Nicho diferente: espacios no-tradicionales + LATAM + marketplace 3 lados |
-| Fragilidad del equipo unipersonal | Buscar cofounder con perfil comercial/growth |
+| Coexistencia con jugadores enterprise | Atender la franja SMB que ellos no atienden, integrar 3 lados |
+| Necesidad de complementar el equipo | Búsqueda activa de socios con perfil comercial/growth y red en agencias |
 
 ---
 
 ## El equipo
 
 **Cesar Emilio Castaño Marin** — Fundador
+Lidera visión, producto y estrategia. Construyó el MVP completo: plataforma en producción con autenticación, publicaciones, pagos Stripe, emails transaccionales y dominio propio.
 
-Construyó el MVP completo: plataforma en producción con autenticación, publicaciones, pagos Stripe, emails transaccionales y dominio propio. Stack moderno de bajo costo operativo.
+**Tomás Ossa Cárdenas** — Ingeniero de Software en Jefe
+Socio de Cesar en *Smash Vision* y co-fundador técnico de SpotU. Lidera arquitectura, escalabilidad y la integración de las funcionalidades de Fase 2 (IA + contratos digitales).
 
-**Buscamos:**
-- Perfil con experiencia en ventas/growth, producto/marketing o agencias de publicidad
-- Red de contactos en alguno de los mercados objetivo
+> El reparto de equity entre los miembros del equipo aún no está formalmente definido — se acordará junto a los nuevos socios que se sumen al proyecto.
+
+**Buscamos sumar:**
+- Perfil con experiencia en growth/ventas o agencias de publicidad
+- Red de contactos en alguno de los mercados objetivo (Colombia, N. México, Florida)
 - Disposición a operar hands-on en los primeros meses
+- Eventualmente, capital de arranque para acelerar onboarding y marketing inicial
+
+Ver [team.md](team.md) para detalle completo del equipo y perfiles que buscamos.
 
 ---
 
@@ -185,12 +192,12 @@ Construyó el MVP completo: plataforma en producción con autenticación, public
 | Servicio | Costo mensual |
 |----------|--------------|
 | Supabase | $0 - $25 |
-| Vercel | $0 - $20 |
+| Vercel Pro (requerido para uso comercial) | $20 |
 | Claude API (IA, Fase 2) | ~$20-50 |
 | Resend (emails) | $0 - $20 |
 | Stripe | 2.9% + $0.30 por transacción |
 | Dominio | ~$15/año |
-| **Total estimado** | **< $120/mes** |
+| **Total estimado** | **~$70-$140/mes** |
 
 ---
 

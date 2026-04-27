@@ -55,7 +55,8 @@
       "Bash(node -e \"try { require\\('sharp'\\); console.log\\('sharp ok'\\); } catch\\(e\\) { console.log\\('no sharp'\\); }\")",
       "Bash(node -e ' *)",
       "Bash(npx -y playwright install chromium)",
-      "Bash(node docs/capture_screenshots.js)"
+      "Bash(node docs/capture_screenshots.js)",
+      "Bash(git commit *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\cesar\\.claude\\projects\\c--Users-cesar-OneDrive-Escritorio-FREELANCE-SpotU\\memory"

@@ -5,6 +5,7 @@ const PptxGenJS = require(
 
 const ASSETS = path.resolve(__dirname, 'assets');
 const A = (f) => path.join(ASSETS, f);
+const OUTPUT = path.resolve(__dirname, 'partners', 'SpotU_Presentacion.pptx');
 
 const prs = new PptxGenJS();
 prs.layout = 'LAYOUT_16x9';
@@ -679,7 +680,84 @@ function topRightLogo(slide) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 11 — TRACCIÓN & ROADMAP
+// SLIDE 11 — EQUIPO
+// ════════════════════════════════════════════════════════════════════════════
+{
+  const s = prs.addSlide();
+  s.background = { color: C.white };
+  accentBar(s, 'Equipo');
+  topRightLogo(s);
+  slideTitle(s, 'Quiénes están construyendo SpotU');
+  hRule(s);
+
+  const members = [
+    {
+      initials: 'CC',
+      color: C.indigo,
+      name: 'Cesar Emilio Castaño Marin',
+      role: 'Fundador',
+      desc: 'Lidera visión, producto y estrategia. Construyó el MVP completo: plataforma en producción con autenticación, publicaciones, pagos Stripe, emails y branding.',
+    },
+    {
+      initials: 'TO',
+      color: C.coral,
+      name: 'Tomás Ossa Cárdenas',
+      role: 'Ingeniero de Software en Jefe',
+      desc: 'Socio de Cesar en Smash Vision y co-fundador técnico de SpotU. Lidera arquitectura, escalabilidad e integración de las funcionalidades de Fase 2 (IA + contratos).',
+    },
+  ];
+
+  members.forEach((m, i) => {
+    const x = 0.5 + i * 4.65;
+    const y = 1.75;
+    roundCard(s, x, y, 4.35, 2.4, C.slate100, C.slate200);
+
+    // Avatar circle with initials
+    s.addShape(prs.ShapeType.ellipse, {
+      x: x + 0.3, y: y + 0.3, w: 1.0, h: 1.0,
+      fill: { color: m.color },
+      line: { color: m.color, width: 0 },
+    });
+    s.addText(m.initials, {
+      x: x + 0.3, y: y + 0.3, w: 1.0, h: 1.0,
+      fontSize: 26, bold: true, color: C.white, align: 'center', fontFace: F,
+    });
+
+    s.addText(m.name, {
+      x: x + 1.45, y: y + 0.35, w: 2.8, h: 0.42,
+      fontSize: 14, bold: true, color: C.slate, fontFace: F,
+    });
+    s.addText(m.role, {
+      x: x + 1.45, y: y + 0.78, w: 2.8, h: 0.32,
+      fontSize: 11, bold: true, color: m.color, fontFace: F,
+    });
+    s.addText(m.desc, {
+      x: x + 0.3, y: y + 1.45, w: 3.75, h: 0.85,
+      fontSize: 11, color: C.slate500, fontFace: F,
+    });
+  });
+
+  // Note about equity
+  s.addShape(prs.ShapeType.roundRect, {
+    x: 0.5, y: 4.3, w: 9, h: 0.55,
+    rectRadius: 0.08,
+    fill: { color: C.indigoLight },
+    line: { color: C.indigoPale, width: 1 },
+  });
+  s.addText('Reparto de equity entre el equipo y nuevos socios — aún por definir formalmente.', {
+    x: 0.6, y: 4.36, w: 8.8, h: 0.42,
+    fontSize: 12, italic: true, color: C.indigoDark, align: 'center', fontFace: F,
+  });
+
+  // Searching for partners
+  s.addText('Buscamos sumar:  growth/ventas  ·  red en agencias LATAM  ·  capital de arranque', {
+    x: 0.5, y: 5.0, w: 9, h: 0.38,
+    fontSize: 12, bold: true, color: C.coral, align: 'center', fontFace: F,
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SLIDE 12 — TRACCIÓN & ROADMAP
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
@@ -735,7 +813,7 @@ function topRightLogo(slide) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 12 — POR QUÉ AHORA
+// SLIDE 13 — POR QUÉ AHORA
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
@@ -778,7 +856,7 @@ function topRightLogo(slide) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SLIDE 13 — CIERRE / CTA
+// SLIDE 14 — CIERRE / CTA
 // ════════════════════════════════════════════════════════════════════════════
 {
   const s = prs.addSlide();
@@ -833,6 +911,6 @@ function topRightLogo(slide) {
 }
 
 // ── Save ──────────────────────────────────────────────────────────────────
-prs.writeFile({ fileName: 'c:/Users/cesar/OneDrive/Escritorio/FREELANCE/SpotU/docs/SpotU_Presentacion.pptx' })
-  .then(() => console.log('Presentacion guardada: docs/SpotU_Presentacion.pptx'))
+prs.writeFile({ fileName: OUTPUT })
+  .then(() => console.log('Presentacion guardada: ' + OUTPUT))
   .catch(err => { console.error('Error:', err); process.exit(1); });

@@ -1,31 +1,56 @@
-# SpotU — Documentos del Negocio
+# SpotU — Carpeta de Documentación
 
-Recursos para entender, presentar e invertir en SpotU.
-
-## Índice
-
-| Documento | Descripción | Audiencia |
-|-----------|-------------|-----------|
-| [pitch.md](pitch.md) | Presentación completa del negocio — problema, solución, mercado, modelo y tracción | Socios, inversores, colaboradores |
-| [market_study.md](market_study.md) | Análisis de mercado, tamaño, competencia y oportunidad | Inversores, socios estratégicos |
-| [business_model.md](business_model.md) | Cómo gana dinero SpotU — precios, unit economics, proyecciones | Inversores, socios de negocio |
-| [website_guide.md](website_guide.md) | Cómo funciona spotu.online — guía sin tecnicismos | Amigos, familia, cualquier persona |
-| [branding.md](branding.md) | Identidad visual, paleta de colores, tipografía y voz de marca | Diseñadores, colaboradores de marketing |
-| [glossary.md](glossary.md) | Glosario de términos: SMB, OOH, DOOH, MRR, ARPU, etc. | Cualquier persona que lea otro doc y necesite contexto |
-| [product_plan.md](product_plan.md) | Plan técnico y roadmap completo del producto | Cofounders técnicos, CTOs |
-| [SpotU_Presentacion.pptx](SpotU_Presentacion.pptx) | Presentación visual de 13 slides (PowerPoint) | Reuniones con socios e inversores |
-
-## Cómo regenerar la presentación
-
-```bash
-node docs/capture_screenshots.js   # captura nuevos screenshots de spotu.online
-node docs/build_presentation.js    # genera SpotU_Presentacion.pptx
-```
-
-Los logos en PNG están en `docs/assets/`. Los screenshots del sitio (`site_*.png`) se regeneran y no se trackean en git.
+Documentación del proyecto, organizada por audiencia.
 
 ---
 
-**Fundador:** Cesar Emilio Castaño Marin
-**Sitio web:** [spotu.online](https://spotu.online)
-**Correo:** admin@spotu.online
+## 📂 [partners/](partners/) — Documentación para compartir con socios
+
+Bundle listo para enviar o presentar a potenciales socios, inversores y colaboradores. Empezar por [partners/README.md](partners/README.md).
+
+| Documento | Descripción |
+|-----------|-------------|
+| [partners/SpotU_Presentacion.pptx](partners/SpotU_Presentacion.pptx) | Presentación visual de 14 slides |
+| [partners/pitch.md](partners/pitch.md) | Pitch completo: problema, solución, mercado, modelo |
+| [partners/team.md](partners/team.md) | Equipo fundador (Cesar + Tomás) y perfiles que buscamos |
+| [partners/business_model.md](partners/business_model.md) | Tarifas, unit economics, proyecciones |
+| [partners/market_study.md](partners/market_study.md) | Análisis de mercado y panorama competitivo |
+| [partners/website_guide.md](partners/website_guide.md) | Cómo funciona spotu.online (sin tecnicismos) |
+| [partners/branding.md](partners/branding.md) | Identidad visual y voz de marca |
+| [partners/glossary.md](partners/glossary.md) | Glosario de términos (SMB, OOH, ARPU, etc.) |
+
+---
+
+## 📂 [internal/](internal/) — Documentación interna
+
+Archivos de referencia y trabajo interno, no pensados para compartir con socios externos.
+
+| Documento | Descripción |
+|-----------|-------------|
+| [internal/product_plan.md](internal/product_plan.md) | Plan técnico detallado y roadmap completo |
+| [internal/pitch_legacy.md](internal/pitch_legacy.md) | Versión original del pitch (referencia histórica) |
+| [internal/prompt_logo.txt](internal/prompt_logo.txt) | Prompt usado para generar el logo |
+
+---
+
+## 📂 [assets/](assets/) — Recursos gráficos
+
+Logos en `.png` y screenshots del sitio (`site_*.png`, no trackeados en git).
+
+---
+
+## Scripts
+
+| Script | Función |
+|--------|---------|
+| `build_presentation.js` | Genera `partners/SpotU_Presentacion.pptx` con PptxGenJS |
+| `capture_screenshots.js` | Captura screenshots de spotu.online con Playwright |
+
+```bash
+node docs/capture_screenshots.js   # actualizar screenshots de spotu.online
+node docs/build_presentation.js    # regenerar la presentación
+```
+
+---
+
+**Fundador:** Cesar Emilio Castaño Marin · admin@spotu.online
